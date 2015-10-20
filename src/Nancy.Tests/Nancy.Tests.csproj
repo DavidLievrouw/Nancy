@@ -242,6 +242,7 @@
     <Compile Include="Unit\Sessions\Cache\HeldUpgradeableReadLockFixture.cs" />
     <Compile Include="Unit\Sessions\Cache\HeldReadLockFixture.cs" />
     <Compile Include="Unit\Sessions\Cache\HeldWriteLockFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsConfigurationFixture.cs" />
     <Compile Include="Unit\Sessions\CookieBasedSessionsConfigurationFixture.cs" />
     <Compile Include="Unit\Sessions\CookieBasedSessionsFixture.cs" />
     <Compile Include="Unit\Cryptography\RijndaelEncryptionProviderFixture.cs" />
