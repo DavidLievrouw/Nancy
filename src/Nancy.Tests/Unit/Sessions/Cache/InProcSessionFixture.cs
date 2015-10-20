@@ -1,8 +1,9 @@
-﻿namespace Nancy.Tests.Unit.Sessions
+﻿namespace Nancy.Tests.Unit.Sessions.Cache
 {
     using System;
     using FakeItEasy;
     using Nancy.Session;
+    using Nancy.Session.Cache;
     using Xunit;
 
     public class InProcSessionFixture
