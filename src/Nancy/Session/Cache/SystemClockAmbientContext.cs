@@ -1,4 +1,4 @@
-﻿namespace Nancy.Session
+﻿namespace Nancy.Session.Cache
 {
     /// <summary>
     /// Represents the ambient context of the global system clock.

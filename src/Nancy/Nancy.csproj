@@ -290,11 +290,11 @@
     <Compile Include="Routing\Trie\TrieNodeFactory.cs" />
     <Compile Include="Security\SSLProxy.cs" />
     <Compile Include="Session\CookieBasedSessionsConfiguration.cs" />
-    <Compile Include="Session\InProcSession.cs" />
-    <Compile Include="Session\InProcSessionCache.cs" />
-    <Compile Include="Session\ISystemClock.cs" />
-    <Compile Include="Session\RealSystemClock.cs" />
-    <Compile Include="Session\SystemClockAmbientContext.cs" />
+    <Compile Include="Session\Cache\InProcSession.cs" />
+    <Compile Include="Session\Cache\InProcSessionCache.cs" />
+    <Compile Include="Session\Cache\ISystemClock.cs" />
+    <Compile Include="Session\Cache\RealSystemClock.cs" />
+    <Compile Include="Session\Cache\SystemClockAmbientContext.cs" />
     <Compile Include="StaticContent.cs" />
     <Compile Include="Conventions\ViewLocationConventions.cs" />
     <Compile Include="Cryptography\Base64Helpers.cs" />
