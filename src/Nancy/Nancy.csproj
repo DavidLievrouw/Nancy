@@ -289,6 +289,11 @@
     <Compile Include="Routing\Trie\SegmentMatch.cs" />
     <Compile Include="Routing\Trie\TrieNodeFactory.cs" />
     <Compile Include="Security\SSLProxy.cs" />
+    <Compile Include="Session\Cache\HeldLock.cs" />
+    <Compile Include="Session\Cache\HeldReadLock.cs" />
+    <Compile Include="Session\Cache\HeldUpgradeableReadLock.cs" />
+    <Compile Include="Session\Cache\HeldWriteLock.cs" />
+    <Compile Include="Session\Cache\IHeldLock.cs" />
     <Compile Include="Session\CookieBasedSessionsConfiguration.cs" />
     <Compile Include="Session\Cache\InProcSession.cs" />
     <Compile Include="Session\Cache\InProcSessionCache.cs" />
