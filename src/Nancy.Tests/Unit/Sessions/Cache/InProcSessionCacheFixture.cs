@@ -139,11 +139,7 @@
                 newThread.Start();
                 threads.Add(newThread);
             }
-
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
+            threads.ForEach(thread => thread.Join());
 
             var expectedNumberOfSessions = numberOfThreads + this.numberOfSessions;
             var actualNumberOfSessions = this.inProcSessionCache.Count;

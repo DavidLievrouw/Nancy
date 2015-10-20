@@ -32,14 +32,9 @@
             get
             {
                 this.CheckDisposed();
-                try
+                using (new HeldReadLock(this.rwlock))
                 {
-                    this.rwlock.EnterReadLock();
                     return this.sessions.Count;
-                }
-                finally
-                {
-                    if (this.rwlock.IsReadLockHeld) this.rwlock.ExitReadLock();
                 }
             }
         }
@@ -75,14 +70,9 @@
             if (session == null) throw new ArgumentNullException("session");
             this.CheckDisposed();
 
-            try
+            using (new HeldWriteLock(this.rwlock))
             {
-                this.rwlock.EnterWriteLock();
                 if (!this.sessions.Contains(session)) this.sessions.Add(session);
-            }
-            finally
-            {
-                if (this.rwlock.IsWriteLockHeld) this.rwlock.ExitWriteLock();
             }
         }
 
@@ -95,32 +85,21 @@
         {
             this.CheckDisposed();
 
-            try
+            using (new HeldUpgradeableReadLock(this.rwlock))
             {
-                this.rwlock.EnterUpgradeableReadLock();
-
                 var foundSession = this.sessions.SingleOrDefault(session => session.Id == id);
 
                 // CQS violation, for convenience
                 if (foundSession != null && foundSession.IsExpired(SystemClockAmbientContext.Current.NowUtc))
                 {
-                    try
+                    using (new HeldWriteLock(this.rwlock))
                     {
-                        this.rwlock.EnterWriteLock();
                         this.sessions.Remove(foundSession);
                         foundSession = null;
-                    }
-                    finally
-                    {
-                        if (this.rwlock.IsWriteLockHeld) this.rwlock.ExitWriteLock();
                     }
                 }
 
                 return foundSession;
-            }
-            finally
-            {
-                if (this.rwlock.IsUpgradeableReadLockHeld) this.rwlock.ExitUpgradeableReadLock();
             }
         }
 
