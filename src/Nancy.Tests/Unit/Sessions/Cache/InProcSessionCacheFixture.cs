@@ -22,9 +22,8 @@
             this.nowUtc = new DateTime(2015, 10, 20, 21, 36, 14, DateTimeKind.Utc);
             this.fakeSystemClock = A.Fake<ISystemClock>();
             this.ConfigureSystemClock_ToReturn(this.nowUtc);
-            SystemClockAmbientContext.Current = this.fakeSystemClock;
 
-            this.inProcSessionCache = new InProcSessionCache();
+            this.inProcSessionCache = new InProcSessionCache(this.fakeSystemClock);
             this.expiredSession = new InProcSession(A.Dummy<ISession>(), this.nowUtc.AddMinutes(-20),
                 TimeSpan.FromMinutes(15));
             this.activeSession = new InProcSession(A.Dummy<ISession>(), this.nowUtc.AddMinutes(-3),

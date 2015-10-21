@@ -299,7 +299,6 @@
     <Compile Include="Session\Cache\InProcSessionCache.cs" />
     <Compile Include="Session\Cache\ISystemClock.cs" />
     <Compile Include="Session\Cache\RealSystemClock.cs" />
-    <Compile Include="Session\Cache\SystemClockAmbientContext.cs" />
     <Compile Include="Session\InProcSessions.cs" />
     <Compile Include="Session\InProcSessionsConfiguration.cs" />
     <Compile Include="StaticContent.cs" />

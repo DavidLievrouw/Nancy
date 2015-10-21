@@ -38,13 +38,12 @@
         [Fact]
         public void When_expired_isexpired_returns_true()
         {
-            SystemClockAmbientContext.Current = this.fakeSystemClock;
             var creationTime = new DateTime(2015, 10, 20, 21, 19, 0, DateTimeKind.Utc);
             var timeout = TimeSpan.FromMinutes(10);
             this.ConfigureSystemClock_ToReturn(creationTime.AddMinutes(11));
             var inProcSession = new InProcSession(this.wrappedSession, creationTime, timeout);
 
-            var actual = inProcSession.IsExpired(SystemClockAmbientContext.Current.NowUtc);
+            var actual = inProcSession.IsExpired(this.fakeSystemClock.NowUtc);
 
             Assert.True(actual);
         }
@@ -52,13 +51,12 @@
         [Fact]
         public void When_not_expired_isexpired_returns_false()
         {
-            SystemClockAmbientContext.Current = this.fakeSystemClock;
             var creationTime = new DateTime(2015, 10, 20, 21, 19, 0, DateTimeKind.Utc);
             var timeout = TimeSpan.FromMinutes(10);
             this.ConfigureSystemClock_ToReturn(creationTime.AddMinutes(2));
             var inProcSession = new InProcSession(this.wrappedSession, creationTime, timeout);
 
-            var actual = inProcSession.IsExpired(SystemClockAmbientContext.Current.NowUtc);
+            var actual = inProcSession.IsExpired(this.fakeSystemClock.NowUtc);
 
             Assert.False(actual);
         }
