@@ -13,13 +13,16 @@
     {
         private readonly ReaderWriterLockSlim rwlock;
         private readonly List<InProcSession> sessions;
+        private readonly ISystemClock systemClock;
         private bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InProcSessionCache"/> class.
         /// </summary>
-        public InProcSessionCache()
+        public InProcSessionCache(ISystemClock systemClock)
         {
+            if (systemClock == null) throw new ArgumentNullException("systemClock");
+            this.systemClock = systemClock;
             this.sessions = new List<InProcSession>();
             this.rwlock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         }
@@ -90,7 +93,7 @@
                 var foundSession = this.sessions.SingleOrDefault(session => session.Id == id);
 
                 // CQS violation, for convenience
-                if (foundSession != null && foundSession.IsExpired(SystemClockAmbientContext.Current.NowUtc))
+                if (foundSession != null && foundSession.IsExpired(this.systemClock.NowUtc))
                 {
                     using (new HeldWriteLock(this.rwlock))
                     {

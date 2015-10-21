@@ -18,12 +18,22 @@
 
         private readonly InProcSessionCache cache;
         private readonly InProcSessionsConfiguration currentConfiguration;
+        private readonly ISystemClock systemClock;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InProcSessions"/> class.
         /// </summary>
         /// <param name="configuration">Cookie based sessions configuration.</param>
-        public InProcSessions(InProcSessionsConfiguration configuration)
+        public InProcSessions(InProcSessionsConfiguration configuration) : this(configuration, new RealSystemClock())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InProcSessions"/> class.
+        /// </summary>
+        /// <param name="configuration">Cookie based sessions configuration.</param>
+        /// <param name="systemClock">The system clock to use.</param>
+        internal InProcSessions(InProcSessionsConfiguration configuration, ISystemClock systemClock)
         {
             if (configuration == null)
             {
@@ -34,17 +44,13 @@
             {
                 throw new ArgumentException("Configuration is invalid", "configuration");
             }
-            this.currentConfiguration = configuration;
-            this.cache = new InProcSessionCache();
-        }
 
-        /// <summary>
-        /// Gets the cookie name that the session is stored in
-        /// </summary>
-        /// <value>Cookie name</value>
-        public string CookieName
-        {
-            get { return this.currentConfiguration.CookieName; }
+            // Create DI object graph
+            this.systemClock = systemClock;
+
+            this.currentConfiguration = configuration;
+            this.systemClock = systemClock;
+            this.cache = new InProcSessionCache(this.systemClock);
         }
 
         /// <summary>
@@ -58,7 +64,7 @@
             {
                 throw new ArgumentNullException("pipelines");
             }
-
+            
             var sessionStore = new InProcSessions(configuration);
 
             pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx => LoadSession(ctx, sessionStore));
@@ -107,7 +113,7 @@
             {
                 var sessionTimeout =
                     this.currentConfiguration.SessionTimeout.Add(TimeSpan.FromSeconds(SessionExpirationBufferSeconds));
-                var newSession = new InProcSession(session, SystemClockAmbientContext.Current.NowUtc, sessionTimeout);
+                var newSession = new InProcSession(session, this.systemClock.NowUtc, sessionTimeout);
                 this.cache.Set(newSession);
 
                 var cryptographyConfiguration = this.currentConfiguration.CryptographyConfiguration;
