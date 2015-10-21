@@ -1,4 +1,4 @@
-﻿namespace Nancy.Session.Cache
+﻿namespace Nancy.Session.InProcSessionsManagement.Cache
 {
     using System;
     using System.Collections;
@@ -9,10 +9,10 @@
     /// <summary>
     /// Cache object that holds the saved sessions.
     /// </summary>
-    internal class InProcSessionCache : IEnumerable<InProcSession>, IDisposable
+    internal class InProcSessionCache : IEnumerable<InProcSessionWrapper>, IDisposable
     {
         private readonly ReaderWriterLockSlim rwlock;
-        private readonly List<InProcSession> sessions;
+        private readonly List<InProcSessionWrapper> sessions;
         private readonly ISystemClock systemClock;
         private bool isDisposed;
 
@@ -23,7 +23,7 @@
         {
             if (systemClock == null) throw new ArgumentNullException("systemClock");
             this.systemClock = systemClock;
-            this.sessions = new List<InProcSession>();
+            this.sessions = new List<InProcSessionWrapper>();
             this.rwlock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         }
 
@@ -52,7 +52,7 @@
             this.isDisposed = true;
         }
 
-        public IEnumerator<InProcSession> GetEnumerator()
+        public IEnumerator<InProcSessionWrapper> GetEnumerator()
         {
             this.CheckDisposed();
             return this.sessions.GetEnumerator();
@@ -68,14 +68,33 @@
         /// Add a new item to the cache.
         /// </summary>
         /// <param name="session">The item to add.</param>
-        public void Set(InProcSession session)
+        public void Set(InProcSessionWrapper session)
         {
             if (session == null) throw new ArgumentNullException("session");
             this.CheckDisposed();
 
             using (new HeldWriteLock(this.rwlock))
             {
-                if (!this.sessions.Contains(session)) this.sessions.Add(session);
+                var index = this.sessions.IndexOf(session);
+
+                if (index < 0)
+                {
+                    this.sessions.Add(session);
+                }
+                else
+                {
+                    this.sessions[index] = session;
+                }
+            }
+        }
+
+        public void Trim()
+        {
+            this.CheckDisposed();
+
+            using (new HeldWriteLock(this.rwlock))
+            {
+                this.sessions.RemoveAll(session => session.IsExpired(this.systemClock.NowUtc));
             }
         }
 
@@ -84,7 +103,7 @@
         /// </summary>
         /// <param name="id">The identifier of the session.</param>
         /// <returns>The session with the specified identifier, or null, if none was not found.</returns>
-        public InProcSession Get(Guid id)
+        public InProcSessionWrapper Get(Guid id)
         {
             this.CheckDisposed();
 

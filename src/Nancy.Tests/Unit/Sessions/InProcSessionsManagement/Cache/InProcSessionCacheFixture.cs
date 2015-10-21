@@ -1,17 +1,17 @@
-﻿namespace Nancy.Tests.Unit.Sessions.Cache
+﻿namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.Cache
 {
     using System;
     using System.Collections.Generic;
     using System.Threading;
     using FakeItEasy;
     using Nancy.Session;
-    using Nancy.Session.Cache;
+    using Nancy.Session.InProcSessionsManagement.Cache;
     using Xunit;
 
     public class InProcSessionCacheFixture : IDisposable
     {
-        private readonly InProcSession activeSession;
-        private readonly InProcSession expiredSession;
+        private readonly InProcSessionWrapper activeSession;
+        private readonly InProcSessionWrapper expiredSession;
         private readonly ISystemClock fakeSystemClock;
         private readonly InProcSessionCache inProcSessionCache;
         private readonly DateTime nowUtc;
@@ -24,9 +24,9 @@
             this.ConfigureSystemClock_ToReturn(this.nowUtc);
 
             this.inProcSessionCache = new InProcSessionCache(this.fakeSystemClock);
-            this.expiredSession = new InProcSession(A.Dummy<ISession>(), this.nowUtc.AddMinutes(-20),
+            this.expiredSession = new InProcSessionWrapper(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc.AddMinutes(-20),
                 TimeSpan.FromMinutes(15));
-            this.activeSession = new InProcSession(A.Dummy<ISession>(), this.nowUtc.AddMinutes(-3),
+            this.activeSession = new InProcSessionWrapper(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc.AddMinutes(-3),
                 TimeSpan.FromMinutes(15));
             this.inProcSessionCache.Set(this.expiredSession);
             this.inProcSessionCache.Set(this.activeSession);
@@ -46,9 +46,19 @@
         }
 
         [Fact]
+        public void Trim_removes_expired_elements()
+        {
+            this.inProcSessionCache.Trim();
+
+            var expected = this.numberOfSessions - 1;
+            var actual = this.inProcSessionCache.Count;
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void Set_adds_new_element()
         {
-            var extraSession = new InProcSession(A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
+            var extraSession = new InProcSessionWrapper(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
             this.inProcSessionCache.Set(extraSession);
 
             var expected = this.numberOfSessions + 1;
@@ -57,11 +67,21 @@
         }
 
         [Fact]
-        public void Set_does_not_add_when_element_already_is_cached()
+        public void Set_replaces_item_when_element_already_is_cached()
         {
-            this.inProcSessionCache.Set(this.activeSession);
+            var newSession = new InProcSessionWrapper(
+                this.activeSession.Id,
+                this.activeSession.WrappedSession,
+                this.nowUtc.AddSeconds(10),
+                TimeSpan.FromMinutes(10)
+                );
+            this.inProcSessionCache.Set(newSession);
+
             var actual = this.inProcSessionCache.Count;
             Assert.Equal(this.numberOfSessions, actual);
+
+            var sessionAfterSave = this.inProcSessionCache.Get(this.activeSession.Id);
+            Assert.Equal(sessionAfterSave.LastSave, newSession.LastSave);
         }
 
         [Fact]
@@ -110,7 +130,7 @@
         [Fact]
         public void When_disposed_then_cannot_access_Set()
         {
-            var extraSession = new InProcSession(A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
+            var extraSession = new InProcSessionWrapper(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
             this.inProcSessionCache.Dispose();
             Assert.Throws<ObjectDisposedException>(() => this.inProcSessionCache.Set(extraSession));
         }
@@ -121,9 +141,9 @@
             const int numberOfThreads = 1000;
             var threadAction = new ThreadStart(() =>
             {
-                var extraSession1 = new InProcSession(A.Dummy<ISession>(), this.nowUtc.AddMinutes(-20),
+                var extraSession1 = new InProcSessionWrapper(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc.AddMinutes(-20),
                     TimeSpan.FromMinutes(15));
-                var extraSession2 = new InProcSession(A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
+                var extraSession2 = new InProcSessionWrapper(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
                 this.inProcSessionCache.Set(extraSession1);
                 Thread.Sleep(20);
                 this.inProcSessionCache.Get(extraSession1.Id);
