@@ -23,7 +23,7 @@
         /// <param name="timeout">The time after which the session should expire.</param>
         internal InProcSession(Guid id, ISession wrappedSession, DateTime creationUtc, TimeSpan timeout)
         {
-            if (wrappedSession == null) throw new ArgumentNullException(nameof(wrappedSession));
+            if (wrappedSession == null) throw new ArgumentNullException("wrappedSession");
             this.Id = id;
             this.WrappedSession = wrappedSession;
             this.CreationUtc = creationUtc;
