@@ -1,4 +1,4 @@
-﻿namespace Nancy.Session.Cache
+﻿namespace Nancy.Session.InProcSessionsManagement.Cache
 {
     using System.Threading;
 

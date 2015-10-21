@@ -2,19 +2,18 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Nancy.Bootstrapper;
     using Nancy.Cookies;
     using Nancy.Cryptography;
     using Nancy.Helpers;
-    using Nancy.Session.Cache;
+    using Nancy.Session.InProcSessionsManagement.Cache;
 
     /// <summary>
     /// Memory based session storage
     /// </summary>
     public class InProcSessions
     {
-        private const int SessionExpirationBufferSeconds = 30;
+        private const int SessionExpirationBufferSeconds = 20;
 
         private readonly InProcSessionCache cache;
         private readonly InProcSessionsConfiguration currentConfiguration;
@@ -64,7 +63,7 @@
             {
                 throw new ArgumentNullException("pipelines");
             }
-            
+
             var sessionStore = new InProcSessions(configuration);
 
             pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx => LoadSession(ctx, sessionStore));
@@ -84,11 +83,12 @@
         /// <summary>
         /// Save the session into the response
         /// </summary>
+        /// <param name="sessionId">The unique identifier of the session.</param>
         /// <param name="session">Session to save</param>
         /// <param name="response">Response to save into</param>
-        public void Save(ISession session, Response response)
+        public void Save(Guid sessionId, ISession session, Response response)
         {
-            if (session == null) return;
+            if (session == null || !session.HasChanged) return;
 
             var sessionItemsDictionary = new Dictionary<string, object>();
             if (!(session is NullSessionProvider))
@@ -99,21 +99,11 @@
                 }
             }
 
-            if (sessionItemsDictionary.Count < 1)
-            {
-                var cookie = new NancyCookie(currentConfiguration.CookieName, Guid.Empty.ToString(), true)
-                {
-                    Expires = DateTime.UtcNow.AddDays(-1),
-                    Domain = this.currentConfiguration.Domain,
-                    Path = this.currentConfiguration.Path
-                };
-                response.WithCookie(cookie);
-            }
-            else
+            if (sessionItemsDictionary.Count > 0)
             {
                 var sessionTimeout =
                     this.currentConfiguration.SessionTimeout.Add(TimeSpan.FromSeconds(SessionExpirationBufferSeconds));
-                var newSession = new InProcSession(session, this.systemClock.NowUtc, sessionTimeout);
+                var newSession = new InProcSessionWrapper(sessionId, session, this.systemClock.NowUtc, sessionTimeout);
                 this.cache.Set(newSession);
 
                 var cryptographyConfiguration = this.currentConfiguration.CryptographyConfiguration;
@@ -163,7 +153,7 @@
                 }
 
                 var sessionIdString = encryptionProvider.Decrypt(encryptedCookie);
-                
+
                 Guid sessionId;
                 if (Guid.TryParse(sessionIdString, out sessionId))
                 {
@@ -182,7 +172,35 @@
         /// <param name="sessionStore">Session store</param>
         private static void SaveSession(NancyContext context, InProcSessions sessionStore)
         {
-            sessionStore.Save(context.Request.Session, context.Response);
+            sessionStore.cache.Trim();
+
+            var sessionId = Guid.NewGuid();
+
+            if (context.Request.Cookies.ContainsKey(sessionStore.currentConfiguration.CookieName))
+            {
+                var cookieString = context.Request.Cookies[sessionStore.currentConfiguration.CookieName];
+                var hmacProvider = sessionStore.currentConfiguration.CryptographyConfiguration.HmacProvider;
+                var encryptionProvider = sessionStore.currentConfiguration.CryptographyConfiguration.EncryptionProvider;
+
+                var cookieData = HttpUtility.UrlDecode(cookieString);
+                var hmacLength = Base64Helpers.GetBase64Length(hmacProvider.HmacLength);
+                if (cookieData.Length >= hmacLength)
+                {
+                    var hmacString = cookieData.Substring(0, hmacLength);
+                    var encryptedCookie = cookieData.Substring(hmacLength);
+
+                    var hmacBytes = Convert.FromBase64String(hmacString);
+                    var newHmac = hmacProvider.GenerateHmac(encryptedCookie);
+                    var hmacValid = HmacComparer.Compare(newHmac, hmacBytes, hmacProvider.HmacLength);
+                    if (hmacValid)
+                    {
+                        var sessionIdString = encryptionProvider.Decrypt(encryptedCookie);
+                        Guid.TryParse(sessionIdString, out sessionId);
+                    }
+                }
+            }
+
+            sessionStore.Save(sessionId, context.Request.Session, context.Response);
         }
 
         /// <summary>

@@ -1,8 +1,8 @@
-﻿namespace Nancy.Tests.Unit.Sessions.Cache
+﻿namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.Cache
 {
     using System;
     using System.Threading;
-    using Nancy.Session.Cache;
+    using Nancy.Session.InProcSessionsManagement.Cache;
     using Xunit;
 
     public class HeldUpgradeableReadLockFixture : IDisposable

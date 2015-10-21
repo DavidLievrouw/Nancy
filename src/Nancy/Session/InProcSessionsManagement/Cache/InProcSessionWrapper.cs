@@ -1,32 +1,23 @@
-﻿namespace Nancy.Session.Cache
+﻿namespace Nancy.Session.InProcSessionsManagement.Cache
 {
     using System;
 
-    internal class InProcSession
+    internal class InProcSessionWrapper
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InProcSession"/> class.
-        /// </summary>
-        /// <param name="wrappedSession">The real Nancy session to wrap.</param>
-        /// <param name="creationUtc">The UTC time when the session was created.</param>
-        /// <param name="timeout">The time after which the session should expire.</param>
-        public InProcSession(ISession wrappedSession, DateTime creationUtc, TimeSpan timeout) : this(Guid.NewGuid(), wrappedSession, creationUtc, timeout)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InProcSession"/> class.
+        /// Initializes a new instance of the <see cref="InProcSessionWrapper"/> class.
         /// </summary>
         /// <param name="id">The unique session identifier.</param>
         /// <param name="wrappedSession">The real Nancy session to wrap.</param>
-        /// <param name="creationUtc">The UTC time when the session was created.</param>
+        /// <param name="lastSave">The UTC time when the session was created.</param>
         /// <param name="timeout">The time after which the session should expire.</param>
-        internal InProcSession(Guid id, ISession wrappedSession, DateTime creationUtc, TimeSpan timeout)
+        public InProcSessionWrapper(Guid id, ISession wrappedSession, DateTime lastSave, TimeSpan timeout)
         {
             if (wrappedSession == null) throw new ArgumentNullException("wrappedSession");
+            if (id == Guid.Empty) throw new ArgumentException("The session Id cannot be empty.", "id");
             this.Id = id;
             this.WrappedSession = wrappedSession;
-            this.CreationUtc = creationUtc;
+            this.LastSave = lastSave;
             this.Timeout = timeout;
         }
 
@@ -41,9 +32,9 @@
         public ISession WrappedSession { get; private set; }
 
         /// <summary>
-        /// The UTC time when the session was created.
+        /// The UTC time when the session was last saved.
         /// </summary>
-        public DateTime CreationUtc { get; private set; }
+        public DateTime LastSave { get; private set; }
 
         /// <summary>
         /// The time after which the session should expire.
@@ -57,14 +48,14 @@
         /// <returns>True if the session has expired, otherwise false.</returns>
         public bool IsExpired(DateTime nowUtc)
         {
-            return nowUtc > this.CreationUtc.Add(this.Timeout);
+            return nowUtc > this.LastSave.Add(this.Timeout);
         }
 
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
 
-            var otherSession = obj as InProcSession;
+            var otherSession = obj as InProcSessionWrapper;
             if (otherSession == null) return false;
 
             return this.Id == otherSession.Id;
