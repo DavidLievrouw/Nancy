@@ -1,9 +1,8 @@
-namespace Nancy.Testing.Tests
+namespace Nancy.Tests.Unit.Sessions
 {
     using System;
     using Nancy.Cryptography;
     using Nancy.Session;
-    using Nancy.Tests;
     using Xunit;
 
     public class InProcSessionsConfigurationFixture
@@ -33,9 +32,19 @@ namespace Nancy.Testing.Tests
         }
 
         [Fact]
-        public void Should_not_be_valid_with_empty_cookiename()
+        public void Should_not_be_valid_with_null_identificationmethod_configuration()
         {
-            this.config.CookieName = "";
+            this.config.SessionIdentificationMethodConfiguration = null;
+
+            var result = this.config.IsValid;
+
+            result.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void Should_not_be_valid_with_null_identificationmethod()
+        {
+            this.config.SessionIdentificationMethodConfiguration.SessionIdentificationMethod = null;
 
             var result = this.config.IsValid;
 
