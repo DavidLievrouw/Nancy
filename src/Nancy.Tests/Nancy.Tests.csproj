@@ -240,6 +240,8 @@
     <Compile Include="Unit\Security\ModuleSecurityFixture.cs" />
     <Compile Include="Unit\Security\SSLProxyFixture.cs" />
     <Compile Include="Unit\Security\UserIdentityExtensionsFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookieIdentificationMethodFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\Cache\HeldUpgradeableReadLockFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\Cache\HeldReadLockFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\Cache\HeldWriteLockFixture.cs" />
@@ -250,6 +252,7 @@
     <Compile Include="Unit\Sessions\DefaultSessionObjectFormatterFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\Cache\InProcSessionCacheFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionIdentificationMethodConfigurationFixture.cs" />
     <Compile Include="Unit\Sessions\NullSessionProviderFixture.cs" />
     <Compile Include="Unit\Sessions\SessionFixture.cs" />
     <Compile Include="Unit\TextFormatterFixture.cs" />
