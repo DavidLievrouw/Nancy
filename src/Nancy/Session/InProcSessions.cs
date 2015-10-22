@@ -1,15 +1,15 @@
 ﻿namespace Nancy.Session
 {
     using System;
-    using System.Collections.Generic;
     using Nancy.Bootstrapper;
     using Nancy.Cookies;
     using Nancy.Cryptography;
     using Nancy.Helpers;
+    using Nancy.Session.InProcSessionsManagement;
     using Nancy.Session.InProcSessionsManagement.Cache;
 
     /// <summary>
-    /// Memory based session storage
+    /// In-process memory based session storage
     /// </summary>
     public class InProcSessions
     {
@@ -90,24 +90,15 @@
         {
             if (session == null || !session.HasChanged) return;
 
-            var sessionItemsDictionary = new Dictionary<string, object>();
-            if (!(session is NullSessionProvider))
-            {
-                foreach (var kvp in session)
-                {
-                    sessionItemsDictionary[kvp.Key] = kvp.Value;
-                }
-            }
-
-            if (sessionItemsDictionary.Count > 0)
+            if (!(session is NullSessionProvider) && session.Count > 0)
             {
                 var sessionTimeout =
                     this.currentConfiguration.SessionTimeout.Add(TimeSpan.FromSeconds(SessionExpirationBufferSeconds));
-                var newSession = new InProcSessionWrapper(sessionId, session, this.systemClock.NowUtc, sessionTimeout);
-                this.cache.Set(newSession);
+                var inProcSession = new InProcSession(sessionId, session, this.systemClock.NowUtc, sessionTimeout);
+                this.cache.Set(inProcSession);
 
                 var cryptographyConfiguration = this.currentConfiguration.CryptographyConfiguration;
-                var encryptedData = cryptographyConfiguration.EncryptionProvider.Encrypt(newSession.Id.ToString());
+                var encryptedData = cryptographyConfiguration.EncryptionProvider.Encrypt(inProcSession.Id.ToString());
                 var hmacBytes = cryptographyConfiguration.HmacProvider.GenerateHmac(encryptedData);
                 var cookieData = string.Format("{0}{1}", Convert.ToBase64String(hmacBytes), encryptedData);
 
@@ -158,7 +149,7 @@
                 if (Guid.TryParse(sessionIdString, out sessionId))
                 {
                     var session = this.cache.Get(sessionId);
-                    if (session != null) return this.cache.Get(sessionId).WrappedSession;
+                    if (session != null) return session;
                 }
             }
 
@@ -172,6 +163,7 @@
         /// <param name="sessionStore">Session store</param>
         private static void SaveSession(NancyContext context, InProcSessions sessionStore)
         {
+            // ToDo: Improvement: Trim the session store async and periodically
             sessionStore.cache.Trim();
 
             var sessionId = Guid.NewGuid();

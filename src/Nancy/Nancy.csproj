@@ -295,7 +295,7 @@
     <Compile Include="Session\InProcSessionsManagement\Cache\HeldWriteLock.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\IHeldLock.cs" />
     <Compile Include="Session\CookieBasedSessionsConfiguration.cs" />
-    <Compile Include="Session\InProcSessionsManagement\Cache\InProcSessionWrapper.cs" />
+    <Compile Include="Session\InProcSessionsManagement\InProcSession.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\InProcSessionCache.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\ISystemClock.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\RealSystemClock.cs" />
