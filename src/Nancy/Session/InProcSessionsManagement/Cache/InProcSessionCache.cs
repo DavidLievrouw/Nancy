@@ -9,7 +9,7 @@
     /// <summary>
     /// Cache object that holds the saved sessions.
     /// </summary>
-    internal class InProcSessionCache : IEnumerable<InProcSession>, IDisposable
+    internal class InProcSessionCache : IInProcSessionCache
     {
         private readonly ReaderWriterLockSlim rwlock;
         private readonly List<InProcSession> sessions;
@@ -30,13 +30,10 @@
         /// <summary>
         /// Gets the number of sessions that are currently held in cache.
         /// </summary>
-        public int Count
-        {
-            get
-            {
+        public int Count {
+            get {
                 this.CheckDisposed();
-                using (new HeldReadLock(this.rwlock))
-                {
+                using (new HeldReadLock(this.rwlock)) {
                     return this.sessions.Count;
                 }
             }
@@ -73,27 +70,26 @@
             if (session == null) throw new ArgumentNullException("session");
             this.CheckDisposed();
 
-            using (new HeldWriteLock(this.rwlock))
-            {
+            using (new HeldWriteLock(this.rwlock)) {
                 var index = this.sessions.IndexOf(session);
 
-                if (index < 0)
-                {
+                if (index < 0) {
                     this.sessions.Add(session);
                 }
-                else
-                {
+                else {
                     this.sessions[index] = session;
                 }
             }
         }
 
+        /// <summary>
+        /// Remove any expired sessions from this cache.
+        /// </summary>
         public void Trim()
         {
             this.CheckDisposed();
 
-            using (new HeldWriteLock(this.rwlock))
-            {
+            using (new HeldWriteLock(this.rwlock)) {
                 this.sessions.RemoveAll(session => session.IsExpired(this.systemClock.NowUtc));
             }
         }
@@ -107,15 +103,12 @@
         {
             this.CheckDisposed();
 
-            using (new HeldUpgradeableReadLock(this.rwlock))
-            {
+            using (new HeldUpgradeableReadLock(this.rwlock)) {
                 var foundSession = this.sessions.SingleOrDefault(session => session.Id == id);
 
                 // CQS violation, for convenience
-                if (foundSession != null && foundSession.IsExpired(this.systemClock.NowUtc))
-                {
-                    using (new HeldWriteLock(this.rwlock))
-                    {
+                if (foundSession != null && foundSession.IsExpired(this.systemClock.NowUtc)) {
+                    using (new HeldWriteLock(this.rwlock)) {
                         this.sessions.Remove(foundSession);
                         foundSession = null;
                     }

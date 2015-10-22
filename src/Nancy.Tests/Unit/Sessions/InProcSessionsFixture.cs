@@ -29,7 +29,7 @@ namespace Nancy.Tests.Unit.Sessions
         public void Given_null_config_then_throws()
         {
             var hooks = A.Fake<IPipelines>();
-            Assert.Throws<ArgumentNullException>(() => hooks.Enable(null));
+            Assert.Throws<ArgumentNullException>(() => hooks.Enable((InProcSessionsConfiguration)null));
         }
 
         [Fact]

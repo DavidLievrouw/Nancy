@@ -1,8 +1,24 @@
 ﻿namespace Nancy.Session.InProcSessionsManagement
 {
+    using System;
+
+    /// <summary>
+    /// Identification method for in-process memory based sessions.
+    /// </summary>
     public interface IInProcSessionIdentificationMethod
     {
-        ISession LoadSession(NancyContext context);
-        void SaveSession(NancyContext context);
+        /// <summary>
+        /// Load the session identifier from the specified context.
+        /// </summary>
+        /// <param name="context">The current context.</param>
+        /// <returns>The identifier of the session for the current request.</returns>
+        Guid GetCurrentSessionId(NancyContext context);
+
+        /// <summary>
+        /// Save the session in the specified context.
+        /// </summary>
+        /// <param name="sessionId">The identifier of the session.</param>
+        /// <param name="context">The current context.</param>
+        void SaveSessionId(Guid sessionId, NancyContext context);
     }
 }
