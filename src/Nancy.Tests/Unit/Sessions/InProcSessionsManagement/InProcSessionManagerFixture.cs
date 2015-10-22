@@ -23,13 +23,10 @@
             this.fakeSessionIdentificationMethod = A.Fake<IInProcSessionIdentificationMethod>();
             this.validConfiguration = new InProcSessionsConfiguration
             {
-                SessionIdentificationMethodConfiguration = new InProcSessionIdentificationMethodConfiguration
-                {
-                    SessionIdentificationMethod = this.fakeSessionIdentificationMethod
-                },
+                SessionIdentificationMethod = this.fakeSessionIdentificationMethod,
                 CryptographyConfiguration = new CryptographyConfiguration(
                     A.Dummy<IEncryptionProvider>(),
-                    A.Fake<IHmacProvider>()),
+                    A.Dummy<IHmacProvider>()),
                 SessionTimeout = TimeSpan.FromMinutes(30)
             };
             this.fakeSessionCache = A.Fake<IInProcSessionCache>();

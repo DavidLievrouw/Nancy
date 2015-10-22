@@ -293,7 +293,6 @@
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookieIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\IInProcSessionCache.cs" />
     <Compile Include="Session\InProcSessionsManagement\IInProcSessionManager.cs" />
-    <Compile Include="Session\InProcSessionsManagement\InProcSessionIdentificationMethodConfiguration.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\HeldLock.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\HeldReadLock.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\HeldUpgradeableReadLock.cs" />

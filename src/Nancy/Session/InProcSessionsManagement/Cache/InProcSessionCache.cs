@@ -7,7 +7,7 @@
     using System.Threading;
 
     /// <summary>
-    /// Cache object that holds the saved sessions.
+    /// Cache object that holds the in-process memory sessions.
     /// </summary>
     internal class InProcSessionCache : IInProcSessionCache
     {

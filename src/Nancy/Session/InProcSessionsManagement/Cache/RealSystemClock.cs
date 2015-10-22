@@ -5,7 +5,7 @@
     /// <summary>
     /// The default implementation of the SystemClock interface.
     /// </summary>
-    public class RealSystemClock : ISystemClock
+    internal class RealSystemClock : ISystemClock
     {
         /// <summary>
         /// Gets the current UTC date and time.
