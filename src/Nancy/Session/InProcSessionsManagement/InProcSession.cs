@@ -9,8 +9,6 @@
     /// </summary>
     public class InProcSession : ISession
     {
-        private readonly ISession wrappedSession;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InProcSession"/> class.
         /// </summary>
@@ -22,7 +20,7 @@
         {
             if (wrappedSession == null) throw new ArgumentNullException("wrappedSession");
             if (id == Guid.Empty) throw new ArgumentException("The session Id cannot be empty.", "id");
-            this.wrappedSession = wrappedSession;
+            this.WrappedSession = wrappedSession;
             this.Id = id;
             this.LastSave = lastSave;
             this.Timeout = timeout;
@@ -52,6 +50,11 @@
             private set;
         }
 
+        internal ISession WrappedSession {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Checks whether this session has expired.
         /// </summary>
@@ -64,7 +67,7 @@
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
-            return this.wrappedSession.GetEnumerator();
+            return this.WrappedSession.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -84,13 +87,13 @@
         {
             return this.Id.GetHashCode();
         }
-        
+
         /// <summary>
         /// The number of session values
         /// </summary>
         /// <returns></returns>
         public int Count {
-            get { return this.wrappedSession.Count; }
+            get { return this.WrappedSession.Count; }
         }
 
         /// <summary>
@@ -98,7 +101,7 @@
         /// </summary>
         public void DeleteAll()
         {
-            this.wrappedSession.DeleteAll();
+            this.WrappedSession.DeleteAll();
         }
 
         /// <summary>
@@ -106,22 +109,22 @@
         /// </summary>
         public void Delete(string key)
         {
-            this.wrappedSession.Delete(key);
+            this.WrappedSession.Delete(key);
         }
 
         /// <summary>
         /// Retrieves the value from the session
         /// </summary>
         public object this[string key] {
-            get { return this.wrappedSession[key]; }
-            set { this.wrappedSession[key] = value; }
+            get { return this.WrappedSession[key]; }
+            set { this.WrappedSession[key] = value; }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether this session has been changed, since its creation.
         /// </summary>
         public bool HasChanged {
-            get { return this.wrappedSession.HasChanged; }
+            get { return this.WrappedSession.HasChanged; }
         }
     }
 }

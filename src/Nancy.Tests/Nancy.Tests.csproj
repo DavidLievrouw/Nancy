@@ -251,6 +251,7 @@
     <Compile Include="Unit\Cryptography\RijndaelEncryptionProviderFixture.cs" />
     <Compile Include="Unit\Sessions\DefaultSessionObjectFormatterFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\Cache\InProcSessionCacheFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionFactoryFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionManagerFixture.cs" />
     <Compile Include="Unit\Sessions\NullSessionProviderFixture.cs" />
