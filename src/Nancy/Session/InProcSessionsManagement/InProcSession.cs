@@ -4,7 +4,10 @@
     using System.Collections;
     using System.Collections.Generic;
 
-    internal class InProcSession : ISession
+    /// <summary>
+    /// A wrapper for the Nancy ISession interface.
+    /// </summary>
+    public class InProcSession : ISession
     {
         private readonly ISession wrappedSession;
 
@@ -114,6 +117,9 @@
             set { this.wrappedSession[key] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this session has been changed, since its creation.
+        /// </summary>
         public bool HasChanged {
             get { return this.wrappedSession.HasChanged; }
         }

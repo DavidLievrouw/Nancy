@@ -17,7 +17,7 @@ namespace Nancy.Tests.Unit.Sessions
                 new DefaultHmacProvider(new PassphraseKeyGenerator("UberSuperSecure",
                     new byte[] {1, 2, 3, 4, 5, 6, 7, 8})));
 
-            this.config = new InProcSessionsConfiguration()
+            this.config = new InProcSessionsConfiguration
             {
                 CryptographyConfiguration = cryptographyConfiguration
             };
@@ -26,25 +26,14 @@ namespace Nancy.Tests.Unit.Sessions
         [Fact]
         public void Should_be_valid_with_all_properties_set()
         {
-            var result = this.config.IsValid;
-
+            var result = new InProcSessionsConfiguration().IsValid;
             result.ShouldBeTrue();
         }
 
         [Fact]
-        public void Should_not_be_valid_with_null_identificationmethod_configuration()
+        public void Should_not_be_valid_with_null_session_identificationmethod()
         {
-            this.config.SessionIdentificationMethodConfiguration = null;
-
-            var result = this.config.IsValid;
-
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Should_not_be_valid_with_null_identificationmethod()
-        {
-            this.config.SessionIdentificationMethodConfiguration.SessionIdentificationMethod = null;
+            this.config.SessionIdentificationMethod = null;
 
             var result = this.config.IsValid;
 

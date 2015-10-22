@@ -38,7 +38,6 @@ namespace Nancy.Session
         internal static void Enable(this IPipelines pipelines, IInProcSessionManager sessionManager)
         {
             if (pipelines == null) throw new ArgumentNullException("pipelines");
-            if (sessionManager == null) throw new ArgumentNullException("sessionManager");
 
             pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx => LoadSession(ctx, sessionManager));
             pipelines.AfterRequest.AddItemToEndOfPipeline(ctx => SaveSession(ctx, sessionManager));

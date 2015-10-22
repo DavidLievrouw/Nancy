@@ -13,7 +13,7 @@
         /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
         /// </summary>
         public InProcSessionsConfiguration()
-            : this(CryptographyConfiguration.Default, InProcSessionIdentificationMethodConfiguration.Default)
+            : this(CryptographyConfiguration.Default, new BySessionIdCookieIdentificationMethod())
         {
         }
 
@@ -21,7 +21,7 @@
         /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
         /// </summary>
         public InProcSessionsConfiguration(CryptographyConfiguration cryptographyConfiguration)
-            : this(cryptographyConfiguration, InProcSessionIdentificationMethodConfiguration.Default)
+            : this(cryptographyConfiguration, new BySessionIdCookieIdentificationMethod())
         {
         }
 
@@ -29,10 +29,10 @@
         /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
         /// </summary>
         public InProcSessionsConfiguration(CryptographyConfiguration cryptographyConfiguration,
-            InProcSessionIdentificationMethodConfiguration sessionIdentificationMethodConfiguration)
+             IInProcSessionIdentificationMethod sessionIdentificationMethod)
         {
             this.CryptographyConfiguration = cryptographyConfiguration;
-            this.SessionIdentificationMethodConfiguration = sessionIdentificationMethodConfiguration;
+            this.SessionIdentificationMethod = sessionIdentificationMethod;
             this.SessionTimeout = TimeSpan.FromMinutes(20);
         }
 
@@ -45,18 +45,18 @@
         }
 
         /// <summary>
-        /// Gets or sets the session identification method configuration
+        /// Gets or sets the method that is used to identify the session from the context
         /// </summary>
-        public InProcSessionIdentificationMethodConfiguration SessionIdentificationMethodConfiguration {
+        public IInProcSessionIdentificationMethod SessionIdentificationMethod
+        {
             get;
             set;
         }
-        
+
         /// <summary>
         /// Gets or sets the time after which a memory session expires
         /// </summary>
-        public TimeSpan SessionTimeout
-        {
+        public TimeSpan SessionTimeout {
             get;
             set;
         }
@@ -66,11 +66,7 @@
         /// </summary>
         public virtual bool IsValid {
             get {
-                if (this.SessionIdentificationMethodConfiguration == null) {
-                    return false;
-                }
-
-                if (this.SessionIdentificationMethodConfiguration.SessionIdentificationMethod == null) {
+                if (this.SessionIdentificationMethod == null) {
                     return false;
                 }
 

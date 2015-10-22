@@ -39,7 +39,7 @@ namespace Nancy.Tests.Unit.Sessions
             var invalidConfiguration = new InProcSessionsConfiguration
             {
                 CryptographyConfiguration = null,
-                SessionIdentificationMethodConfiguration = null,
+                SessionIdentificationMethod = null,
                 SessionTimeout = TimeSpan.FromSeconds(-5)
             };
             Assert.Throws<ArgumentException>(() => hooks.Enable(invalidConfiguration));
