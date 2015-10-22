@@ -2,6 +2,7 @@
 
 namespace Nancy.Tests.Unit.Sessions
 {
+    using System;
     using FakeItEasy;
     using Nancy.Bootstrapper;
     using Nancy.Session;
@@ -22,6 +23,32 @@ namespace Nancy.Tests.Unit.Sessions
 
             beforePipeline.PipelineDelegates.Count().ShouldEqual(1);
             afterPipeline.PipelineItems.Count().ShouldEqual(1);
+        }
+
+        [Fact]
+        public void Given_null_config_then_throws()
+        {
+            var hooks = A.Fake<IPipelines>();
+            Assert.Throws<ArgumentNullException>(() => hooks.Enable(null));
+        }
+
+        [Fact]
+        public void Given_invalid_config_then_throws()
+        {
+            var hooks = A.Fake<IPipelines>();
+            var invalidConfiguration = new InProcSessionsConfiguration
+            {
+                CryptographyConfiguration = null,
+                SessionIdentificationMethodConfiguration = null,
+                SessionTimeout = TimeSpan.FromSeconds(-5)
+            };
+            Assert.Throws<ArgumentException>(() => hooks.Enable(invalidConfiguration));
+        }
+
+        [Fact]
+        public void Given_null_pipelines_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => InProcSessions.Enable(null));
         }
     }
 }
