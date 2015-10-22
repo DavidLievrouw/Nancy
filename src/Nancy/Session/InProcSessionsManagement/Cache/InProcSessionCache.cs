@@ -9,10 +9,10 @@
     /// <summary>
     /// Cache object that holds the saved sessions.
     /// </summary>
-    internal class InProcSessionCache : IEnumerable<InProcSessionWrapper>, IDisposable
+    internal class InProcSessionCache : IEnumerable<InProcSession>, IDisposable
     {
         private readonly ReaderWriterLockSlim rwlock;
-        private readonly List<InProcSessionWrapper> sessions;
+        private readonly List<InProcSession> sessions;
         private readonly ISystemClock systemClock;
         private bool isDisposed;
 
@@ -23,7 +23,7 @@
         {
             if (systemClock == null) throw new ArgumentNullException("systemClock");
             this.systemClock = systemClock;
-            this.sessions = new List<InProcSessionWrapper>();
+            this.sessions = new List<InProcSession>();
             this.rwlock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         }
 
@@ -52,7 +52,7 @@
             this.isDisposed = true;
         }
 
-        public IEnumerator<InProcSessionWrapper> GetEnumerator()
+        public IEnumerator<InProcSession> GetEnumerator()
         {
             this.CheckDisposed();
             return this.sessions.GetEnumerator();
@@ -68,7 +68,7 @@
         /// Add a new item to the cache.
         /// </summary>
         /// <param name="session">The item to add.</param>
-        public void Set(InProcSessionWrapper session)
+        public void Set(InProcSession session)
         {
             if (session == null) throw new ArgumentNullException("session");
             this.CheckDisposed();
@@ -103,7 +103,7 @@
         /// </summary>
         /// <param name="id">The identifier of the session.</param>
         /// <returns>The session with the specified identifier, or null, if none was not found.</returns>
-        public InProcSessionWrapper Get(Guid id)
+        public InProcSession Get(Guid id)
         {
             this.CheckDisposed();
 
