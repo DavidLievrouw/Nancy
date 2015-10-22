@@ -304,6 +304,7 @@
     <Compile Include="Session\InProcSessionsManagement\Cache\InProcSessionCache.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\ISystemClock.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\RealSystemClock.cs" />
+    <Compile Include="Session\InProcSessionsManagement\InProcSessionFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\InProcSessionManager.cs" />
     <Compile Include="Session\InProcSessionsManagement\IInProcSessionFactory.cs" />
     <Compile Include="Session\InProcSessions_spike.cs" />
