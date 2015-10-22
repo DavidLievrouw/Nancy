@@ -3,24 +3,13 @@
 namespace Nancy.Session
 {
     using Nancy.Bootstrapper;
+    using Nancy.Session.InProcSessionsManagement;
 
+    /// <summary>
+    /// In-process memory session storage
+    /// </summary>
     public static class InProcSessions
     {
-        /// <summary>
-        /// Initialise and add in-process memory based session hooks to the application pipeline
-        /// </summary>
-        /// <param name="pipelines">Application pipelines</param>
-        /// <param name="configuration">In-process memory based sessions configuration.</param>
-        public static void Enable(this IPipelines pipelines, InProcSessionsConfiguration configuration)
-        {
-            if (pipelines == null) throw new ArgumentNullException("pipelines");
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            if (!configuration.IsValid) throw new ArgumentException("Configuration is invalid", "configuration");
-
-            pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx => LoadSession(ctx, configuration));
-            pipelines.AfterRequest.AddItemToEndOfPipeline(ctx => SaveSession(ctx, configuration));
-        }
-
         /// <summary>
         /// Initialise and add in-process memory based session hooks to the application pipeline with the default configuration.
         /// </summary>
@@ -30,17 +19,43 @@ namespace Nancy.Session
             Enable(pipelines, InProcSessionsConfiguration.Default);
         }
 
-        private static Response LoadSession(NancyContext ctx,
-            InProcSessionsConfiguration configuration)
+        /// <summary>
+        /// Initialise and add in-process memory based session hooks to the application pipeline
+        /// </summary>
+        /// <param name="pipelines">Application pipelines</param>
+        /// <param name="configuration">In-process memory based sessions configuration.</param>
+        public static void Enable(this IPipelines pipelines, InProcSessionsConfiguration configuration)
         {
-            configuration.SessionIdentificationMethodConfiguration.SessionIdentificationMethod.LoadSession(ctx);
+            if (configuration == null) throw new ArgumentNullException("configuration");
+            if (!configuration.IsValid) throw new ArgumentException("Configuration is invalid", "configuration");
+
+            // ToDo: Hook up composition root for this feature
+            IInProcSessionManager sessionManager = null;
+
+            Enable(pipelines, sessionManager);
+        }
+
+        internal static void Enable(this IPipelines pipelines, IInProcSessionManager sessionManager)
+        {
+            if (pipelines == null) throw new ArgumentNullException("pipelines");
+            if (sessionManager == null) throw new ArgumentNullException("sessionManager");
+
+            pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx => LoadSession(ctx, sessionManager));
+            pipelines.AfterRequest.AddItemToEndOfPipeline(ctx => SaveSession(ctx, sessionManager));
+        }
+
+        private static Response LoadSession(NancyContext ctx,
+            IInProcSessionManager sessionManager)
+        {
+            sessionManager.Load(ctx);
             return null;
         }
 
         private static Response SaveSession(NancyContext ctx,
-            InProcSessionsConfiguration configuration)
+            IInProcSessionManager sessionManager)
         {
-            configuration.SessionIdentificationMethodConfiguration.SessionIdentificationMethod.SaveSession(ctx);
+            if (ctx.Request == null) return null;
+            sessionManager.Save(ctx.Request.Session, ctx);
             return null;
         }
     }

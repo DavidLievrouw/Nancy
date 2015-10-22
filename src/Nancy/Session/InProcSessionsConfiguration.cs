@@ -94,6 +94,9 @@
             }
         }
 
-        public static InProcSessionsConfiguration Default = new InProcSessionsConfiguration();
+        /// <summary>
+        /// An instance of the <see cref="InProcSessionsConfiguration"/> class, using its default values. 
+        /// </summary>
+        public static readonly InProcSessionsConfiguration Default = new InProcSessionsConfiguration();
     }
 }
