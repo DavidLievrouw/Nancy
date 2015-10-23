@@ -2,7 +2,7 @@
 
 namespace Nancy.Session.InProcSessionsManagement.PeriodicTasks
 {
-    public interface IPeriodicTaskFactory
+    internal interface IPeriodicTaskFactory
     {
         IPeriodicTask Create(Action action);
     }

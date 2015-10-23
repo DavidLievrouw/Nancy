@@ -74,7 +74,7 @@
         /// <summary>
         /// Gets a value indicating whether the configuration is valid or not.
         /// </summary>
-        public virtual bool IsValid {
+        public bool IsValid {
             get {
                 if (this.SessionIdentificationMethod == null) {
                     return false;

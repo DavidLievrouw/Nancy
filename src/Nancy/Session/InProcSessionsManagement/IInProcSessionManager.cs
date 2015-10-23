@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an object that loads and saves Nancy sessions.
     /// </summary>
-    public interface IInProcSessionManager
+    internal interface IInProcSessionManager
     {
         /// <summary>
         /// Save the session, for future reference.

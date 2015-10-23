@@ -2,7 +2,7 @@
 {
     using System.Threading;
 
-    public interface ICancellationTokenSourceFactory
+    internal interface ICancellationTokenSourceFactory
     {
         CancellationTokenSource Create();
     }

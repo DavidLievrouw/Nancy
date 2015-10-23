@@ -7,7 +7,7 @@
     /// <summary>
     /// Represents an object that can perform a periodic task.
     /// </summary>
-    public interface IPeriodicTask : IDisposable
+    internal interface IPeriodicTask : IDisposable
     {
         /// <summary>
         /// Start the periodic task.
