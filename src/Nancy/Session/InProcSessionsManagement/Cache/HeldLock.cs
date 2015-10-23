@@ -7,7 +7,7 @@
     {
         protected readonly ReaderWriterLockSlim wrappedLock;
 
-        public HeldLock(ReaderWriterLockSlim wrappedLock)
+        protected HeldLock(ReaderWriterLockSlim wrappedLock)
         {
             if (wrappedLock == null) throw new ArgumentNullException("wrappedLock");
             this.wrappedLock = wrappedLock;
@@ -16,6 +16,6 @@
 
         public abstract void Dispose();
 
-        public abstract void Acquire();
+        protected abstract void Acquire();
     }
 }

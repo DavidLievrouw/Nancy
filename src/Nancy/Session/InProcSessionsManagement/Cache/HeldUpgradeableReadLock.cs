@@ -8,7 +8,7 @@
         {
         }
 
-        public override void Acquire()
+        protected override void Acquire()
         {
             this.wrappedLock.EnterUpgradeableReadLock();
         }

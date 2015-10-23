@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 
@@ -12,3 +11,4 @@ using System.Reflection;
 
 [assembly: InternalsVisibleTo("Nancy.Tests")]
 [assembly: InternalsVisibleTo("Nancy.Hosting.Self.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

@@ -5,7 +5,7 @@ namespace Nancy.Session.InProcSessionsManagement.Cache
     /// <summary>
     /// Interface that represents the system clock.
     /// </summary>
-    public interface ISystemClock
+    internal interface ISystemClock
     {
         /// <summary>
         /// Gets the current UTC date and time.

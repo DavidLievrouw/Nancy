@@ -7,7 +7,7 @@
     /// <summary>
     /// A wrapper for the Nancy ISession interface.
     /// </summary>
-    public class InProcSession : ISession
+    internal class InProcSession : ISession
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InProcSession"/> class.

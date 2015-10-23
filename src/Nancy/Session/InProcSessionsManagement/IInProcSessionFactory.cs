@@ -5,7 +5,7 @@ namespace Nancy.Session.InProcSessionsManagement
     /// <summary>
     /// Represents an object that can create in-process memory sessions.
     /// </summary>
-    public interface IInProcSessionFactory
+    internal interface IInProcSessionFactory
     {
         /// <summary>
         /// Create a new instance of <see cref="InProcSession"/>, using the specified arguments.

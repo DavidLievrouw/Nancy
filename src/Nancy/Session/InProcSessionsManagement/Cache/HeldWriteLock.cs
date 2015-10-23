@@ -8,7 +8,7 @@ namespace Nancy.Session.InProcSessionsManagement.Cache
         {
         }
 
-        public override void Acquire()
+        protected override void Acquire()
         {
             this.wrappedLock.EnterWriteLock();
         }

@@ -6,10 +6,18 @@ namespace Nancy.Tests.Unit.Sessions
     using FakeItEasy;
     using Nancy.Bootstrapper;
     using Nancy.Session;
+    using Nancy.Session.InProcSessionsManagement;
     using Xunit;
 
     public class InProcSessionsFixture
     {
+        private readonly IInProcSessionManager fakeSessionManager;
+
+        public InProcSessionsFixture()
+        {
+            this.fakeSessionManager = A.Fake<IInProcSessionManager>();
+        }
+
         [Fact]
         public void Should_add_pre_and_post_hooks_when_enabled()
         {
@@ -19,7 +27,7 @@ namespace Nancy.Tests.Unit.Sessions
             A.CallTo(() => hooks.BeforeRequest).Returns(beforePipeline);
             A.CallTo(() => hooks.AfterRequest).Returns(afterPipeline);
 
-            InProcSessions.Enable(hooks);
+            hooks.Enable(this.fakeSessionManager);
 
             beforePipeline.PipelineDelegates.Count().ShouldEqual(1);
             afterPipeline.PipelineItems.Count().ShouldEqual(1);

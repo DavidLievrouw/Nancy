@@ -1,6 +1,6 @@
 ﻿namespace Nancy.Session.InProcSessionsManagement
 {
-    public interface IPeriodicCacheCleaner
+    internal interface IPeriodicCacheCleaner
     {
         void Start();
         void Stop();

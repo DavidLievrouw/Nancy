@@ -6,7 +6,7 @@
     /// <summary>
     /// Represents an object that can cache <see cref="InProcSession"/> instances.
     /// </summary>
-    public interface IInProcSessionCache : IEnumerable<InProcSession>, IDisposable
+    internal interface IInProcSessionCache : IEnumerable<InProcSession>, IDisposable
     {
         /// <summary>
         /// Gets the number of sessions that are currently held in cache.
