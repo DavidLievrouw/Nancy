@@ -269,6 +269,10 @@
     <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionFactoryFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\InProcSessionManagerFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\PeriodicCacheCleanerFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\PeriodicTasks\CancellationTokenSourceFactoryFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\PeriodicTasks\PeriodicTaskFactoryFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\PeriodicTasks\PeriodicTaskFixture.cs" />
     <Compile Include="Unit\Sessions\NullSessionProviderFixture.cs" />
     <Compile Include="Unit\Sessions\SessionFixture.cs" />
     <Compile Include="Unit\TextFormatterFixture.cs" />

@@ -13,6 +13,7 @@
         private readonly IInProcSessionCache fakeSessionCache;
         private readonly IInProcSessionFactory fakeSessionFactory;
         private readonly IInProcSessionIdentificationMethod fakeSessionIdentificationMethod;
+        private readonly IPeriodicCacheCleaner fakePeriodicCacheCleaner;
         private readonly InProcSessionsConfiguration validConfiguration;
         private readonly NancyContext nancyContext;
         private readonly InProcSessionManager sessionManager;
@@ -27,14 +28,17 @@
                 CryptographyConfiguration = new CryptographyConfiguration(
                     A.Dummy<IEncryptionProvider>(),
                     A.Dummy<IHmacProvider>()),
-                SessionTimeout = TimeSpan.FromMinutes(30)
+                SessionTimeout = TimeSpan.FromMinutes(30),
+                CacheTrimInterval = TimeSpan.FromMinutes(40)
             };
             this.fakeSessionCache = A.Fake<IInProcSessionCache>();
             this.fakeSessionFactory = A.Fake<IInProcSessionFactory>();
+            this.fakePeriodicCacheCleaner = A.Fake<IPeriodicCacheCleaner>();
             this.sessionManager = new InProcSessionManager(
                 this.validConfiguration,
                 this.fakeSessionCache,
-                this.fakeSessionFactory);
+                this.fakeSessionFactory,
+                this.fakePeriodicCacheCleaner);
         }
 
         [Fact]
@@ -43,7 +47,8 @@
             Assert.Throws<ArgumentNullException>(() => new InProcSessionManager(
                 null,
                 this.fakeSessionCache,
-                this.fakeSessionFactory));
+                this.fakeSessionFactory,
+                this.fakePeriodicCacheCleaner));
         }
 
         [Fact]
@@ -52,7 +57,8 @@
             Assert.Throws<ArgumentNullException>(() => new InProcSessionManager(
                 this.validConfiguration,
                 null,
-                this.fakeSessionFactory));
+                this.fakeSessionFactory,
+                this.fakePeriodicCacheCleaner));
         }
 
         [Fact]
@@ -61,7 +67,25 @@
             Assert.Throws<ArgumentNullException>(() => new InProcSessionManager(
                 this.validConfiguration,
                 this.fakeSessionCache,
+                null,
+                this.fakePeriodicCacheCleaner));
+        }
+
+        [Fact]
+        public void Given_null_periodic_cleaner_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new InProcSessionManager(
+                this.validConfiguration,
+                this.fakeSessionCache,
+                this.fakeSessionFactory,
                 null));
+        }
+
+        [Fact]
+        public void When_constructing_then_starts_periodic_clean_task()
+        {
+            A.CallTo(() => this.fakePeriodicCacheCleaner.Start())
+                .MustHaveHappened();
         }
 
         public class Load : InProcSessionManagerFixture

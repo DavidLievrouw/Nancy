@@ -307,6 +307,14 @@
     <Compile Include="Session\InProcSessionsManagement\InProcSessionFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\InProcSessionManager.cs" />
     <Compile Include="Session\InProcSessionsManagement\IInProcSessionFactory.cs" />
+    <Compile Include="Session\InProcSessionsManagement\IPeriodicCacheCleaner.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\CancellationTokenSourceFactory.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\ICancellationTokenSourceFactory.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\IPeriodicTask.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicCacheCleaner.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\IPeriodicTaskFactory.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\PeriodicTask.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\PeriodicTaskFactory.cs" />
     <Compile Include="Session\InProcSessions_spike.cs" />
     <Compile Include="Session\InProcSessionsConfiguration.cs" />
     <Compile Include="StaticContent.cs" />
