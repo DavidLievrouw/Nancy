@@ -1,6 +1,7 @@
 namespace Nancy.Tests.Unit.Sessions
 {
     using System;
+    using FakeItEasy;
     using Nancy.Cryptography;
     using Nancy.Session;
     using Xunit;
@@ -12,10 +13,8 @@ namespace Nancy.Tests.Unit.Sessions
         public InProcSessionsConfigurationFixture()
         {
             var cryptographyConfiguration = new CryptographyConfiguration(
-                new RijndaelEncryptionProvider(new PassphraseKeyGenerator("SuperSecretPass",
-                    new byte[] {1, 2, 3, 4, 5, 6, 7, 8})),
-                new DefaultHmacProvider(new PassphraseKeyGenerator("UberSuperSecure",
-                    new byte[] {1, 2, 3, 4, 5, 6, 7, 8})));
+                A.Dummy<IEncryptionProvider>(),
+                A.Dummy<IHmacProvider>());
 
             this.config = new InProcSessionsConfiguration
             {
@@ -86,6 +85,26 @@ namespace Nancy.Tests.Unit.Sessions
         public void Should_not_be_valid_with_negative_session_timeout()
         {
             this.config.SessionTimeout = TimeSpan.FromSeconds(-1);
+
+            var result = this.config.IsValid;
+
+            result.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void Should_be_valid_with_empty_cache_trim_interval()
+        {
+            this.config.CacheTrimInterval = TimeSpan.Zero;
+
+            var result = this.config.IsValid;
+
+            result.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Should_not_be_valid_with_negative_cache_trim_interval()
+        {
+            this.config.CacheTrimInterval = TimeSpan.FromSeconds(-1);
 
             var result = this.config.IsValid;
 

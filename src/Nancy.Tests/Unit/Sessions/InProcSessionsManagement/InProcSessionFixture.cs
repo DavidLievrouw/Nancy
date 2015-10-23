@@ -70,6 +70,19 @@
             Assert.False(actual);
         }
 
+        [Fact]
+        public void When_exactly_expiration_time_isexpired_returns_false()
+        {
+          var creationTime = new DateTime(2015, 10, 20, 21, 19, 0, DateTimeKind.Utc);
+          var timeout = TimeSpan.FromMinutes(10.223);
+          this.ConfigureSystemClock_ToReturn(creationTime.Add(timeout));
+          var inProcSession = new InProcSession(Guid.NewGuid(), this.wrappedSession, creationTime, timeout);
+
+          var actual = inProcSession.IsExpired(this.fakeSystemClock.NowUtc);
+
+          Assert.False(actual);
+        }
+
         private void ConfigureSystemClock_ToReturn(DateTime nowUtc)
         {
             A.CallTo(() => this.fakeSystemClock.NowUtc).Returns(nowUtc);

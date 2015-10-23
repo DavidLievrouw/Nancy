@@ -34,6 +34,7 @@
             this.CryptographyConfiguration = cryptographyConfiguration;
             this.SessionIdentificationMethod = sessionIdentificationMethod;
             this.SessionTimeout = TimeSpan.FromMinutes(20);
+            this.CacheTrimInterval = TimeSpan.FromMinutes(30);
         }
 
         /// <summary>
@@ -62,6 +63,15 @@
         }
 
         /// <summary>
+        /// Gets or sets the time after which a the expired sessions are cleaned up.
+        /// </summary>
+        public TimeSpan CacheTrimInterval
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the configuration is valid or not.
         /// </summary>
         public virtual bool IsValid {
@@ -83,6 +93,11 @@
                 }
 
                 if (this.SessionTimeout <= TimeSpan.Zero) {
+                    return false;
+                }
+
+                if (this.CacheTrimInterval < TimeSpan.Zero)
+                {
                     return false;
                 }
 

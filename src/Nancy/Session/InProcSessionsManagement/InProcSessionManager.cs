@@ -9,18 +9,25 @@ namespace Nancy.Session.InProcSessionsManagement
         private readonly InProcSessionsConfiguration configuration;
         private readonly IInProcSessionCache sessionCache;
         private readonly IInProcSessionFactory sessionFactory;
+        private readonly IPeriodicCacheCleaner periodicCacheCleaner;
 
         public InProcSessionManager(
             InProcSessionsConfiguration configuration,
             IInProcSessionCache sessionCache,
-            IInProcSessionFactory sessionFactory)
+            IInProcSessionFactory sessionFactory,
+            IPeriodicCacheCleaner periodicCacheCleaner)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
             if (sessionCache == null) throw new ArgumentNullException("sessionCache");
             if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
+            if (periodicCacheCleaner == null) throw new ArgumentNullException("periodicCacheCleaner");
             this.configuration = configuration;
             this.sessionCache = sessionCache;
             this.sessionFactory = sessionFactory;
+            this.periodicCacheCleaner = periodicCacheCleaner;
+
+            // Start periodic cleaning
+            this.periodicCacheCleaner.Start();
         }
 
         /// <summary>

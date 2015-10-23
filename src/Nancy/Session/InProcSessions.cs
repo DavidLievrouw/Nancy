@@ -5,6 +5,7 @@ namespace Nancy.Session
     using Nancy.Bootstrapper;
     using Nancy.Session.InProcSessionsManagement;
     using Nancy.Session.InProcSessionsManagement.Cache;
+    using Nancy.Session.InProcSessionsManagement.PeriodicTasks;
 
     /// <summary>
     /// In-process memory session storage
@@ -30,10 +31,17 @@ namespace Nancy.Session
             if (configuration == null) throw new ArgumentNullException("configuration");
             if (!configuration.IsValid) throw new ArgumentException("Configuration is invalid", "configuration");
 
+            // Composition root for the memory based sessions feature
+            var sessionCache = new InProcSessionCache(new RealSystemClock());
             var sessionManager = new InProcSessionManager(
                 configuration,
-                new InProcSessionCache(new RealSystemClock()), 
-                new InProcSessionFactory(configuration, new RealSystemClock()));
+                sessionCache,
+                new InProcSessionFactory(configuration, new RealSystemClock()),
+                new PeriodicCacheCleaner(
+                    configuration,
+                    sessionCache,
+                    new PeriodicTaskFactory(),
+                    new CancellationTokenSourceFactory()));
 
             Enable(pipelines, sessionManager);
         }
