@@ -3,26 +3,36 @@
     using System;
     using Nancy.Cryptography;
     using Nancy.Session.InProcSessionsManagement;
+    using Nancy.Session.InProcSessionsManagement.BySessionIdCookie;
 
     /// <summary>
     /// Configuration options for in-process memory based sessions
     /// </summary>
     public class InProcSessionsConfiguration
     {
+        private const int DefaultSessionTimeoutMinutes = 20;
+        private const int DefaultCacheTrimIntervalMinutes = 30;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
         /// </summary>
         public InProcSessionsConfiguration()
-            : this(CryptographyConfiguration.Default, new BySessionIdCookieIdentificationMethod())
         {
+            this.CryptographyConfiguration = CryptographyConfiguration.Default;
+            this.SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(this);
+            this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
+            this.CacheTrimInterval = TimeSpan.FromMinutes(DefaultCacheTrimIntervalMinutes);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
         /// </summary>
         public InProcSessionsConfiguration(CryptographyConfiguration cryptographyConfiguration)
-            : this(cryptographyConfiguration, new BySessionIdCookieIdentificationMethod())
         {
+            this.CryptographyConfiguration = cryptographyConfiguration;
+            this.SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(this);
+            this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
+            this.CacheTrimInterval = TimeSpan.FromMinutes(DefaultCacheTrimIntervalMinutes);
         }
 
         /// <summary>
@@ -33,8 +43,8 @@
         {
             this.CryptographyConfiguration = cryptographyConfiguration;
             this.SessionIdentificationMethod = sessionIdentificationMethod;
-            this.SessionTimeout = TimeSpan.FromMinutes(20);
-            this.CacheTrimInterval = TimeSpan.FromMinutes(30);
+            this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
+            this.CacheTrimInterval = TimeSpan.FromMinutes(DefaultCacheTrimIntervalMinutes);
         }
 
         /// <summary>
