@@ -83,6 +83,7 @@
             if (context == null) throw new ArgumentNullException("context");
 
             var cookieData = this.cookieDataProvider.ProvideCookieData(context.Request);
+            if (cookieData == null) return this.sessionIdFactory.CreateNew();
             var isHmacValid = this.hmacValidator.IsValidHmac(cookieData);
             if (!isHmacValid) return this.sessionIdFactory.CreateNew();
 
