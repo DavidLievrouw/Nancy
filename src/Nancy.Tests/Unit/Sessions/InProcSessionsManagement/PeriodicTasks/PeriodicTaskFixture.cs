@@ -64,5 +64,20 @@
                 Assert.Equal(1, this.numberOfExecutions);
             }
         }
+
+        [Fact]
+        public void When_zero_interval_is_given_then_does_work_only_once()
+        {
+            using (var tokenSource = new CancellationTokenSource())
+            {
+                this.periodicTask.Start(
+                    TimeSpan.FromMilliseconds(50),
+                    TimeSpan.Zero,
+                    tokenSource.Token);
+                Thread.Sleep(250);
+                this.periodicTask.Dispose();
+                Assert.Equal(1, this.numberOfExecutions);
+            }
+        }
     }
 }
