@@ -290,7 +290,14 @@
     <Compile Include="Routing\Trie\TrieNodeFactory.cs" />
     <Compile Include="Security\SSLProxy.cs" />
     <Compile Include="Session\InProcSessions.cs" />
-    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookieIdentificationMethod.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethod.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieData.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieDataDecrypter.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieDataProvider.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\HmacValidator.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\ICookieDataDecrypter.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\ICookieDataProvider.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\IHmacValidator.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\IInProcSessionCache.cs" />
     <Compile Include="Session\InProcSessionsManagement\IInProcSessionManager.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\HeldLock.cs" />
@@ -308,6 +315,7 @@
     <Compile Include="Session\InProcSessionsManagement\InProcSessionManager.cs" />
     <Compile Include="Session\InProcSessionsManagement\IInProcSessionFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\IPeriodicCacheCleaner.cs" />
+    <Compile Include="Session\InProcSessionsManagement\ISessionIdFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\CancellationTokenSourceFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\ICancellationTokenSourceFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\IPeriodicTask.cs" />
@@ -315,6 +323,7 @@
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\IPeriodicTaskFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\PeriodicTask.cs" />
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\PeriodicTaskFactory.cs" />
+    <Compile Include="Session\InProcSessionsManagement\SessionIdFactory.cs" />
     <Compile Include="Session\InProcSessions_spike.cs" />
     <Compile Include="Session\InProcSessionsConfiguration.cs" />
     <Compile Include="StaticContent.cs" />
