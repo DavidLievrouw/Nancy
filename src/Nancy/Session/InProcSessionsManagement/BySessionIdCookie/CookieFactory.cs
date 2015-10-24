@@ -1,10 +1,11 @@
 namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
 {
     using System;
+    using Nancy.Cookies;
 
-    internal class CookieDataDecrypter : ICookieDataDecrypter
+    internal class CookieFactory : ICookieFactory
     {
-        public string DecryptCookieData(string cookieData)
+        public INancyCookie CreateCookie(CookieData cookieData)
         {
             throw new NotImplementedException();
         }

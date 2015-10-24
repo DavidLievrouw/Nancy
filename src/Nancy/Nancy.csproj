@@ -292,11 +292,11 @@
     <Compile Include="Session\InProcSessions.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieData.cs" />
-    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieDataDecrypter.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieDataProvider.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\HmacValidator.cs" />
-    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\ICookieDataDecrypter.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\ICookieDataProvider.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\ICookieFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\IHmacValidator.cs" />
     <Compile Include="Session\InProcSessionsManagement\Cache\IInProcSessionCache.cs" />
     <Compile Include="Session\InProcSessionsManagement\IInProcSessionManager.cs" />
