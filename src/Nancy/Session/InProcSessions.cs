@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Nancy.Session
+﻿namespace Nancy.Session
 {
+    using System;
     using Nancy.Bootstrapper;
     using Nancy.Session.InProcSessionsManagement;
     using Nancy.Session.InProcSessionsManagement.Cache;
@@ -65,9 +64,7 @@ namespace Nancy.Session
         private static Response SaveSession(NancyContext ctx,
             IInProcSessionManager sessionManager)
         {
-            if (ctx.Request == null) return null;
-            sessionManager.Save(ctx.Request.Session, ctx);
-            return null;
+            return ctx.Request == null ? null : sessionManager.Save(ctx.Request.Session, ctx);
         }
     }
 }

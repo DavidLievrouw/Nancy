@@ -8,7 +8,7 @@
     /// </summary>
     public class BySessionIdCookieIdentificationMethod : IBySessionIdCookieIdentificationMethod
     {
-        internal const string DefaultCookieName = "_nsid";
+        const string DefaultCookieName = "_nsid";
         private readonly IEncryptionProvider encryptionProvider;
         private readonly IHmacProvider hmacProvider;
         private readonly ICookieDataProvider cookieDataProvider;
@@ -58,7 +58,7 @@
         }
 
         /// <summary>
-        /// Cookie name for storing session id.
+        /// Gets or sets the cookie name in which the session id is stored.
         /// </summary>
         public string CookieName {
             get;
@@ -106,7 +106,8 @@
         /// </summary>
         /// <param name="sessionId">The identifier of the session.</param>
         /// <param name="context">The current context.</param>
-        public void SaveSessionId(Guid sessionId, NancyContext context)
+        /// <returns>The early exit response, or null, if everything is OK.</returns>
+        public Response SaveSessionId(Guid sessionId, NancyContext context)
         {
             if (context == null) throw new ArgumentNullException("context");
             if (context.Response == null) throw new ArgumentException("The specified context does not contain a response to modify", "context");
@@ -123,6 +124,8 @@
 
             var cookie = this.cookieFactory.CreateCookie(cookieData);
             context.Response.WithCookie(cookie);
+
+            return null;
         }
     }
 }

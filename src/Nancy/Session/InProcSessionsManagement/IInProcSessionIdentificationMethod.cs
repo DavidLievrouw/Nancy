@@ -19,6 +19,7 @@
         /// </summary>
         /// <param name="sessionId">The identifier of the session.</param>
         /// <param name="context">The current context.</param>
-        void SaveSessionId(Guid sessionId, NancyContext context);
+        /// <returns>The early exit response, or null, if everything is OK.</returns>
+        Response SaveSessionId(Guid sessionId, NancyContext context);
     }
 }

@@ -16,8 +16,11 @@ namespace Nancy.Demo.InProcSessions
             var sessionConfig = new InProcSessionsConfiguration
             {
                 SessionTimeout = TimeSpan.FromMinutes(3),
-                CacheTrimInterval = TimeSpan.FromMinutes(2),
+                CacheTrimInterval = TimeSpan.FromMinutes(10),
                 SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default)
+                {
+                    CookieName = "_MySessionId"
+                }
             };
             InProcSessions.Enable(pipelines, sessionConfig);
 

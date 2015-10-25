@@ -9,13 +9,13 @@
 
     public class InProcSessionManagerFixture
     {
+        private readonly IPeriodicCacheCleaner fakePeriodicCacheCleaner;
         private readonly IInProcSessionCache fakeSessionCache;
         private readonly IInProcSessionFactory fakeSessionFactory;
         private readonly IInProcSessionIdentificationMethod fakeSessionIdentificationMethod;
-        private readonly IPeriodicCacheCleaner fakePeriodicCacheCleaner;
-        private readonly InProcSessionsConfiguration validConfiguration;
         private readonly NancyContext nancyContext;
         private readonly InProcSessionManager sessionManager;
+        private readonly InProcSessionsConfiguration validConfiguration;
 
         public InProcSessionManagerFixture()
         {
@@ -226,6 +226,21 @@
                 this.sessionManager.Save(this.fakeSession, this.nancyContext);
                 A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(sessionId, this.nancyContext))
                     .MustHaveHappened();
+            }
+
+            [Fact]
+            public void Returns_result_from_identification_method()
+            {
+                var sessionId = Guid.NewGuid();
+                var expectedResponse = new Response().WithStatusCode(HttpStatusCode.Found);
+                A.CallTo(() => this.fakeSessionIdentificationMethod.GetCurrentSessionId(this.nancyContext))
+                    .Returns(sessionId);
+                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(sessionId, this.nancyContext))
+                    .Returns(expectedResponse);
+
+                var actualResponse = this.sessionManager.Save(this.fakeSession, this.nancyContext);
+
+                Assert.Equal(expectedResponse, actualResponse);
             }
         }
     }

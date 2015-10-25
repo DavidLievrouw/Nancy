@@ -121,7 +121,7 @@
         public void On_creation_sets_default_cookie_name()
         {
             var actual = this.bySessionIdCookieIdentificationMethod.CookieName;
-            Assert.Equal(BySessionIdCookieIdentificationMethod.DefaultCookieName, actual);
+            Assert.Equal("_nsid", actual);
         }
 
         public class Load : BySessionIdCookieIdentificationMethodFixture
@@ -306,7 +306,7 @@
             }
 
             [Fact]
-            public void Adds_expected_cookie_to_response_containing_data_from_encryptionprovider_and_hmacprovider()
+            public void Adds_expected_cookie_to_response_containing_data_from_encryptionprovider_and_hmacprovider_and_returns_null()
             {
                 const string encryptedSessionId = "ABC_sessionid_xyz";
                 var hmacBytes = new byte[] {1, 2, 3};
@@ -323,8 +323,10 @@
                     cookieData.SessionId == encryptedSessionId &&
                     HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))
                     .Returns(new NancyCookie("cookiefortest", expectedCookieData));
-                this.bySessionIdCookieIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
 
+                var earlyExitResponse = this.bySessionIdCookieIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
+
+                Assert.Null(earlyExitResponse);
                 A.CallTo(() => this.fakeCookieFactory.CreateCookie(A<CookieData>.That.Matches(cookieData =>
                     cookieData.SessionId == encryptedSessionId &&
                     HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))
