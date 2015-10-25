@@ -5,7 +5,7 @@
     /// <summary>
     /// Identification method for in-process memory based sessions, using a cookie that contains the session identifier.
     /// </summary>
-    public class BySessionIdCookieIdentificationMethod : IInProcSessionIdentificationMethod
+    public class BySessionIdCookieIdentificationMethod : IBySessionIdCookieIdentificationMethod
     {
         internal const string DefaultCookieName = "_nsid";
         private readonly InProcSessionsConfiguration configuration;
@@ -23,7 +23,7 @@
             this.cookieDataProvider = new CookieDataProvider(configuration.CryptographyConfiguration.HmacProvider);
             this.hmacValidator = new HmacValidator(configuration.CryptographyConfiguration.HmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
-            this.cookieFactory = new CookieFactory();
+            this.cookieFactory = new CookieFactory(this);
             this.CookieName = DefaultCookieName;
         }
 
