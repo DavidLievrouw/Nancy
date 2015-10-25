@@ -6,7 +6,7 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
     public interface IBySessionIdCookieIdentificationMethod : IInProcSessionIdentificationMethod
     {
         /// <summary>
-        /// Cookie name for storing session id.
+        /// Gets or sets the cookie name in which the session id is stored.
         /// </summary>
         string CookieName { get; set; }
 

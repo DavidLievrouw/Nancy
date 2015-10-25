@@ -290,6 +290,8 @@
     <Compile Include="Routing\Trie\TrieNodeFactory.cs" />
     <Compile Include="Security\SSLProxy.cs" />
     <Compile Include="Session\InProcSessions.cs" />
+    <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\ByQueryStringParamIdentificationMethod.cs" />
+    <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\IByQueryStringParamIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieData.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieDataProvider.cs" />
