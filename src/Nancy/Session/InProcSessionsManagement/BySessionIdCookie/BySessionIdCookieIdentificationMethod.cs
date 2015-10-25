@@ -20,7 +20,7 @@
         public BySessionIdCookieIdentificationMethod(InProcSessionsConfiguration configuration)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
-            this.cookieDataProvider = new CookieDataProvider(configuration.CryptographyConfiguration.HmacProvider);
+            this.cookieDataProvider = new CookieDataProvider(configuration.CryptographyConfiguration.HmacProvider, this);
             this.hmacValidator = new HmacValidator(configuration.CryptographyConfiguration.HmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
             this.cookieFactory = new CookieFactory(this);
@@ -83,7 +83,7 @@
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            var cookieData = this.cookieDataProvider.ProvideCookieData(context.Request, this.CookieName);
+            var cookieData = this.cookieDataProvider.ProvideCookieData(context.Request);
             if (cookieData == null) return this.sessionIdFactory.CreateNew();
             var isHmacValid = this.hmacValidator.IsValidHmac(cookieData);
             if (!isHmacValid) return this.sessionIdFactory.CreateNew();
