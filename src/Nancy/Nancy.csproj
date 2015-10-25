@@ -325,7 +325,6 @@
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\PeriodicTask.cs" />
     <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\PeriodicTaskFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\SessionIdFactory.cs" />
-    <Compile Include="Session\InProcSessions_spike.cs" />
     <Compile Include="Session\InProcSessionsConfiguration.cs" />
     <Compile Include="StaticContent.cs" />
     <Compile Include="Conventions\ViewLocationConventions.cs" />

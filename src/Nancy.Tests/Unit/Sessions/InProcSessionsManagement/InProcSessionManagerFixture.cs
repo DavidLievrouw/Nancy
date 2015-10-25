@@ -2,7 +2,6 @@
 {
     using System;
     using FakeItEasy;
-    using Nancy.Cryptography;
     using Nancy.Session;
     using Nancy.Session.InProcSessionsManagement;
     using Nancy.Session.InProcSessionsManagement.Cache;
@@ -25,9 +24,6 @@
             this.validConfiguration = new InProcSessionsConfiguration
             {
                 SessionIdentificationMethod = this.fakeSessionIdentificationMethod,
-                CryptographyConfiguration = new CryptographyConfiguration(
-                    A.Dummy<IEncryptionProvider>(),
-                    A.Dummy<IHmacProvider>()),
                 SessionTimeout = TimeSpan.FromMinutes(30),
                 CacheTrimInterval = TimeSpan.FromMinutes(40)
             };

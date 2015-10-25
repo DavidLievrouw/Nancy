@@ -58,7 +58,7 @@ namespace Nancy.Session
         private static Response LoadSession(NancyContext ctx,
             IInProcSessionManager sessionManager)
         {
-            sessionManager.Load(ctx);
+            ctx.Request.Session = sessionManager.Load(ctx);
             return null;
         }
 

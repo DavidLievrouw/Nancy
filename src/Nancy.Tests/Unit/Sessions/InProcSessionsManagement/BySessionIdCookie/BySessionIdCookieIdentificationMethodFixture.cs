@@ -25,18 +25,14 @@
         {
             this.fakeEncryptionProvider = A.Fake<IEncryptionProvider>();
             this.fakeHmacProvider = A.Fake<IHmacProvider>();
-            this.validConfiguration = new InProcSessionsConfiguration
-            {
-                CryptographyConfiguration = new CryptographyConfiguration(
-                    this.fakeEncryptionProvider,
-                    this.fakeHmacProvider)
-            };
+            this.validConfiguration = new InProcSessionsConfiguration();
             this.fakeCookieDataProvider = A.Fake<ICookieDataProvider>();
             this.fakeHmacValidator = A.Fake<IHmacValidator>();
             this.fakeSessionIdFactory = A.Fake<ISessionIdFactory>();
             this.fakeCookieFactory = A.Fake<ICookieFactory>();
             this.bySessionIdCookieIdentificationMethod = new BySessionIdCookieIdentificationMethod(
-                this.validConfiguration,
+                this.fakeEncryptionProvider,
+                this.fakeHmacProvider,
                 this.fakeCookieDataProvider,
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,
@@ -44,16 +40,41 @@
         }
 
         [Fact]
-        public void Given_null_configuration_then_throws()
+        public void Given_null_crypto_configuration_then_throws()
         {
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(null));
+        }
+
+        [Fact]
+        public void Given_null_encryption_provider_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
+                null,
+                this.fakeHmacProvider,
+                this.fakeCookieDataProvider,
+                this.fakeHmacValidator,
+                this.fakeSessionIdFactory,
+                this.fakeCookieFactory));
+        }
+
+        [Fact]
+        public void Given_null_hmac_provider_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
+                this.fakeEncryptionProvider,
+                null,
+                this.fakeCookieDataProvider,
+                this.fakeHmacValidator,
+                this.fakeSessionIdFactory,
+                this.fakeCookieFactory));
         }
 
         [Fact]
         public void Given_null_cookie_data_provider_then_throws()
         {
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
-                this.validConfiguration,
+                this.fakeEncryptionProvider,
+                this.fakeHmacProvider,
                 null,
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,
@@ -64,7 +85,8 @@
         public void Given_null_hmac_validator_then_throws()
         {
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
-                this.validConfiguration,
+                this.fakeEncryptionProvider,
+                this.fakeHmacProvider,
                 this.fakeCookieDataProvider,
                 null,
                 this.fakeSessionIdFactory,
@@ -75,7 +97,8 @@
         public void Given_null_session_id_factory_then_throws()
         {
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
-                this.validConfiguration,
+                this.fakeEncryptionProvider,
+                this.fakeHmacProvider,
                 this.fakeCookieDataProvider,
                 this.fakeHmacValidator,
                 null,
@@ -86,7 +109,8 @@
         public void Given_null_cookie_factory_then_throws()
         {
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
-                this.validConfiguration,
+                this.fakeEncryptionProvider,
+                this.fakeHmacProvider,
                 this.fakeCookieDataProvider,
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,

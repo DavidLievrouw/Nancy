@@ -1,6 +1,7 @@
 ﻿namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
 {
     using System;
+    using Nancy.Cryptography;
 
     /// <summary>
     /// Identification method for in-process memory based sessions, using a cookie that contains the session identifier.
@@ -8,7 +9,8 @@
     public class BySessionIdCookieIdentificationMethod : IBySessionIdCookieIdentificationMethod
     {
         internal const string DefaultCookieName = "_nsid";
-        private readonly InProcSessionsConfiguration configuration;
+        private readonly IEncryptionProvider encryptionProvider;
+        private readonly IHmacProvider hmacProvider;
         private readonly ICookieDataProvider cookieDataProvider;
         private readonly IHmacValidator hmacValidator;
         private readonly ISessionIdFactory sessionIdFactory;
@@ -17,11 +19,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="BySessionIdCookieIdentificationMethod"/> class.
         /// </summary>
-        public BySessionIdCookieIdentificationMethod(InProcSessionsConfiguration configuration)
+        public BySessionIdCookieIdentificationMethod(CryptographyConfiguration cryptoConfig)
         {
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            this.cookieDataProvider = new CookieDataProvider(configuration.CryptographyConfiguration.HmacProvider, this);
-            this.hmacValidator = new HmacValidator(configuration.CryptographyConfiguration.HmacProvider);
+            if (cryptoConfig == null) throw new ArgumentNullException("cryptoConfig");
+            this.encryptionProvider = cryptoConfig.EncryptionProvider;
+            this.hmacProvider = cryptoConfig.HmacProvider;
+            this.cookieDataProvider = new CookieDataProvider(this.hmacProvider, this);
+            this.hmacValidator = new HmacValidator(this.hmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
             this.cookieFactory = new CookieFactory(this);
             this.CookieName = DefaultCookieName;
@@ -31,18 +35,21 @@
         /// Initializes a new instance of the <see cref="BySessionIdCookieIdentificationMethod"/> class.
         /// </summary>
         internal BySessionIdCookieIdentificationMethod(
-            InProcSessionsConfiguration configuration,
+            IEncryptionProvider encryptionProvider,
+            IHmacProvider hmacProvider,
             ICookieDataProvider cookieDataProvider,
             IHmacValidator hmacValidator,
             ISessionIdFactory sessionIdFactory,
             ICookieFactory cookieFactory)
         {
-            if (configuration == null) throw new ArgumentNullException("configuration");
+            if (encryptionProvider == null) throw new ArgumentNullException("encryptionProvider");
+            if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
             if (cookieDataProvider == null) throw new ArgumentNullException("configuration");
             if (hmacValidator == null) throw new ArgumentNullException("configuration");
             if (sessionIdFactory == null) throw new ArgumentNullException("configuration");
             if (cookieFactory == null) throw new ArgumentNullException("configuration");
-            this.configuration = configuration;
+            this.encryptionProvider = encryptionProvider;
+            this.hmacProvider = hmacProvider;
             this.cookieDataProvider = cookieDataProvider;
             this.hmacValidator = hmacValidator;
             this.sessionIdFactory = sessionIdFactory;
@@ -87,9 +94,8 @@
             if (cookieData == null) return this.sessionIdFactory.CreateNew();
             var isHmacValid = this.hmacValidator.IsValidHmac(cookieData);
             if (!isHmacValid) return this.sessionIdFactory.CreateNew();
-
-            var encryptionProvider = this.configuration.CryptographyConfiguration.EncryptionProvider;
-            var decryptedSessionId = encryptionProvider.Decrypt(cookieData.SessionId);
+            
+            var decryptedSessionId = this.encryptionProvider.Decrypt(cookieData.SessionId);
             if (string.IsNullOrEmpty(decryptedSessionId)) return this.sessionIdFactory.CreateNew();
 
             return this.sessionIdFactory.CreateFrom(decryptedSessionId) ?? this.sessionIdFactory.CreateNew();
@@ -105,12 +111,9 @@
             if (context == null) throw new ArgumentNullException("context");
             if (context.Response == null) throw new ArgumentException("The specified context does not contain a response to modify", "context");
             if (sessionId == Guid.Empty) throw new ArgumentException("The specified session id cannot be empty", "sessionId");
-
-            var encryptionProvider = this.configuration.CryptographyConfiguration.EncryptionProvider;
-            var encryptedSessionId = encryptionProvider.Encrypt(sessionId.ToString());
-
-            var hmacProvider = this.configuration.CryptographyConfiguration.HmacProvider;
-            var hmacBytes = hmacProvider.GenerateHmac(encryptedSessionId);
+            
+            var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.ToString());
+            var hmacBytes = this.hmacProvider.GenerateHmac(encryptedSessionId);
 
             var cookieData = new CookieData
             {

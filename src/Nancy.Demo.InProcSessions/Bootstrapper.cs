@@ -2,7 +2,9 @@ namespace Nancy.Demo.InProcSessions
 {
     using System;
     using Nancy.Bootstrapper;
+    using Nancy.Cryptography;
     using Nancy.Session;
+    using Nancy.Session.InProcSessionsManagement.BySessionIdCookie;
     using Nancy.TinyIoc;
 
     public class Bootstrapper : DefaultNancyBootstrapper
@@ -13,7 +15,9 @@ namespace Nancy.Demo.InProcSessions
 
             var sessionConfig = new InProcSessionsConfiguration
             {
-                SessionTimeout = TimeSpan.FromMinutes(3),                
+                SessionTimeout = TimeSpan.FromMinutes(3),
+                CacheTrimInterval = TimeSpan.FromMinutes(2),
+                SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default)
             };
             InProcSessions.Enable(pipelines, sessionConfig);
 
