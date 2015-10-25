@@ -21,7 +21,7 @@
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
             this.cookieDataProvider = new CookieDataProvider(configuration.CryptographyConfiguration.HmacProvider);
-            this.hmacValidator = new HmacValidator();
+            this.hmacValidator = new HmacValidator(configuration.CryptographyConfiguration.HmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
             this.cookieFactory = new CookieFactory();
             this.CookieName = DefaultCookieName;
