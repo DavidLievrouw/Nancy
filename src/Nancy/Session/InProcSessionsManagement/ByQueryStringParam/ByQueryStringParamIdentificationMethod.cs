@@ -80,6 +80,10 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         /// <returns>The early exit response, or null, if everything is OK.</returns>
         public Response SaveSessionId(Guid sessionId, NancyContext context)
         {
+            if (context == null) throw new ArgumentNullException("context");
+            if (context.Request == null) throw new ArgumentException("The specified context does not contain a request", "context");
+            if (sessionId == Guid.Empty) throw new ArgumentException("The specified session id cannot be empty", "sessionId");
+
             // If it doesn't contain a session id, then replace the response with 302 and add location header
             // Otherwise, do nothing
             throw new NotImplementedException();

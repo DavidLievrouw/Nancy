@@ -246,5 +246,42 @@
                     .MustHaveHappened();
             }
         }
+
+        public class Save : ByQueryStringParamIdentificationMethodFixture
+        {
+            private readonly NancyContext context;
+            private readonly Guid validSessionId;
+
+            public Save()
+            {
+                this.validSessionId = Guid.NewGuid();
+                this.context = new NancyContext()
+                {
+                    Request = new Request("GET", "http://www.google.be")
+                };
+            }
+
+            [Fact]
+            public void Given_null_context_then_throws()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId, null));
+            }
+
+            [Fact]
+            public void Given_context_without_request_then_throws()
+            {
+                this.context.Request = null;
+                Assert.Throws<ArgumentException>(
+                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId, this.context));
+            }
+
+            [Fact]
+            public void Given_empty_session_id_then_throws()
+            {
+                Assert.Throws<ArgumentException>(
+                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(Guid.Empty, this.context));
+            }
+        }
     }
 }
