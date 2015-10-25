@@ -13,7 +13,7 @@
     public class BySessionIdCookieIdentificationMethodFixture
     {
         private readonly BySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
-        private readonly ICookieDataProvider fakeCookieDataProvider;
+        private readonly ISessionIdentificationDataProvider fakeSessionIdentificationDataProvider;
         private readonly ICookieFactory fakeCookieFactory;
         private readonly IEncryptionProvider fakeEncryptionProvider;
         private readonly IHmacProvider fakeHmacProvider;
@@ -26,14 +26,14 @@
             this.fakeEncryptionProvider = A.Fake<IEncryptionProvider>();
             this.fakeHmacProvider = A.Fake<IHmacProvider>();
             this.validConfiguration = new InProcSessionsConfiguration();
-            this.fakeCookieDataProvider = A.Fake<ICookieDataProvider>();
+            this.fakeSessionIdentificationDataProvider = A.Fake<ISessionIdentificationDataProvider>();
             this.fakeHmacValidator = A.Fake<IHmacValidator>();
             this.fakeSessionIdFactory = A.Fake<ISessionIdFactory>();
             this.fakeCookieFactory = A.Fake<ICookieFactory>();
             this.bySessionIdCookieIdentificationMethod = new BySessionIdCookieIdentificationMethod(
                 this.fakeEncryptionProvider,
                 this.fakeHmacProvider,
-                this.fakeCookieDataProvider,
+                this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,
                 this.fakeCookieFactory);
@@ -51,7 +51,7 @@
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
                 null,
                 this.fakeHmacProvider,
-                this.fakeCookieDataProvider,
+                this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,
                 this.fakeCookieFactory));
@@ -63,7 +63,7 @@
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
                 this.fakeEncryptionProvider,
                 null,
-                this.fakeCookieDataProvider,
+                this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,
                 this.fakeCookieFactory));
@@ -87,7 +87,7 @@
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
                 this.fakeEncryptionProvider,
                 this.fakeHmacProvider,
-                this.fakeCookieDataProvider,
+                this.fakeSessionIdentificationDataProvider,
                 null,
                 this.fakeSessionIdFactory,
                 this.fakeCookieFactory));
@@ -99,7 +99,7 @@
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
                 this.fakeEncryptionProvider,
                 this.fakeHmacProvider,
-                this.fakeCookieDataProvider,
+                this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
                 null,
                 this.fakeCookieFactory));
@@ -111,7 +111,7 @@
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
                 this.fakeEncryptionProvider,
                 this.fakeHmacProvider,
-                this.fakeCookieDataProvider,
+                this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,
                 null));
@@ -151,7 +151,7 @@
             [Fact]
             public void When_context_contains_no_session_cookie_data_then_returns_new_session_id()
             {
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromCookie(this.context.Request))
                     .Returns(null);
 
                 var actual = this.bySessionIdCookieIdentificationMethod.GetCurrentSessionId(this.context);
@@ -166,13 +166,13 @@
             [Fact]
             public void When_cookie_does_not_have_a_valid_hmac_then_returns_new_session_id()
             {
-                var cookieData = new CookieData
+                var cookieData = new SessionIdentificationData
                 {
                     SessionId = "ABCSomeEncryptedSessionIdXYZ",
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromCookie(this.context.Request))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(false);
@@ -189,13 +189,13 @@
             [Fact]
             public void When_decrypted_session_id_is_not_valid_then_returns_new_session_id()
             {
-                var cookieData = new CookieData
+                var cookieData = new SessionIdentificationData
                 {
                     SessionId = "ABCSomeEncryptedSessionIdXYZ",
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromCookie(this.context.Request))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(true);
@@ -215,13 +215,13 @@
             public void When_decrypted_session_id_is_not_a_valid_guid_then_returns_new_session_id()
             {
                 const string invalidDecryptedSessionId = "This is not a valid guid!";
-                var cookieData = new CookieData
+                var cookieData = new SessionIdentificationData
                 {
                     SessionId = "ABCSomeEncryptedSessionIdXYZ",
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromCookie(this.context.Request))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(true);
@@ -244,13 +244,13 @@
             {
                 var expectedSessionId = Guid.NewGuid();
                 var decryptedSessionId = expectedSessionId.ToString();
-                var cookieData = new CookieData
+                var cookieData = new SessionIdentificationData
                 {
                     SessionId = "ABCSomeEncryptedSessionIdXYZ",
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromCookie(this.context.Request))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(true);
@@ -319,7 +319,7 @@
                     .Returns(hmacBytes);
                 A.CallTo(() => this.fakeHmacProvider.HmacLength)
                     .Returns(hmacBytes.Length);
-                A.CallTo(() => this.fakeCookieFactory.CreateCookie(A<CookieData>.That.Matches(cookieData =>
+                A.CallTo(() => this.fakeCookieFactory.CreateCookie(A<SessionIdentificationData>.That.Matches(cookieData =>
                     cookieData.SessionId == encryptedSessionId &&
                     HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))
                     .Returns(new NancyCookie("cookiefortest", expectedCookieData));
@@ -327,7 +327,7 @@
                 var earlyExitResponse = this.bySessionIdCookieIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
 
                 Assert.Null(earlyExitResponse);
-                A.CallTo(() => this.fakeCookieFactory.CreateCookie(A<CookieData>.That.Matches(cookieData =>
+                A.CallTo(() => this.fakeCookieFactory.CreateCookie(A<SessionIdentificationData>.That.Matches(cookieData =>
                     cookieData.SessionId == encryptedSessionId &&
                     HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))
                     .MustHaveHappened();

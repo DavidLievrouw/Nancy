@@ -2,13 +2,14 @@
 {
     using System;
     using FakeItEasy;
+    using Nancy.Session.InProcSessionsManagement;
     using Nancy.Session.InProcSessionsManagement.BySessionIdCookie;
     using Xunit;
 
     public class CookieFactoryFixture
     {
         private readonly IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
-        private readonly CookieData cookieData;
+        private readonly SessionIdentificationData sessionIdentificationData;
         private readonly string cookieDomain;
         private readonly CookieFactory cookieFactory;
         private readonly string cookieName;
@@ -24,7 +25,7 @@
             this.cookieName = "TheCookieName";
             this.cookieValue = "01HMAC98%02SessionId";
             this.cookieValueEncoded = "01HMAC98%2502SessionId";
-            this.cookieData = new CookieData
+            this.sessionIdentificationData = new SessionIdentificationData
             {
                 SessionId = "%02SessionId",
                 Hmac = new byte[] {211, 81, 204, 0, 47, 124}
@@ -55,7 +56,7 @@
         [Fact]
         public void Returns_http_only_cookie()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.cookieData);
+            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
             Assert.True(actualCookie.HttpOnly);
         }
 
@@ -67,7 +68,7 @@
             A.CallTo(() => this.bySessionIdCookieIdentificationMethod.Path)
                 .Returns(null);
 
-            var actualCookie = this.cookieFactory.CreateCookie(this.cookieData);
+            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
             Assert.Null(actualCookie.Domain);
             Assert.Null(actualCookie.Path);
         }
@@ -75,7 +76,7 @@
         [Fact]
         public void Returns_cookie_with_path_and_domain_if_specified()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.cookieData);
+            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
             Assert.Equal(this.cookieDomain, actualCookie.Domain);
             Assert.Equal(this.cookiePath, actualCookie.Path);
         }
@@ -83,21 +84,21 @@
         [Fact]
         public void Returns_cookie_with_valid_name()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.cookieData);
+            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
             Assert.Equal(this.cookieName, actualCookie.Name);
         }
 
         [Fact]
         public void Returns_cookie_with_specified_data()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.cookieData);
+            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
             Assert.Equal(this.cookieValue, actualCookie.Value);
         }
 
         [Fact]
         public void Returns_cookie_with_specified_encoded_data()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.cookieData);
+            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
             Assert.Equal(this.cookieValueEncoded, actualCookie.EncodedValue);
         }
     }

@@ -11,7 +11,7 @@
         const string DefaultCookieName = "_nsid";
         private readonly IEncryptionProvider encryptionProvider;
         private readonly IHmacProvider hmacProvider;
-        private readonly ICookieDataProvider cookieDataProvider;
+        private readonly ISessionIdentificationDataProvider sessionIdentificationDataProvider;
         private readonly IHmacValidator hmacValidator;
         private readonly ISessionIdFactory sessionIdFactory;
         private readonly ICookieFactory cookieFactory;
@@ -24,7 +24,7 @@
             if (cryptoConfig == null) throw new ArgumentNullException("cryptoConfig");
             this.encryptionProvider = cryptoConfig.EncryptionProvider;
             this.hmacProvider = cryptoConfig.HmacProvider;
-            this.cookieDataProvider = new CookieDataProvider(this.hmacProvider, this);
+            this.sessionIdentificationDataProvider = new SessionIdentificationDataProvider(this.hmacProvider, this);
             this.hmacValidator = new HmacValidator(this.hmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
             this.cookieFactory = new CookieFactory(this);
@@ -37,20 +37,20 @@
         internal BySessionIdCookieIdentificationMethod(
             IEncryptionProvider encryptionProvider,
             IHmacProvider hmacProvider,
-            ICookieDataProvider cookieDataProvider,
+            ISessionIdentificationDataProvider sessionIdentificationDataProvider,
             IHmacValidator hmacValidator,
             ISessionIdFactory sessionIdFactory,
             ICookieFactory cookieFactory)
         {
             if (encryptionProvider == null) throw new ArgumentNullException("encryptionProvider");
             if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
-            if (cookieDataProvider == null) throw new ArgumentNullException("configuration");
+            if (sessionIdentificationDataProvider == null) throw new ArgumentNullException("configuration");
             if (hmacValidator == null) throw new ArgumentNullException("configuration");
             if (sessionIdFactory == null) throw new ArgumentNullException("configuration");
             if (cookieFactory == null) throw new ArgumentNullException("configuration");
             this.encryptionProvider = encryptionProvider;
             this.hmacProvider = hmacProvider;
-            this.cookieDataProvider = cookieDataProvider;
+            this.sessionIdentificationDataProvider = sessionIdentificationDataProvider;
             this.hmacValidator = hmacValidator;
             this.sessionIdFactory = sessionIdFactory;
             this.cookieFactory = cookieFactory;
@@ -90,7 +90,7 @@
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            var cookieData = this.cookieDataProvider.ProvideCookieData(context.Request);
+            var cookieData = this.sessionIdentificationDataProvider.ProvideDataFromCookie(context.Request);
             if (cookieData == null) return this.sessionIdFactory.CreateNew();
             var isHmacValid = this.hmacValidator.IsValidHmac(cookieData);
             if (!isHmacValid) return this.sessionIdFactory.CreateNew();
@@ -116,7 +116,7 @@
             var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.ToString());
             var hmacBytes = this.hmacProvider.GenerateHmac(encryptedSessionId);
 
-            var cookieData = new CookieData
+            var cookieData = new SessionIdentificationData
             {
                 SessionId = encryptedSessionId,
                 Hmac = hmacBytes

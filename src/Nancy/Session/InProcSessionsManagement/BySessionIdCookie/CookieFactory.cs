@@ -14,13 +14,13 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             this.bySessionIdCookieIdentificationMethod = bySessionIdCookieIdentificationMethod;
         }
 
-        public INancyCookie CreateCookie(CookieData cookieData)
+        public INancyCookie CreateCookie(SessionIdentificationData sessionIdentificationData)
         {
-            if (cookieData == null) throw new ArgumentNullException("cookieData");
+            if (sessionIdentificationData == null) throw new ArgumentNullException("sessionIdentificationData");
 
             return new NancyCookie(
                 this.bySessionIdCookieIdentificationMethod.CookieName,
-                cookieData.ToString(),
+                sessionIdentificationData.ToString(),
                 true)
             {
                 Domain = this.bySessionIdCookieIdentificationMethod.Domain,
