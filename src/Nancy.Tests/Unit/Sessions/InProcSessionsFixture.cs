@@ -46,7 +46,6 @@ namespace Nancy.Tests.Unit.Sessions
             var hooks = A.Fake<IPipelines>();
             var invalidConfiguration = new InProcSessionsConfiguration
             {
-                CryptographyConfiguration = null,
                 SessionIdentificationMethod = null,
                 SessionTimeout = TimeSpan.FromSeconds(-5)
             };

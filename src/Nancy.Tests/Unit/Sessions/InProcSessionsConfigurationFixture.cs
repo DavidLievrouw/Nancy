@@ -12,14 +12,7 @@ namespace Nancy.Tests.Unit.Sessions
 
         public InProcSessionsConfigurationFixture()
         {
-            var cryptographyConfiguration = new CryptographyConfiguration(
-                A.Dummy<IEncryptionProvider>(),
-                A.Dummy<IHmacProvider>());
-
-            this.config = new InProcSessionsConfiguration
-            {
-                CryptographyConfiguration = cryptographyConfiguration
-            };
+            this.config = new InProcSessionsConfiguration();
         }
 
         [Fact]
@@ -33,38 +26,6 @@ namespace Nancy.Tests.Unit.Sessions
         public void Should_not_be_valid_with_null_session_identificationmethod()
         {
             this.config.SessionIdentificationMethod = null;
-
-            var result = this.config.IsValid;
-
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Should_not_be_valid_with_null_cryptography_configuration()
-        {
-            this.config.CryptographyConfiguration = null;
-
-            var result = this.config.IsValid;
-
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Should_not_be_valid_with_null_encryption_provider()
-        {
-            this.config.CryptographyConfiguration = new CryptographyConfiguration(null,
-                this.config.CryptographyConfiguration.HmacProvider);
-
-            var result = this.config.IsValid;
-
-            result.ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Should_not_be_valid_with_null_hmac_provider()
-        {
-            this.config.CryptographyConfiguration =
-                new CryptographyConfiguration(this.config.CryptographyConfiguration.EncryptionProvider, null);
 
             var result = this.config.IsValid;
 

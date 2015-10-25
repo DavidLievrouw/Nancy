@@ -18,19 +18,7 @@
         /// </summary>
         public InProcSessionsConfiguration()
         {
-            this.CryptographyConfiguration = CryptographyConfiguration.Default;
-            this.SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(this);
-            this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
-            this.CacheTrimInterval = TimeSpan.FromMinutes(DefaultCacheTrimIntervalMinutes);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
-        /// </summary>
-        public InProcSessionsConfiguration(CryptographyConfiguration cryptographyConfiguration)
-        {
-            this.CryptographyConfiguration = cryptographyConfiguration;
-            this.SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(this);
+            this.SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default);
             this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
             this.CacheTrimInterval = TimeSpan.FromMinutes(DefaultCacheTrimIntervalMinutes);
         }
@@ -41,18 +29,9 @@
         public InProcSessionsConfiguration(CryptographyConfiguration cryptographyConfiguration,
              IInProcSessionIdentificationMethod sessionIdentificationMethod)
         {
-            this.CryptographyConfiguration = cryptographyConfiguration;
             this.SessionIdentificationMethod = sessionIdentificationMethod;
             this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
             this.CacheTrimInterval = TimeSpan.FromMinutes(DefaultCacheTrimIntervalMinutes);
-        }
-
-        /// <summary>
-        /// Gets or sets the cryptography configuration
-        /// </summary>
-        public CryptographyConfiguration CryptographyConfiguration {
-            get;
-            set;
         }
 
         /// <summary>
@@ -87,18 +66,6 @@
         public bool IsValid {
             get {
                 if (this.SessionIdentificationMethod == null) {
-                    return false;
-                }
-
-                if (this.CryptographyConfiguration == null) {
-                    return false;
-                }
-
-                if (this.CryptographyConfiguration.EncryptionProvider == null) {
-                    return false;
-                }
-
-                if (this.CryptographyConfiguration.HmacProvider == null) {
                     return false;
                 }
 
