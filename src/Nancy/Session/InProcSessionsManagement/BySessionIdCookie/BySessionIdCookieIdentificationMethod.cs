@@ -17,13 +17,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="BySessionIdCookieIdentificationMethod"/> class.
         /// </summary>
-        public BySessionIdCookieIdentificationMethod(InProcSessionsConfiguration configuration) : this(
-            configuration, 
-            new CookieDataProvider(), 
-            new HmacValidator(), 
-            new SessionIdFactory(),
-            new CookieFactory())
+        public BySessionIdCookieIdentificationMethod(InProcSessionsConfiguration configuration)
         {
+            if (configuration == null) throw new ArgumentNullException("configuration");
+            this.cookieDataProvider = new CookieDataProvider(configuration.CryptographyConfiguration.HmacProvider);
+            this.hmacValidator = new HmacValidator();
+            this.sessionIdFactory = new SessionIdFactory();
+            this.cookieFactory = new CookieFactory();
+            this.CookieName = DefaultCookieName;
         }
 
         /// <summary>
@@ -36,11 +37,11 @@
             ISessionIdFactory sessionIdFactory,
             ICookieFactory cookieFactory)
         {
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-            if (cookieDataProvider == null) throw new ArgumentNullException(nameof(cookieDataProvider));
-            if (hmacValidator == null) throw new ArgumentNullException(nameof(hmacValidator));
-            if (sessionIdFactory == null) throw new ArgumentNullException(nameof(sessionIdFactory));
-            if (cookieFactory == null) throw new ArgumentNullException(nameof(cookieFactory));
+            if (configuration == null) throw new ArgumentNullException("configuration");
+            if (cookieDataProvider == null) throw new ArgumentNullException("configuration");
+            if (hmacValidator == null) throw new ArgumentNullException("configuration");
+            if (sessionIdFactory == null) throw new ArgumentNullException("configuration");
+            if (cookieFactory == null) throw new ArgumentNullException("configuration");
             this.configuration = configuration;
             this.cookieDataProvider = cookieDataProvider;
             this.hmacValidator = hmacValidator;
@@ -82,7 +83,7 @@
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            var cookieData = this.cookieDataProvider.ProvideCookieData(context.Request);
+            var cookieData = this.cookieDataProvider.ProvideCookieData(context.Request, this.CookieName);
             if (cookieData == null) return this.sessionIdFactory.CreateNew();
             var isHmacValid = this.hmacValidator.IsValidHmac(cookieData);
             if (!isHmacValid) return this.sessionIdFactory.CreateNew();

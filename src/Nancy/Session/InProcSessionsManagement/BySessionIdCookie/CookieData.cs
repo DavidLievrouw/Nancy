@@ -11,7 +11,7 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
         {
             var base64hmac = string.Empty;
             if (this.Hmac != null) base64hmac = Convert.ToBase64String(this.Hmac);
-            return string.Format("{0}{1}", this.SessionId, base64hmac);
+            return string.Format("{0}{1}", base64hmac, this.SessionId);
         }
     }
 }
