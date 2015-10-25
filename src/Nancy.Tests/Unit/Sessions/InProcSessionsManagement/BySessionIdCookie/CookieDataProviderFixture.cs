@@ -9,6 +9,7 @@
 
     public class CookieDataProviderFixture
     {
+        private readonly IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
         private readonly CookieDataProvider cookieDataProvider;
         private readonly string cookieName;
         private readonly string encryptedSessionIdString;
@@ -22,7 +23,9 @@
         {
             this.cookieName = "TheCookieName";
             this.hmacProvider = A.Fake<IHmacProvider>();
-            this.cookieDataProvider = new CookieDataProvider(this.hmacProvider);
+            this.bySessionIdCookieIdentificationMethod = A.Fake<IBySessionIdCookieIdentificationMethod>();
+            this.cookieDataProvider = new CookieDataProvider(this.hmacProvider,
+                this.bySessionIdCookieIdentificationMethod);
 
             this.validRequest = new Request("GET", "http://www.google.be");
             this.hmacString = "01HMAC98";
@@ -37,53 +40,48 @@
 
             A.CallTo(() => this.hmacProvider.HmacLength)
                 .Returns(6);
+            A.CallTo(() => this.bySessionIdCookieIdentificationMethod.CookieName)
+                .Returns(this.cookieName);
         }
 
         [Fact]
         public void Given_null_hmac_provider_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CookieDataProvider(null));
+            Assert.Throws<ArgumentNullException>(
+                () => new CookieDataProvider(null, this.bySessionIdCookieIdentificationMethod));
         }
 
         [Fact]
-        public void Given_null_cookie_name_then_throws()
+        public void Given_null_identification_method_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(
-                () => this.cookieDataProvider.ProvideCookieData(this.validRequest, null));
-        }
-
-        [Fact]
-        public void Given_empty_cookie_name_then_throws()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => this.cookieDataProvider.ProvideCookieData(this.validRequest, string.Empty));
+            Assert.Throws<ArgumentNullException>(() => new CookieDataProvider(this.hmacProvider, null));
         }
 
         [Fact]
         public void Given_null_request_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => this.cookieDataProvider.ProvideCookieData(null, this.cookieName));
+            Assert.Throws<ArgumentNullException>(() => this.cookieDataProvider.ProvideCookieData(null));
         }
 
         [Fact]
         public void Given_request_without_cookie_then_returns_null()
         {
             this.validRequest.Cookies.Clear();
-            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest, this.cookieName);
+            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest);
             Assert.Null(actual);
         }
 
         [Fact]
         public void Decodes_cookie_value()
         {
-            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest, this.cookieName);
+            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest);
             Assert.Equal(this.expectedResult.SessionId, actual.SessionId);
         }
 
         public void Given_cookie_data_is_completele_nonsense_then_returns_null()
         {
             this.SetCookieValue("BS");
-            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest, this.cookieName);
+            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest);
             Assert.Null(actual);
         }
 
@@ -94,7 +92,7 @@
             var expectedResult = HttpUtility.UrlDecode(cookieData);
             this.SetCookieValue("A" + this.encryptedSessionIdString);
 
-            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest, this.cookieName);
+            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest);
             Assert.Equal(expectedResult, actual.SessionId);
             Assert.NotNull(actual.Hmac);
             Assert.Empty(actual.Hmac);
@@ -103,7 +101,7 @@
         [Fact]
         public void Given_valid_cookie_then_returns_expected_result()
         {
-            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest, this.cookieName);
+            var actual = this.cookieDataProvider.ProvideCookieData(this.validRequest);
             Assert.Equal(this.expectedResult.SessionId, actual.SessionId);
             Assert.True(HmacComparer.Compare(actual.Hmac, this.expectedResult.Hmac, this.hmacProvider.HmacLength));
         }
