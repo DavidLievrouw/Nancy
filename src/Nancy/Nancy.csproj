@@ -295,6 +295,7 @@
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieDataProvider.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\CookieFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\HmacValidator.cs" />
+    <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\IBySessionIdCookieIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\ICookieDataProvider.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\ICookieFactory.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\IHmacValidator.cs" />

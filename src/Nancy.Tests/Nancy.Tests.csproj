@@ -258,6 +258,7 @@
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethodFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\CookieDataFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\CookieDataProviderFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\CookieFactoryFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\HmacValidatorFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\Cache\HeldUpgradeableReadLockFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\Cache\HeldReadLockFixture.cs" />
