@@ -127,7 +127,7 @@
             [Fact]
             public void When_context_contains_no_session_cookie_data_then_returns_new_session_id()
             {
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request, A<string>._))
                     .Returns(null);
 
                 var actual = this.bySessionIdCookieIdentificationMethod.GetCurrentSessionId(this.context);
@@ -148,7 +148,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request, A<string>._))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(false);
@@ -171,7 +171,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request, A<string>._))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(true);
@@ -197,7 +197,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request, A<string>._))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(true);
@@ -226,7 +226,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request))
+                A.CallTo(() => this.fakeCookieDataProvider.ProvideCookieData(this.context.Request, A<string>._))
                     .Returns(cookieData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(cookieData))
                     .Returns(true);
