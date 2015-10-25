@@ -80,6 +80,7 @@
             Assert.Equal(this.expectedResult.SessionId, actual.SessionId);
         }
 
+        [Fact]
         public void Given_cookie_data_is_completele_nonsense_then_returns_null()
         {
             this.SetCookieValue("BS");
