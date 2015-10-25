@@ -1,8 +1,8 @@
-namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
+namespace Nancy.Session.InProcSessionsManagement
 {
     using System;
 
-    internal class CookieData
+    internal class SessionIdentificationData
     {
         public string SessionId { get; set; }
         public byte[] Hmac { get; set; }

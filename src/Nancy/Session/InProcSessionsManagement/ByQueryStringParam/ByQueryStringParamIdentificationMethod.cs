@@ -24,6 +24,9 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         /// <returns>The identifier of the session for the current request.</returns>
         public Guid GetCurrentSessionId(NancyContext context)
         {
+            if (context == null) throw new ArgumentNullException("context");
+
+
             // Id it doesn't contain a session id, then create a new session id
             throw new NotImplementedException();
         }

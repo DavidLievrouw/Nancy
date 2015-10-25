@@ -4,12 +4,12 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
     using Nancy.Cryptography;
     using Nancy.Helpers;
 
-    internal class CookieDataProvider : ICookieDataProvider
+    internal class SessionIdentificationDataProvider : ISessionIdentificationDataProvider
     {
         private readonly IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
         private readonly IHmacProvider hmacProvider;
 
-        public CookieDataProvider(IHmacProvider hmacProvider,
+        public SessionIdentificationDataProvider(IHmacProvider hmacProvider,
             IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod)
         {
             if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
@@ -19,7 +19,7 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             this.bySessionIdCookieIdentificationMethod = bySessionIdCookieIdentificationMethod;
         }
 
-        public CookieData ProvideCookieData(Request request)
+        public SessionIdentificationData ProvideDataFromCookie(Request request)
         {
             if (request == null) throw new ArgumentNullException("request");
 
@@ -49,7 +49,7 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
                 encryptedSessionId = cookieData;
             }
 
-            return new CookieData
+            return new SessionIdentificationData
             {
                 SessionId = encryptedSessionId,
                 Hmac = hmacBytes

@@ -1,4 +1,4 @@
-namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
+namespace Nancy.Session.InProcSessionsManagement
 {
     using System;
     using Nancy.Cryptography;
@@ -13,13 +13,13 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             this.hmacProvider = hmacProvider;
         }
 
-        public bool IsValidHmac(CookieData cookieData)
+        public bool IsValidHmac(SessionIdentificationData sessionIdentificationData)
         {
-            if (cookieData == null) throw new ArgumentNullException("cookieData");
-            if (cookieData.Hmac == null) return false;
+            if (sessionIdentificationData == null) throw new ArgumentNullException("sessionIdentificationData");
+            if (sessionIdentificationData.Hmac == null) return false;
 
-            var incomingBytes = cookieData.Hmac;
-            var expectedHmac = this.hmacProvider.GenerateHmac(cookieData.SessionId);
+            var incomingBytes = sessionIdentificationData.Hmac;
+            var expectedHmac = this.hmacProvider.GenerateHmac(sessionIdentificationData.SessionId);
             return HmacComparer.Compare(expectedHmac, incomingBytes, this.hmacProvider.HmacLength);
         }
     }
