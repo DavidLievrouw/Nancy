@@ -27,17 +27,17 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             if (!request.Cookies.TryGetValue(this.bySessionIdCookieIdentificationMethod.CookieName, out cookieValue))
                 return null;
 
-            var cookieData = HttpUtility.UrlDecode(cookieValue);
+            var decodedCookieValue = HttpUtility.UrlDecode(cookieValue);
             var hmacLength = Base64Helpers.GetBase64Length(this.hmacProvider.HmacLength);
 
-            if (cookieData.Length < hmacLength)
+            if (decodedCookieValue.Length < hmacLength)
             {
                 // Definitely invalid
                 return null;
             }
 
-            var hmacString = cookieData.Substring(0, hmacLength);
-            var encryptedSessionId = cookieData.Substring(hmacLength);
+            var hmacString = decodedCookieValue.Substring(0, hmacLength);
+            var encryptedSessionId = decodedCookieValue.Substring(hmacLength);
 
             var hmacBytes = new byte[] {};
             try
@@ -46,7 +46,7 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             }
             catch (FormatException)
             {
-                encryptedSessionId = cookieData;
+                encryptedSessionId = decodedCookieValue;
             }
 
             return new SessionIdentificationData

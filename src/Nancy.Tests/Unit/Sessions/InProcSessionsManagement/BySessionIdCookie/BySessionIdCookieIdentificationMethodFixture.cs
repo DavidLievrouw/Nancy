@@ -70,7 +70,7 @@
         }
 
         [Fact]
-        public void Given_null_cookie_data_provider_then_throws()
+        public void Given_null_session_data_provider_then_throws()
         {
             Assert.Throws<ArgumentNullException>(() => new BySessionIdCookieIdentificationMethod(
                 this.fakeEncryptionProvider,
@@ -149,7 +149,7 @@
             }
 
             [Fact]
-            public void When_context_contains_no_session_cookie_data_then_returns_new_session_id()
+            public void When_context_contains_no_session_identification_data_then_returns_new_session_id()
             {
                 A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromCookie(this.context.Request))
                     .Returns(null);

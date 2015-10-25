@@ -1,19 +1,54 @@
 namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
 {
     using System;
+    using Nancy.Cryptography;
 
     /// <summary>
     /// Identification method for in-process memory based sessions, using a querystring parameter, that contains the session identifier.
     /// </summary>
     public class ByQueryStringParamIdentificationMethod : IByQueryStringParamIdentificationMethod
     {
-        const string DefaultParameterName = "_nsid";
+        private const string DefaultParameterName = "_nsid";
+        private readonly IEncryptionProvider encryptionProvider;
+        private readonly IHmacProvider hmacProvider;
+        private readonly IHmacValidator hmacValidator;
+        private readonly ISessionIdentificationDataProvider sessionIdentificationDataProvider;
+        private readonly ISessionIdFactory sessionIdFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ByQueryStringParamIdentificationMethod"/> class.
         /// </summary>
-        public ByQueryStringParamIdentificationMethod()
+        public ByQueryStringParamIdentificationMethod(CryptographyConfiguration cryptoConfig)
         {
+            if (cryptoConfig == null) throw new ArgumentNullException("cryptoConfig");
+            this.encryptionProvider = cryptoConfig.EncryptionProvider;
+            this.hmacProvider = cryptoConfig.HmacProvider;
+            this.sessionIdentificationDataProvider = new SessionIdentificationDataProvider(this.hmacProvider, this);
+            this.hmacValidator = new HmacValidator(this.hmacProvider);
+            this.sessionIdFactory = new SessionIdFactory();
+            this.ParameterName = DefaultParameterName;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ByQueryStringParamIdentificationMethod"/> class.
+        /// </summary>
+        internal ByQueryStringParamIdentificationMethod(
+            IEncryptionProvider encryptionProvider,
+            IHmacProvider hmacProvider,
+            ISessionIdentificationDataProvider sessionIdentificationDataProvider,
+            IHmacValidator hmacValidator,
+            ISessionIdFactory sessionIdFactory)
+        {
+            if (encryptionProvider == null) throw new ArgumentNullException("encryptionProvider");
+            if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
+            if (sessionIdentificationDataProvider == null) throw new ArgumentNullException("configuration");
+            if (hmacValidator == null) throw new ArgumentNullException("configuration");
+            if (sessionIdFactory == null) throw new ArgumentNullException("configuration");
+            this.encryptionProvider = encryptionProvider;
+            this.hmacProvider = hmacProvider;
+            this.sessionIdentificationDataProvider = sessionIdentificationDataProvider;
+            this.hmacValidator = hmacValidator;
+            this.sessionIdFactory = sessionIdFactory;
             this.ParameterName = DefaultParameterName;
         }
 
@@ -26,9 +61,15 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         {
             if (context == null) throw new ArgumentNullException("context");
 
+            var queryStringData = this.sessionIdentificationDataProvider.ProvideDataFromQuery(context.Request);
+            if (queryStringData == null) return this.sessionIdFactory.CreateNew();
+            var isHmacValid = this.hmacValidator.IsValidHmac(queryStringData);
+            if (!isHmacValid) return this.sessionIdFactory.CreateNew();
 
-            // Id it doesn't contain a session id, then create a new session id
-            throw new NotImplementedException();
+            var decryptedSessionId = this.encryptionProvider.Decrypt(queryStringData.SessionId);
+            if (string.IsNullOrEmpty(decryptedSessionId)) return this.sessionIdFactory.CreateNew();
+
+            return this.sessionIdFactory.CreateFrom(decryptedSessionId) ?? this.sessionIdFactory.CreateNew();
         }
 
         /// <summary>

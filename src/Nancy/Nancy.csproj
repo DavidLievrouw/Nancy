@@ -293,6 +293,7 @@
     <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\ByQueryStringParamIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\IByQueryStringParamIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\ISessionIdentificationDataProvider.cs" />
+    <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\SessionIdentificationDataProvider.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethod.cs" />
     <Compile Include="Session\InProcSessionsManagement\SessionIdentificationData.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\SessionIdentificationDataProvider.cs" />
