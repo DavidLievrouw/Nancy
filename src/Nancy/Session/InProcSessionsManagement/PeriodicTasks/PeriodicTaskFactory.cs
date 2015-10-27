@@ -9,7 +9,7 @@ namespace Nancy.Session.InProcSessionsManagement.PeriodicTasks
             if (action == null) {
                 throw new ArgumentNullException("action");
             }
-            return new PeriodicTask(action, new SystemThreadingTimer());
+            return new PeriodicTask(action, new RealTimer());
         }
     }
 }

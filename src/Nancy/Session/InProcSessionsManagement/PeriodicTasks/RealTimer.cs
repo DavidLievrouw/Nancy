@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Nancy.Session.InProcSessionsManagement.PeriodicTasks
 {
-    internal class SystemThreadingTimer : ITimer
+    internal class RealTimer : ITimer
     {
         private Timer innerTimer;
         private Action timerAction;
