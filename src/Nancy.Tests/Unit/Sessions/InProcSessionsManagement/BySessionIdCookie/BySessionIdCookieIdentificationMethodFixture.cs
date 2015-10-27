@@ -332,9 +332,8 @@
                     HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))
                     .Returns(new NancyCookie("cookiefortest", expectedCookieData));
 
-                var earlyExitResponse = this.bySessionIdCookieIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
-
-                Assert.Null(earlyExitResponse);
+                this.bySessionIdCookieIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
+                
                 A.CallTo(() => this.fakeCookieFactory.CreateCookie(A<SessionIdentificationData>.That.Matches(cookieData =>
                     cookieData.SessionId == encryptedSessionId &&
                     HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))

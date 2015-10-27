@@ -73,26 +73,51 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         }
 
         /// <summary>
-        /// Save the session in the specified context.
+        /// Save the session identifier in the specified context.
         /// </summary>
         /// <param name="sessionId">The identifier of the session.</param>
         /// <param name="context">The current context.</param>
-        /// <returns>The early exit response, or null, if everything is OK.</returns>
-        public Response SaveSessionId(SessionId sessionId, NancyContext context)
+        public void SaveSessionId(SessionId sessionId, NancyContext context)
         {
             if (sessionId == null) throw new ArgumentNullException("sessionId");
             if (context == null) throw new ArgumentNullException("context");
-            if (context.Request == null) throw new ArgumentException("The specified context does not contain a request", "context");
+            if (context.Request == null)
+                throw new ArgumentException("The specified context does not contain a request", "context");
             if (sessionId.IsEmpty) throw new ArgumentException("The specified session id cannot be empty", "sessionId");
 
             // If it doesn't contain a session id, then replace the response with 302 and add location header
-            // Otherwise, do nothing
-            throw new NotImplementedException();
+            if (sessionId.IsNew) {
+                var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.Value.ToString());
+                var hmacBytes = this.hmacProvider.GenerateHmac(encryptedSessionId);
+
+                var sessionIdentificationData = new SessionIdentificationData
+                {
+                    SessionId = encryptedSessionId,
+                    Hmac = hmacBytes
+                };
+
+                if (context.Request.Url.Query.Length < 1) {
+                    context.Request.Url.Query = context.Request.Url.Query +
+                                                "?" + this.ParameterName +
+                                                "=" + sessionIdentificationData;
+                }
+                else {
+                    context.Request.Url.Query = context.Request.Url.Query +
+                                                "&" + this.ParameterName +
+                                                "=" + sessionIdentificationData;
+                }
+
+                context.Response.StatusCode = HttpStatusCode.Found;
+                context.Response.Headers.Add("Location", context.Request.Url.ToString());
+            }
         }
 
         /// <summary>
         /// Gets or sets the querystring parameter name in which the session id is stored.
         /// </summary>
-        public string ParameterName { get; set; }
+        public string ParameterName {
+            get;
+            set;
+        }
     }
 }

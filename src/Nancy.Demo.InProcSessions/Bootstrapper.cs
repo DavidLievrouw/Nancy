@@ -4,6 +4,7 @@ namespace Nancy.Demo.InProcSessions
     using Nancy.Bootstrapper;
     using Nancy.Cryptography;
     using Nancy.Session;
+    using Nancy.Session.InProcSessionsManagement.ByQueryStringParam;
     using Nancy.Session.InProcSessionsManagement.BySessionIdCookie;
     using Nancy.TinyIoc;
 
@@ -15,11 +16,11 @@ namespace Nancy.Demo.InProcSessions
 
             var sessionConfig = new InProcSessionsConfiguration
             {
-                SessionTimeout = TimeSpan.FromMinutes(3),
+                SessionTimeout = TimeSpan.FromMinutes(1),
                 CacheTrimInterval = TimeSpan.FromMinutes(10),
-                SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default)
+                SessionIdentificationMethod = new ByQueryStringParamIdentificationMethod(CryptographyConfiguration.Default)
                 {
-                    CookieName = "_MySessionId"
+                    ParameterName = "_MySessionId"
                 }
             };
             InProcSessions.Enable(pipelines, sessionConfig);

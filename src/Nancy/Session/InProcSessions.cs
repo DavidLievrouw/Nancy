@@ -64,7 +64,8 @@
         private static Response SaveSession(NancyContext ctx,
             IInProcSessionManager sessionManager)
         {
-            return ctx.Request == null ? null : sessionManager.Save(ctx.Request.Session, ctx);
+            sessionManager.Save(ctx.Request.Session, ctx);
+            return null;
         }
     }
 }
