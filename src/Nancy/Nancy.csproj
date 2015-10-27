@@ -297,6 +297,8 @@
     <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\ResponseManipulatorForSession.cs" />
     <Compile Include="Session\InProcSessionsManagement\ByQueryStringParam\SessionIdentificationDataProvider.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethod.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\SystemThreadingTimer.cs" />
+    <Compile Include="Session\InProcSessionsManagement\PeriodicTasks\ITimer.cs" />
     <Compile Include="Session\InProcSessionsManagement\SessionId.cs" />
     <Compile Include="Session\InProcSessionsManagement\SessionIdentificationData.cs" />
     <Compile Include="Session\InProcSessionsManagement\BySessionIdCookie\SessionIdentificationDataProvider.cs" />

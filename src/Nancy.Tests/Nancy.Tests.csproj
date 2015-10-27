@@ -259,6 +259,7 @@
     <Compile Include="Unit\Sessions\InProcSessionsManagement\ByQueryStringParam\ResponseManipulatorForSessionFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\ByQueryStringParam\SessionIdentificationDataProviderFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethodFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\PeriodicTasks\TimerForUnitTests.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\SessionIdentificationDataFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\SessionIdentificationDataProviderFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\CookieFactoryFixture.cs" />

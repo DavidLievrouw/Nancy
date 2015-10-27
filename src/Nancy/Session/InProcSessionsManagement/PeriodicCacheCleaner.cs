@@ -40,7 +40,6 @@
             this.cancellationTokenSource = this.cancellationTokenSourceFactory.Create();
             this.periodicTask.Start(
                 this.configuration.CacheTrimInterval,
-                this.configuration.CacheTrimInterval,
                 this.cancellationTokenSource.Token);
         }
 

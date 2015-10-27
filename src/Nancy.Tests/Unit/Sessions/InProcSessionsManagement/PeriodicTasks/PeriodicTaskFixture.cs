@@ -9,17 +9,42 @@
     {
         private int numberOfExecutions;
         private readonly PeriodicTask periodicTask;
+        private readonly TimerForUnitTests timer;
 
         public PeriodicTaskFixture()
         {
             this.numberOfExecutions = 0;
-            this.periodicTask = new PeriodicTask(() => this.numberOfExecutions++);
+            this.timer = new TimerForUnitTests();
+            this.periodicTask = new PeriodicTask(() => this.numberOfExecutions++, this.timer);
         }
 
         [Fact]
         public void Given_null_action_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new PeriodicTask(null));
+            Assert.Throws<ArgumentNullException>(() => new PeriodicTask(null, this.timer));
+        }
+
+        [Fact]
+        public void Given_null_timer_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new PeriodicTask(() => this.numberOfExecutions++, null));
+        }
+
+        [Fact]
+        public void Given_zero_interval_time_then_throws()
+        {
+            using (var tokenSource = new CancellationTokenSource()) {
+                Assert.Throws<ArgumentException>(() => this.periodicTask.Start(TimeSpan.Zero, tokenSource.Token));
+            }
+        }
+
+        [Fact]
+        public void Given_negative_interval_time_then_throws()
+        {
+            using (var tokenSource = new CancellationTokenSource()) {
+                Assert.Throws<ArgumentException>(
+                    () => this.periodicTask.Start(TimeSpan.FromSeconds(-1), tokenSource.Token));
+            }
         }
 
         [Fact]
@@ -27,58 +52,39 @@
         {
             using (var tokenSource = new CancellationTokenSource()) {
                 this.periodicTask.Start(
-                    TimeSpan.FromMilliseconds(100),
-                    TimeSpan.FromMilliseconds(100),
+                    TimeSpan.FromMilliseconds(1000),
                     tokenSource.Token);
-                Thread.Sleep(20);
+                this.timer.ElapseSeconds(0.1);
                 tokenSource.Cancel();
+                Assert.Equal(0, this.numberOfExecutions);
             }
         }
 
-        /*
         [Fact]
-        public void Adheres_initial_delay_and_interval()
+        public void Adheres_interval()
         {
-            using (var tokenSource = new CancellationTokenSource())
-            {
+            using (var tokenSource = new CancellationTokenSource()) {
                 this.periodicTask.Start(
-                    TimeSpan.FromMilliseconds(200),
-                    TimeSpan.FromMilliseconds(100),
+                    TimeSpan.FromMilliseconds(1000),
                     tokenSource.Token);
-                Thread.Sleep(450);
+                this.timer.ElapseSeconds(2.5);
                 tokenSource.Cancel();
-                Assert.Equal(3, this.numberOfExecutions);
+                Assert.Equal(2, this.numberOfExecutions);
             }
         }
 
         [Fact]
         public void When_disposed_then_stops()
         {
-            using (var tokenSource = new CancellationTokenSource())
-            {
-                this.periodicTask.Start(
-                    TimeSpan.FromMilliseconds(200),
-                    TimeSpan.FromMilliseconds(100),
-                    tokenSource.Token);
-                Thread.Sleep(250);
-                this.periodicTask.Dispose();
-                Assert.Equal(1, this.numberOfExecutions);
-            }
-        }
-
-        [Fact]
-        public void When_zero_interval_is_given_then_does_work_only_once()
-        {
             using (var tokenSource = new CancellationTokenSource()) {
                 this.periodicTask.Start(
-                    TimeSpan.Zero,
-                    TimeSpan.Zero,
+                    TimeSpan.FromMilliseconds(1000),
                     tokenSource.Token);
-                Thread.Sleep(500);
+                this.timer.ElapseSeconds(4.5);
                 this.periodicTask.Dispose();
-                Assert.Equal(1, this.numberOfExecutions);
+                this.timer.ElapseSeconds(2);
+                Assert.Equal(4, this.numberOfExecutions);
             }
         }
-        */
     }
 }

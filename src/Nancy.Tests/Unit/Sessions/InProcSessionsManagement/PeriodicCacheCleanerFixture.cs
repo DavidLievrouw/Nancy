@@ -95,7 +95,6 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement
 
             A.CallTo(() => this.fakePeriodicTask.Start(
                 this.validConfiguration.CacheTrimInterval,
-                this.validConfiguration.CacheTrimInterval,
                 A<CancellationToken>._))
                 .MustHaveHappened();
         }
