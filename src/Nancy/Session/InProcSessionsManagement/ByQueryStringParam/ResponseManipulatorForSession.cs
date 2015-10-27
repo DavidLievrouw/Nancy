@@ -1,7 +1,7 @@
 namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
 {
     using System;
-    using Nancy.Extensions;
+    using System.Text;
     using Nancy.Helpers;
 
     internal class ResponseManipulatorForSession : IResponseManipulatorForSession
@@ -16,7 +16,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             this.byQueryStringParamIdentificationMethod = byQueryStringParamIdentificationMethod;
         }
 
-        public void ModifyResponseToRedirectToSessionUrl(
+        public void ModifyResponseToRedirectToSessionAwareUrl(
             NancyContext context,
             SessionIdentificationData sessionIdentificationData)
         {
@@ -27,28 +27,26 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             if (context.Response == null)
                 throw new ArgumentException("The specified context does not contain a response", "context");
 
-            var queryDictionary = context.Request.Url.Query.AsQueryDictionary();
-            string valueToReplace = null;
-            dynamic existingSessionIdValue = null;
-            if (queryDictionary.TryGetValue(this.byQueryStringParamIdentificationMethod.ParameterName,
-                out existingSessionIdValue)) {
-                valueToReplace = existingSessionIdValue.ToString();
-            }
+            var originalUri = (Uri)context.Request.Url;
+            var uriBuilder =new UriBuilder(originalUri);
+            var queryParameters = HttpUtility.ParseQueryString(uriBuilder.Query);
+            queryParameters.Set(this.byQueryStringParamIdentificationMethod.ParameterName, sessionIdentificationData.ToString());
 
-            var encodedValueForParameter = HttpUtility.UrlEncode(sessionIdentificationData.ToString());
-            string redirectLocation = null;
-            if (valueToReplace == null) {
-                var joinSymbol = context.Request.Url.Query.Length < 1 ? "?" : "&";
-                var queryAddition = joinSymbol + this.byQueryStringParamIdentificationMethod.ParameterName +
-                                    "=" + encodedValueForParameter;
-                redirectLocation = context.Request.Url + queryAddition;
+            var newQueryString = string.Empty;
+            if (queryParameters.Count > 0) {
+                var newQueryBuilder = new StringBuilder();
+                foreach (var paramName in queryParameters.AllKeys) {
+                    newQueryBuilder.Append(string.Format("{0}={1}&", 
+                        paramName, 
+                        HttpUtility.UrlEncode(queryParameters[paramName])));
+                }
+                newQueryString = newQueryBuilder.ToString().TrimEnd('&');
             }
-            else {
-                redirectLocation = context.Request.Url.ToString().Replace("=" + valueToReplace, "=" + encodedValueForParameter);
-            }
-            
+            uriBuilder.Query = newQueryString;
+            var redirectUrl = uriBuilder.ToString();
+
             context.Response.StatusCode = HttpStatusCode.Found;
-            context.Response.Headers.Add("Location", redirectLocation);
+            context.Response.Headers.Add("Location", redirectUrl);
         }
     }
 }

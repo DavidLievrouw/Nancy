@@ -320,7 +320,7 @@
                 this.byQueryStringParamIdentificationMethod.SaveSessionId(existingSessionId, this.context);
                 A.CallTo(
                     () =>
-                        this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(A<NancyContext>._,
+                        this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(A<NancyContext>._,
                             A<SessionIdentificationData>._))
                     .MustNotHaveHappened();
             }
@@ -340,7 +340,7 @@
 
                 this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
 
-                A.CallTo(() => this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(
+                A.CallTo(() => this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(
                     this.context,
                     A<SessionIdentificationData>.That.Matches(sid => sid.SessionId == encryptedSessionId &&
                                                                      HmacComparer.Compare(sid.Hmac, hmacBytes,

@@ -2,7 +2,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
 {
     internal interface IResponseManipulatorForSession
     {
-        void ModifyResponseToRedirectToSessionUrl(NancyContext context,
+        void ModifyResponseToRedirectToSessionAwareUrl(NancyContext context,
             SessionIdentificationData sessionIdentificationData);
     }
 }
