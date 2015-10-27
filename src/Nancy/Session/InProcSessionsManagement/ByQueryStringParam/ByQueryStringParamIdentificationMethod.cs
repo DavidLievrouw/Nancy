@@ -92,6 +92,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
 
             // Redirect the client to the same url, with the session Id as a query string parameter, if needed
             if (sessionId.IsNew) {
+
                 var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.Value.ToString());
                 var hmacBytes = this.hmacProvider.GenerateHmac(encryptedSessionId);
 
@@ -101,7 +102,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
                     Hmac = hmacBytes
                 };
 
-                this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(
+                this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(
                     context,
                     sessionIdentificationData);
             }

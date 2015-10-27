@@ -48,7 +48,7 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
         {
             Assert.Throws<ArgumentNullException>(
                 () =>
-                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(null,
+                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(null,
                         this.sessionIdentificationData));
         }
 
@@ -57,7 +57,7 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
         {
             Assert.Throws<ArgumentNullException>(
                 () =>
-                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(this.context,
+                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(this.context,
                         null));
         }
 
@@ -70,7 +70,7 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
             };
             Assert.Throws<ArgumentException>(
                 () =>
-                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(contextWithoutRequest,
+                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(contextWithoutRequest,
                         this.sessionIdentificationData));
         }
 
@@ -83,14 +83,14 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
             };
             Assert.Throws<ArgumentException>(
                 () =>
-                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(contextWithoutResponse,
+                    this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(contextWithoutResponse,
                         this.sessionIdentificationData));
         }
 
         [Fact]
         public void Changes_http_status_code_of_reponse_to_302()
         {
-            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(this.context,
+            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(this.context,
                 this.sessionIdentificationData);
             Assert.Equal(this.context.Response.StatusCode, HttpStatusCode.Found);
         }
@@ -102,13 +102,13 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
                                               "?" + this.parameterName + 
                                               "=" + this.sessionIdentificationData;
 
-            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(this.context,
+            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(this.context,
                 this.sessionIdentificationData);
 
             var locationHeader = this.context.Response.Headers
                 .FirstOrDefault(header => header.Key.Equals("Location", StringComparison.OrdinalIgnoreCase));
             Assert.NotNull(locationHeader);
-            Assert.Equal(expectedLocationHeaderValue, locationHeader.Value, StringComparer.OrdinalIgnoreCase);
+            Assert.True(new Uri(expectedLocationHeaderValue).Equals(new Uri(locationHeader.Value)));
         }
 
         [Fact]
@@ -119,13 +119,13 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
                                               "&" + this.parameterName +
                                               "=" + this.sessionIdentificationData;
 
-            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(this.context,
+            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(this.context,
                 this.sessionIdentificationData);
 
             var locationHeader = this.context.Response.Headers
                 .FirstOrDefault(header => header.Key.Equals("Location", StringComparison.OrdinalIgnoreCase));
             Assert.NotNull(locationHeader);
-            Assert.Equal(expectedLocationHeaderValue, locationHeader.Value, StringComparer.OrdinalIgnoreCase);
+            Assert.True(new Uri(expectedLocationHeaderValue).Equals(new Uri(locationHeader.Value)));
         }
 
         [Fact]
@@ -137,32 +137,51 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
                                               "=" + this.sessionIdentificationData +
                                               "&page=14";
 
-            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(this.context,
+            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(this.context,
                 this.sessionIdentificationData);
 
             var locationHeader = this.context.Response.Headers
                 .FirstOrDefault(header => header.Key.Equals("Location", StringComparison.OrdinalIgnoreCase));
             Assert.NotNull(locationHeader);
-            Assert.Equal(expectedLocationHeaderValue, locationHeader.Value, StringComparer.OrdinalIgnoreCase);
+            Assert.True(new Uri(expectedLocationHeaderValue).Equals(new Uri(locationHeader.Value)));
+        }
+
+
+        [Fact]
+        public void Given_request_already_has_a_session_id_with_encoded_characters_then_replaces_that_session_id()
+        {
+            this.context.Request = new Request("GET", "http://www.google.be:624?value=test&process=3&" + this.parameterName + "=ABC%C2%2F23&page=14");
+            var expectedLocationHeaderValue = "http://www.google.be:624?value=test&process=3" +
+                                              "&" + this.parameterName +
+                                              "=" + this.sessionIdentificationData +
+                                              "&page=14";
+
+            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(this.context,
+                this.sessionIdentificationData);
+
+            var locationHeader = this.context.Response.Headers
+                .FirstOrDefault(header => header.Key.Equals("Location", StringComparison.OrdinalIgnoreCase));
+            Assert.NotNull(locationHeader);
+            Assert.True(new Uri(expectedLocationHeaderValue).Equals(new Uri(locationHeader.Value)));
         }
 
         [Fact]
-        public void Given_session_identifier_is_url_encoded()
+        public void Given_session_identifier_is_lowercase_url_encoded()
         {
             this.sessionIdentificationData.SessionId = "/bOu§¨";
-            const string encodedSessionId = "%2FbOu%C2%A7%C2%A8";
+            const string encodedSessionId = "%2fbOu%c2%a7%c2%a8";
             var expectedParameterValue = "01HMAC98" + encodedSessionId;
-            var expectedLocationHeaderValue = this.context.Request.Url +
+            var expectedLocationHeaderValue = this.context.Request.Url + "/" + 
                                               "?" + this.parameterName +
                                               "=" + expectedParameterValue;
 
-            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(this.context,
+            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(this.context,
                 this.sessionIdentificationData);
 
             var locationHeader = this.context.Response.Headers
                 .FirstOrDefault(header => header.Key.Equals("Location", StringComparison.OrdinalIgnoreCase));
             Assert.NotNull(locationHeader);
-            Assert.Equal(expectedLocationHeaderValue, locationHeader.Value, StringComparer.OrdinalIgnoreCase);
+            Assert.True(new Uri(expectedLocationHeaderValue).Equals(new Uri(locationHeader.Value)));
         }
     }
 }
