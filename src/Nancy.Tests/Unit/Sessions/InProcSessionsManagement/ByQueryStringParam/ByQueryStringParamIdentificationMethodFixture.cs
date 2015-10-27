@@ -271,9 +271,9 @@
             [Fact]
             public void Given_context_without_request_then_throws()
             {
-                this.context.Request = null;
+                var contextWithoutRequest = new NancyContext();
                 Assert.Throws<ArgumentException>(
-                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId, this.context));
+                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId, contextWithoutRequest));
             }
 
             [Fact]
