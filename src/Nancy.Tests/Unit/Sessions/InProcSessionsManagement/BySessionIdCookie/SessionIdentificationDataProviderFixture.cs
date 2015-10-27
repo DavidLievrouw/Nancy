@@ -89,16 +89,11 @@
         }
 
         [Fact]
-        public void Given_cookie_hmac_is_invalid_base64_string_then_returns_input_without_hmac()
+        public void Given_cookie_hmac_is_invalid_base64_string_then_returns_null()
         {
-            var cookieData = "A" + this.encryptedSessionIdString;
-            var expectedResult = HttpUtility.UrlDecode(cookieData);
             this.SetCookieValue("A" + this.encryptedSessionIdString);
-
             var actual = this.sessionIdentificationDataProvider.ProvideDataFromCookie(this.validRequest);
-            Assert.Equal(expectedResult, actual.SessionId);
-            Assert.NotNull(actual.Hmac);
-            Assert.Empty(actual.Hmac);
+            Assert.Null(actual);
         }
 
         [Fact]

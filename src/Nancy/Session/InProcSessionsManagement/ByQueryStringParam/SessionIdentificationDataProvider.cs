@@ -29,17 +29,16 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
                 return null;
 
             string parameterValue = querystringDictionary[this.byQueryStringParamIdentificationMethod.ParameterName];
-            var decodedParameterValue = HttpUtility.UrlDecode(parameterValue);
             var hmacLength = Base64Helpers.GetBase64Length(this.hmacProvider.HmacLength);
 
-            if (decodedParameterValue.Length < hmacLength)
+            if (parameterValue.Length < hmacLength)
             {
                 // Definitely invalid
                 return null;
             }
 
-            var hmacString = decodedParameterValue.Substring(0, hmacLength);
-            var encryptedSessionId = decodedParameterValue.Substring(hmacLength);
+            var hmacString = parameterValue.Substring(0, hmacLength);
+            var encryptedSessionId = parameterValue.Substring(hmacLength);
 
             var hmacBytes = new byte[] {};
             try
@@ -48,7 +47,8 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             }
             catch (FormatException)
             {
-                encryptedSessionId = decodedParameterValue;
+                // Invalid HMAC
+                return null;
             }
 
             return new SessionIdentificationData

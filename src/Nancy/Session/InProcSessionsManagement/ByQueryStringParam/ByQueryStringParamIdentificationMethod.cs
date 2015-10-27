@@ -14,6 +14,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         private readonly IHmacValidator hmacValidator;
         private readonly ISessionIdentificationDataProvider sessionIdentificationDataProvider;
         private readonly ISessionIdFactory sessionIdFactory;
+        private readonly IResponseManipulatorForSession responseManipulatorForSession;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ByQueryStringParamIdentificationMethod"/> class.
@@ -26,6 +27,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             this.sessionIdentificationDataProvider = new SessionIdentificationDataProvider(this.hmacProvider, this);
             this.hmacValidator = new HmacValidator(this.hmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
+            this.responseManipulatorForSession = new ResponseManipulatorForSession(this);
             this.ParameterName = DefaultParameterName;
         }
 
@@ -37,18 +39,21 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             IHmacProvider hmacProvider,
             ISessionIdentificationDataProvider sessionIdentificationDataProvider,
             IHmacValidator hmacValidator,
-            ISessionIdFactory sessionIdFactory)
+            ISessionIdFactory sessionIdFactory,
+            IResponseManipulatorForSession responseManipulatorForSession)
         {
             if (encryptionProvider == null) throw new ArgumentNullException("encryptionProvider");
             if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
             if (sessionIdentificationDataProvider == null) throw new ArgumentNullException("configuration");
             if (hmacValidator == null) throw new ArgumentNullException("configuration");
             if (sessionIdFactory == null) throw new ArgumentNullException("configuration");
+            if (responseManipulatorForSession == null) throw new ArgumentNullException("responseManipulatorForSession");
             this.encryptionProvider = encryptionProvider;
             this.hmacProvider = hmacProvider;
             this.sessionIdentificationDataProvider = sessionIdentificationDataProvider;
             this.hmacValidator = hmacValidator;
             this.sessionIdFactory = sessionIdFactory;
+            this.responseManipulatorForSession = responseManipulatorForSession;
             this.ParameterName = DefaultParameterName;
         }
 
@@ -85,7 +90,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
                 throw new ArgumentException("The specified context does not contain a request", "context");
             if (sessionId.IsEmpty) throw new ArgumentException("The specified session id cannot be empty", "sessionId");
 
-            // If it doesn't contain a session id, then replace the response with 302 and add location header
+            // Redirect the client to the same url, with the session Id as a query string parameter, if needed
             if (sessionId.IsNew) {
                 var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.Value.ToString());
                 var hmacBytes = this.hmacProvider.GenerateHmac(encryptedSessionId);
@@ -96,19 +101,9 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
                     Hmac = hmacBytes
                 };
 
-                if (context.Request.Url.Query.Length < 1) {
-                    context.Request.Url.Query = context.Request.Url.Query +
-                                                "?" + this.ParameterName +
-                                                "=" + sessionIdentificationData;
-                }
-                else {
-                    context.Request.Url.Query = context.Request.Url.Query +
-                                                "&" + this.ParameterName +
-                                                "=" + sessionIdentificationData;
-                }
-
-                context.Response.StatusCode = HttpStatusCode.Found;
-                context.Response.Headers.Add("Location", context.Request.Url.ToString());
+                this.responseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(
+                    context,
+                    sessionIdentificationData);
             }
         }
 
