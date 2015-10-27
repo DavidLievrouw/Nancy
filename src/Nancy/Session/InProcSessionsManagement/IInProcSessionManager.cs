@@ -10,8 +10,7 @@
         /// </summary>
         /// <param name="session">The session to save.</param>
         /// <param name="context">The current context.</param>
-        /// <returns>The early exit response, or null, if everything is OK.</returns>
-        Response Save(ISession session, NancyContext context);
+        void Save(ISession session, NancyContext context);
 
         /// <summary>
         /// Load the session that is owned by the specified context.

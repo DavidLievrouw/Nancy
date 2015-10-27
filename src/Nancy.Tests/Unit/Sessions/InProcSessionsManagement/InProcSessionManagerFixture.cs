@@ -227,21 +227,6 @@
                 A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(sessionId, this.nancyContext))
                     .MustHaveHappened();
             }
-
-            [Fact]
-            public void Returns_result_from_identification_method()
-            {
-                var sessionId = new SessionId(Guid.NewGuid(), true);
-                var expectedResponse = new Response().WithStatusCode(HttpStatusCode.Found);
-                A.CallTo(() => this.fakeSessionIdentificationMethod.GetCurrentSessionId(this.nancyContext))
-                    .Returns(sessionId);
-                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(sessionId, this.nancyContext))
-                    .Returns(expectedResponse);
-
-                var actualResponse = this.sessionManager.Save(this.fakeSession, this.nancyContext);
-
-                Assert.Equal(expectedResponse, actualResponse);
-            }
         }
     }
 }

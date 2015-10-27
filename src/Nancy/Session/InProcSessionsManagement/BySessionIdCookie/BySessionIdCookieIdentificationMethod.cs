@@ -102,12 +102,11 @@
         }
 
         /// <summary>
-        /// Save the session in the specified context.
+        /// Save the session identifier in the specified context.
         /// </summary>
         /// <param name="sessionId">The identifier of the session.</param>
         /// <param name="context">The current context.</param>
-        /// <returns>The early exit response, or null, if everything is OK.</returns>
-        public Response SaveSessionId(SessionId sessionId, NancyContext context)
+        public void SaveSessionId(SessionId sessionId, NancyContext context)
         {
             if (sessionId == null) throw new ArgumentNullException("sessionId");
             if (context == null) throw new ArgumentNullException("context");
@@ -117,16 +116,14 @@
             var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.Value.ToString());
             var hmacBytes = this.hmacProvider.GenerateHmac(encryptedSessionId);
 
-            var cookieData = new SessionIdentificationData
+            var sessionIdentificationData = new SessionIdentificationData
             {
                 SessionId = encryptedSessionId,
                 Hmac = hmacBytes
             };
 
-            var cookie = this.cookieFactory.CreateCookie(cookieData);
+            var cookie = this.cookieFactory.CreateCookie(sessionIdentificationData);
             context.Response.WithCookie(cookie);
-
-            return null;
         }
     }
 }

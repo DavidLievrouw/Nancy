@@ -35,13 +35,12 @@ namespace Nancy.Session.InProcSessionsManagement
         /// </summary>
         /// <param name="session">The session to save.</param>
         /// <param name="context">The current context.</param>
-        /// <returns>The early exit response, or null, if everything is OK.</returns>
-        public Response Save(ISession session, NancyContext context)
+        public void Save(ISession session, NancyContext context)
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            if (session == null || !session.HasChanged) return null;
-            if (session is NullSessionProvider || session.Count <= 0) return null;
+            if (session == null || !session.HasChanged) return;
+            if (session is NullSessionProvider || session.Count <= 0) return;
 
             var identificationMethod = this.configuration.SessionIdentificationMethod;
 
@@ -49,7 +48,7 @@ namespace Nancy.Session.InProcSessionsManagement
             var inProcSession = this.sessionFactory.Create(sessionId, session);
             this.sessionCache.Set(inProcSession);
 
-            return identificationMethod.SaveSessionId(sessionId, context);
+            identificationMethod.SaveSessionId(sessionId, context);
         }
 
         /// <summary>

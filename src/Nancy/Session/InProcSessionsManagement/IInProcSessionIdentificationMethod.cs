@@ -15,11 +15,10 @@
         SessionId GetCurrentSessionId(NancyContext context);
 
         /// <summary>
-        /// Save the session in the specified context.
+        /// Save the session identifier in the specified context.
         /// </summary>
         /// <param name="sessionId">The identifier of the session.</param>
         /// <param name="context">The current context.</param>
-        /// <returns>The early exit response, or null, if everything is OK.</returns>
-        Response SaveSessionId(SessionId sessionId, NancyContext context);
+        void SaveSessionId(SessionId sessionId, NancyContext context);
     }
 }
