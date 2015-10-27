@@ -33,7 +33,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             var hmacString = parameterValue.Substring(0, hmacLength);
             var encryptedSessionId = parameterValue.Substring(hmacLength);
 
-            var hmacBytes = new byte[] {};
+            byte[] hmacBytes;
             try
             {
                 hmacBytes = Convert.FromBase64String(hmacString);

@@ -38,7 +38,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             var redirectUrl = uriBuilder.ToString();
 
             context.Response.StatusCode = HttpStatusCode.Found;
-            context.Response.Headers.Add("Location", redirectUrl);
+            context.Response.Headers["Location"] = redirectUrl;
         }
     }
 }

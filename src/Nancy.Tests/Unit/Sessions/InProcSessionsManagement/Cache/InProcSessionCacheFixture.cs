@@ -149,7 +149,7 @@
         [Fact]
         public void Collection_is_thread_safe()
         {
-            const int numberOfThreads = 1000;
+            const int numberOfThreads = 500;
             var threadAction = new ThreadStart(() =>
             {
                 var extraSession1 = new InProcSession(new SessionId(Guid.NewGuid(), false), A.Dummy<ISession>(),
