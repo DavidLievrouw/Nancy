@@ -105,7 +105,7 @@
         public class Load : ByQueryStringParamIdentificationMethodFixture
         {
             private readonly NancyContext context;
-            private readonly Guid newSessionId;
+            private readonly SessionId newSessionId;
 
             public Load()
             {
@@ -114,7 +114,7 @@
                     Request = new Request("GET", "http://www.google.be?_nsid=01HMAC02SessionId")
                 };
 
-                this.newSessionId = Guid.NewGuid();
+                this.newSessionId = new SessionId(Guid.NewGuid(), false);
                 A.CallTo(() => this.fakeSessionIdFactory.CreateNew())
                     .Returns(this.newSessionId);
             }
@@ -220,7 +220,7 @@
             [Fact]
             public void When_decrypted_session_id_is_valid_then_returns_session_id_from_querystring()
             {
-                var expectedSessionId = Guid.NewGuid();
+                var expectedSessionId = new SessionId(Guid.NewGuid(), false);
                 var decryptedSessionId = expectedSessionId.ToString();
                 var sessionIdentificationData = new SessionIdentificationData
                 {
@@ -250,11 +250,11 @@
         public class Save : ByQueryStringParamIdentificationMethodFixture
         {
             private readonly NancyContext context;
-            private readonly Guid validSessionId;
+            private readonly SessionId validSessionId;
 
             public Save()
             {
-                this.validSessionId = Guid.NewGuid();
+                this.validSessionId = new SessionId(Guid.NewGuid(), false);
                 this.context = new NancyContext()
                 {
                     Request = new Request("GET", "http://www.google.be")
@@ -269,6 +269,13 @@
             }
 
             [Fact]
+            public void Given_null_session_id_then_throws()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(null, this.context));
+            }
+
+            [Fact]
             public void Given_context_without_request_then_throws()
             {
                 var contextWithoutRequest = new NancyContext();
@@ -279,8 +286,9 @@
             [Fact]
             public void Given_empty_session_id_then_throws()
             {
+                var emptySessionId = new SessionId(Guid.Empty, false);
                 Assert.Throws<ArgumentException>(
-                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(Guid.Empty, this.context));
+                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(emptySessionId, this.context));
             }
         }
     }

@@ -37,21 +37,29 @@
         }
 
         [Fact]
+        public void Given_null_session_id_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => this.sessionFactory.Create(null, A.Dummy<ISession>()));
+        }
+
+        [Fact]
         public void Given_empty_session_id_then_throws()
         {
-            Assert.Throws<ArgumentException>(() => this.sessionFactory.Create(Guid.Empty, A.Dummy<ISession>()));
+            var emptySessionId = new SessionId(Guid.Empty, false);
+            Assert.Throws<ArgumentException>(() => this.sessionFactory.Create(emptySessionId, A.Dummy<ISession>()));
         }
 
         [Fact]
         public void Given_null_inner_session_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => this.sessionFactory.Create(Guid.NewGuid(), null));
+            var sessionId = new SessionId(Guid.NewGuid(), false);
+            Assert.Throws<ArgumentNullException>(() => this.sessionFactory.Create(sessionId, null));
         }
 
         [Fact]
         public void Creates_session_with_expected_values()
         {
-            var sessionId = Guid.NewGuid();
+            var sessionId = new SessionId(Guid.NewGuid(), false);
             var innerSession = A.Dummy<ISession>();
             var nowUtc = new DateTime(2015, 10, 22, 16, 23, 14);
             ConfigureSystemClock_ToReturn(nowUtc);

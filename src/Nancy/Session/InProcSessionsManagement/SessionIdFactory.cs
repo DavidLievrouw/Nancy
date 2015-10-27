@@ -4,21 +4,17 @@
 
     internal class SessionIdFactory : ISessionIdFactory
     {
-        public Guid CreateNew()
+        public SessionId CreateNew()
         {
-            return Guid.NewGuid();
+            return new SessionId(Guid.NewGuid(), true);
         }
 
-        public Guid? CreateFrom(string sessionIdString)
+        public SessionId CreateFrom(string sessionIdString)
         {
             if (sessionIdString == null) return null;
 
             Guid sessionId;
-            if (Guid.TryParse(sessionIdString, out sessionId))
-            {
-                return sessionId;
-            }
-            return null;
+            return Guid.TryParse(sessionIdString, out sessionId) ? new SessionId(sessionId, false) : null;
         }
     }
 }

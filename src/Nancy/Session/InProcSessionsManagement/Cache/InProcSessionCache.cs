@@ -99,9 +99,10 @@
         /// </summary>
         /// <param name="id">The identifier of the session.</param>
         /// <returns>The session with the specified identifier, or null, if none was not found.</returns>
-        public InProcSession Get(Guid id)
+        public InProcSession Get(SessionId id)
         {
             this.CheckDisposed();
+            if (id == null) throw new ArgumentNullException("id");
 
             using (new HeldUpgradeableReadLock(this.rwlock)) {
                 var foundSession = this.sessions.SingleOrDefault(session => session.Id == id);

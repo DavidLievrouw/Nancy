@@ -25,9 +25,11 @@
             this.ConfigureSystemClock_ToReturn(this.nowUtc);
 
             this.inProcSessionCache = new InProcSessionCache(this.fakeSystemClock);
-            this.expiredSession = new InProcSession(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc.AddMinutes(-20),
+            this.expiredSession = new InProcSession(new SessionId(Guid.NewGuid(), false), A.Dummy<ISession>(),
+                this.nowUtc.AddMinutes(-20),
                 TimeSpan.FromMinutes(15));
-            this.activeSession = new InProcSession(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc.AddMinutes(-3),
+            this.activeSession = new InProcSession(new SessionId(Guid.NewGuid(), false), A.Dummy<ISession>(),
+                this.nowUtc.AddMinutes(-3),
                 TimeSpan.FromMinutes(15));
             this.inProcSessionCache.Set(this.expiredSession);
             this.inProcSessionCache.Set(this.activeSession);
@@ -59,7 +61,8 @@
         [Fact]
         public void Set_adds_new_element()
         {
-            var extraSession = new InProcSession(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
+            var extraSession = new InProcSession(new SessionId(Guid.NewGuid(), false), A.Dummy<ISession>(), this.nowUtc,
+                TimeSpan.FromMinutes(15));
             this.inProcSessionCache.Set(extraSession);
 
             var expected = this.numberOfSessions + 1;
@@ -72,7 +75,7 @@
         {
             var newSession = new InProcSession(
                 this.activeSession.Id,
-                A.Dummy<ISession>(), 
+                A.Dummy<ISession>(),
                 this.nowUtc.AddSeconds(10),
                 TimeSpan.FromMinutes(10)
                 );
@@ -96,9 +99,15 @@
         [Fact]
         public void Get_returns_null_if_id_is_not_found()
         {
-            var nonExistingId = Guid.NewGuid();
+            var nonExistingId = new SessionId(Guid.NewGuid(), false);
             var actual = this.inProcSessionCache.Get(nonExistingId);
             Assert.Null(actual);
+        }
+
+        [Fact]
+        public void Get_throws_when_null_session_id_is_specified()
+        {
+            Assert.Throws<ArgumentNullException>(() => this.inProcSessionCache.Get(null));
         }
 
         [Fact]
@@ -123,7 +132,7 @@
         [Fact]
         public void When_disposed_then_cannot_access_Get()
         {
-            var idToFind = Guid.NewGuid();
+            var idToFind = new SessionId(Guid.NewGuid(), false);
             this.inProcSessionCache.Dispose();
             Assert.Throws<ObjectDisposedException>(() => this.inProcSessionCache.Get(idToFind));
         }
@@ -131,7 +140,8 @@
         [Fact]
         public void When_disposed_then_cannot_access_Set()
         {
-            var extraSession = new InProcSession(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
+            var extraSession = new InProcSession(new SessionId(Guid.NewGuid(), false), A.Dummy<ISession>(), this.nowUtc,
+                TimeSpan.FromMinutes(15));
             this.inProcSessionCache.Dispose();
             Assert.Throws<ObjectDisposedException>(() => this.inProcSessionCache.Set(extraSession));
         }
@@ -142,9 +152,11 @@
             const int numberOfThreads = 1000;
             var threadAction = new ThreadStart(() =>
             {
-                var extraSession1 = new InProcSession(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc.AddMinutes(-20),
+                var extraSession1 = new InProcSession(new SessionId(Guid.NewGuid(), false), A.Dummy<ISession>(),
+                    this.nowUtc.AddMinutes(-20),
                     TimeSpan.FromMinutes(15));
-                var extraSession2 = new InProcSession(Guid.NewGuid(), A.Dummy<ISession>(), this.nowUtc, TimeSpan.FromMinutes(15));
+                var extraSession2 = new InProcSession(new SessionId(Guid.NewGuid(), false), A.Dummy<ISession>(),
+                    this.nowUtc, TimeSpan.FromMinutes(15));
                 this.inProcSessionCache.Set(extraSession1);
                 Thread.Sleep(20);
                 this.inProcSessionCache.Get(extraSession1.Id);
@@ -153,8 +165,7 @@
             });
 
             var threads = new List<Thread>();
-            for (var i = 0; i < numberOfThreads; i++)
-            {
+            for (var i = 0; i < numberOfThreads; i++) {
                 var newThread = new Thread(threadAction);
                 newThread.Start();
                 threads.Add(newThread);

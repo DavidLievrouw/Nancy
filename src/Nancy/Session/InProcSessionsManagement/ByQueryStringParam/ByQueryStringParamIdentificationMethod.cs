@@ -57,7 +57,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         /// </summary>
         /// <param name="context">The current context.</param>
         /// <returns>The identifier of the session for the current request.</returns>
-        public Guid GetCurrentSessionId(NancyContext context)
+        public SessionId GetCurrentSessionId(NancyContext context)
         {
             if (context == null) throw new ArgumentNullException("context");
 
@@ -78,11 +78,12 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         /// <param name="sessionId">The identifier of the session.</param>
         /// <param name="context">The current context.</param>
         /// <returns>The early exit response, or null, if everything is OK.</returns>
-        public Response SaveSessionId(Guid sessionId, NancyContext context)
+        public Response SaveSessionId(SessionId sessionId, NancyContext context)
         {
+            if (sessionId == null) throw new ArgumentNullException("sessionId");
             if (context == null) throw new ArgumentNullException("context");
             if (context.Request == null) throw new ArgumentException("The specified context does not contain a request", "context");
-            if (sessionId == Guid.Empty) throw new ArgumentException("The specified session id cannot be empty", "sessionId");
+            if (sessionId.IsEmpty) throw new ArgumentException("The specified session id cannot be empty", "sessionId");
 
             // If it doesn't contain a session id, then replace the response with 302 and add location header
             // Otherwise, do nothing

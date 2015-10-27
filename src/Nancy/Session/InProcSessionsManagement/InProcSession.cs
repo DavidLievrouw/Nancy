@@ -16,10 +16,11 @@
         /// <param name="wrappedSession">The real Nancy session to wrap.</param>
         /// <param name="lastSave">The UTC time when the session was created.</param>
         /// <param name="timeout">The time after which the session should expire.</param>
-        public InProcSession(Guid id, ISession wrappedSession, DateTime lastSave, TimeSpan timeout)
+        public InProcSession(SessionId id, ISession wrappedSession, DateTime lastSave, TimeSpan timeout)
         {
+            if (id == null) throw new ArgumentNullException("id");
             if (wrappedSession == null) throw new ArgumentNullException("wrappedSession");
-            if (id == Guid.Empty) throw new ArgumentException("The session Id cannot be empty.", "id");
+            if (id.IsEmpty) throw new ArgumentException("The specified session id cannot be empty", "id");
             this.WrappedSession = wrappedSession;
             this.Id = id;
             this.LastSave = lastSave;
@@ -29,7 +30,7 @@
         /// <summary>
         /// Gets the unique identifier of the session.
         /// </summary>
-        public Guid Id {
+        public SessionId Id {
             get;
             private set;
         }
