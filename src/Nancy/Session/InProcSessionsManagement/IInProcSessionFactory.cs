@@ -13,6 +13,6 @@ namespace Nancy.Session.InProcSessionsManagement
         /// <param name="sessionId">The unique identifier of the session.</param>
         /// <param name="wrappedSession">The inner session that is wrapped by the <see cref="InProcSession"/> instance.</param>
         /// <returns>The newly created instance.</returns>
-        InProcSession Create(Guid sessionId, ISession wrappedSession);
+        InProcSession Create(SessionId sessionId, ISession wrappedSession);
     }
 }

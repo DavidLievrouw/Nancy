@@ -95,7 +95,7 @@
             [Fact]
             public void Loads_session_with_id_from_identification_method()
             {
-                var sessionId = Guid.NewGuid();
+                var sessionId = new SessionId(Guid.NewGuid(), false);
                 var expectedSession = new InProcSession(sessionId, A.Fake<ISession>(), DateTime.Now,
                     TimeSpan.FromMinutes(10));
 
@@ -116,7 +116,7 @@
             [Fact]
             public void When_session_is_not_found_then_returns_new_empty_session()
             {
-                var sessionId = Guid.NewGuid();
+                var sessionId = new SessionId(Guid.NewGuid(), false);
 
                 A.CallTo(() => this.fakeSessionIdentificationMethod.GetCurrentSessionId(this.nancyContext))
                     .Returns(sessionId);
@@ -157,7 +157,7 @@
 
                 A.CallTo(() => this.fakeSessionCache.Set(A<InProcSession>._))
                     .MustNotHaveHappened();
-                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<Guid>._, A<NancyContext>._))
+                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<SessionId>._, A<NancyContext>._))
                     .MustNotHaveHappened();
             }
 
@@ -171,7 +171,7 @@
 
                 A.CallTo(() => this.fakeSessionCache.Set(A<InProcSession>._))
                     .MustNotHaveHappened();
-                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<Guid>._, A<NancyContext>._))
+                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<SessionId>._, A<NancyContext>._))
                     .MustNotHaveHappened();
             }
 
@@ -182,7 +182,7 @@
 
                 A.CallTo(() => this.fakeSessionCache.Set(A<InProcSession>._))
                     .MustNotHaveHappened();
-                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<Guid>._, A<NancyContext>._))
+                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<SessionId>._, A<NancyContext>._))
                     .MustNotHaveHappened();
             }
 
@@ -196,14 +196,14 @@
 
                 A.CallTo(() => this.fakeSessionCache.Set(A<InProcSession>._))
                     .MustNotHaveHappened();
-                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<Guid>._, A<NancyContext>._))
+                A.CallTo(() => this.fakeSessionIdentificationMethod.SaveSessionId(A<SessionId>._, A<NancyContext>._))
                     .MustNotHaveHappened();
             }
 
             [Fact]
             public void Given_valid_session_then_caches_that_session()
             {
-                var sessionId = Guid.NewGuid();
+                var sessionId = new SessionId(Guid.NewGuid(), true);
                 var sessionToSave = new InProcSession(sessionId, this.fakeSession, DateTime.Now,
                     TimeSpan.FromMinutes(10));
                 A.CallTo(() => this.fakeSessionIdentificationMethod.GetCurrentSessionId(this.nancyContext))
@@ -219,7 +219,7 @@
             [Fact]
             public void Given_valid_session_then_saves_that_session_using_method_from_configuration()
             {
-                var sessionId = Guid.NewGuid();
+                var sessionId = new SessionId(Guid.NewGuid(), true);
                 A.CallTo(() => this.fakeSessionIdentificationMethod.GetCurrentSessionId(this.nancyContext))
                     .Returns(sessionId);
 
@@ -231,7 +231,7 @@
             [Fact]
             public void Returns_result_from_identification_method()
             {
-                var sessionId = Guid.NewGuid();
+                var sessionId = new SessionId(Guid.NewGuid(), true);
                 var expectedResponse = new Response().WithStatusCode(HttpStatusCode.Found);
                 A.CallTo(() => this.fakeSessionIdentificationMethod.GetCurrentSessionId(this.nancyContext))
                     .Returns(sessionId);

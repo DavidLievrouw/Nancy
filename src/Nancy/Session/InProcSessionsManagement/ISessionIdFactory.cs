@@ -4,8 +4,8 @@
 
     internal interface ISessionIdFactory
     {
-        Guid CreateNew();
+        SessionId CreateNew();
 
-        Guid? CreateFrom(string sessionIdString);
+        SessionId CreateFrom(string sessionIdString);
     }
 }

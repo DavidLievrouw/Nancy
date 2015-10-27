@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="id">The identifier of the session.</param>
         /// <returns>The session with the specified identifier, or null, if none was not found.</returns>
-        InProcSession Get(Guid id);
+        InProcSession Get(SessionId id);
 
         /// <summary>
         /// Add a new item to the cache.

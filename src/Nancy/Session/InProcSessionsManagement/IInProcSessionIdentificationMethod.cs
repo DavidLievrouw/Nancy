@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="context">The current context.</param>
         /// <returns>The identifier of the session for the current request.</returns>
-        Guid GetCurrentSessionId(NancyContext context);
+        SessionId GetCurrentSessionId(NancyContext context);
 
         /// <summary>
         /// Save the session in the specified context.
@@ -20,6 +20,6 @@
         /// <param name="sessionId">The identifier of the session.</param>
         /// <param name="context">The current context.</param>
         /// <returns>The early exit response, or null, if everything is OK.</returns>
-        Response SaveSessionId(Guid sessionId, NancyContext context);
+        Response SaveSessionId(SessionId sessionId, NancyContext context);
     }
 }

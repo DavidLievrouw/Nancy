@@ -279,6 +279,7 @@
     <Compile Include="Unit\Sessions\InProcSessionsManagement\PeriodicTasks\PeriodicTaskFactoryFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\PeriodicTasks\PeriodicTaskFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\SessionIdFactoryFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\SessionIdFixture.cs" />
     <Compile Include="Unit\Sessions\NullSessionProviderFixture.cs" />
     <Compile Include="Unit\Sessions\SessionFixture.cs" />
     <Compile Include="Unit\TextFormatterFixture.cs" />

@@ -16,12 +16,16 @@
             this.systemClock = systemClock;
         }
 
-        public InProcSession Create(Guid sessionId, ISession wrappedSession)
+        public InProcSession Create(SessionId sessionId, ISession wrappedSession)
         {
-            if (sessionId == Guid.Empty) throw new ArgumentException("The session id cannot be empty", "sessionId");
+            if (sessionId == null) throw new ArgumentNullException("sessionId");
+            if (sessionId.IsEmpty) throw new ArgumentException("The session id cannot be empty", "sessionId");
             if (wrappedSession == null) throw new ArgumentNullException("wrappedSession");
 
-            return new InProcSession(sessionId, wrappedSession, this.systemClock.NowUtc,
+            return new InProcSession(
+                sessionId,
+                wrappedSession,
+                this.systemClock.NowUtc,
                 this.configuration.SessionTimeout);
         }
     }

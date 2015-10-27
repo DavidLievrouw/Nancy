@@ -11,7 +11,6 @@
         public SessionIdFactoryFixture()
         {
             this.sessionIdFactory = new SessionIdFactory();
-            ;
         }
 
         public class CreateNew : SessionIdFactoryFixture
@@ -20,7 +19,7 @@
             public void Creates_non_empty_session_id()
             {
                 var actual = this.sessionIdFactory.CreateNew();
-                Assert.NotEqual(Guid.Empty, actual);
+                Assert.NotEqual(Guid.Empty, actual.Value);
             }
 
             [Fact]
@@ -29,8 +28,8 @@
                 var newId1 = this.sessionIdFactory.CreateNew();
                 var newId2 = this.sessionIdFactory.CreateNew();
 
-                Assert.NotEqual(Guid.Empty, newId1);
-                Assert.NotEqual(Guid.Empty, newId2);
+                Assert.NotEqual(Guid.Empty, newId1.Value);
+                Assert.NotEqual(Guid.Empty, newId2.Value);
                 Assert.NotEqual(newId1, newId2);
             }
         }
@@ -40,21 +39,21 @@
             public void Given_null_session_id_string_then_returns_null()
             {
                 var actual = this.sessionIdFactory.CreateFrom(null);
-                Assert.False(actual.HasValue);
+                Assert.Null(actual);
             }
 
             public void Given_empty_session_id_string_then_returns_null()
             {
                 var emptySessionIdString = string.Empty;
                 var actual = this.sessionIdFactory.CreateFrom(emptySessionIdString);
-                Assert.False(actual.HasValue);
+                Assert.Null(actual);
             }
 
             public void Given_invalid_session_id_string_then_returns_null()
             {
                 const string invalidSessionIdString = "[ThisIsNotAGuid]";
                 var actual = this.sessionIdFactory.CreateFrom(invalidSessionIdString);
-                Assert.False(actual.HasValue);
+                Assert.Null(actual);
             }
 
             public void Given_valid_session_id_string_then_returns_session_id()
@@ -64,7 +63,7 @@
 
                 var actual = this.sessionIdFactory.CreateFrom(sessionIdString);
 
-                Assert.True(actual.HasValue);
+                Assert.NotNull(actual);
                 Assert.Equal(expectedSessionId, actual.Value);
             }
         }

@@ -127,7 +127,7 @@
         public class Load : BySessionIdCookieIdentificationMethodFixture
         {
             private readonly NancyContext context;
-            private readonly Guid newSessionId;
+            private readonly SessionId newSessionId;
 
             public Load()
             {
@@ -136,7 +136,7 @@
                     Request = new Request("GET", "http://www.google.be")
                 };
 
-                this.newSessionId = Guid.NewGuid();
+                this.newSessionId = new SessionId(Guid.NewGuid(), true);
                 A.CallTo(() => this.fakeSessionIdFactory.CreateNew())
                     .Returns(this.newSessionId);
             }
@@ -242,7 +242,7 @@
             [Fact]
             public void When_decrypted_session_id_is_valid_then_returns_session_id_from_cookie()
             {
-                var expectedSessionId = Guid.NewGuid();
+                var expectedSessionId = new SessionId(Guid.NewGuid(), false);
                 var decryptedSessionId = expectedSessionId.ToString();
                 var cookieData = new SessionIdentificationData
                 {
@@ -272,11 +272,11 @@
         public class Save : BySessionIdCookieIdentificationMethodFixture
         {
             private readonly NancyContext context;
-            private readonly Guid validSessionId;
+            private readonly SessionId validSessionId;
 
             public Save()
             {
-                this.validSessionId = Guid.NewGuid();
+                this.validSessionId = new SessionId(Guid.NewGuid(), false);
                 this.context = new NancyContext()
                 {
                     Response = new Response()
@@ -287,7 +287,14 @@
             public void Given_null_context_then_throws()
             {
                 Assert.Throws<ArgumentNullException>(
-                    () => this.bySessionIdCookieIdentificationMethod.SaveSessionId(this.validSessionId, null));
+                    () => this.bySessionIdCookieIdentificationMethod.SaveSessionId(null, null));
+            }
+
+            [Fact]
+            public void Given_null_session_id_then_throws()
+            {
+                Assert.Throws<ArgumentNullException>(
+                    () => this.bySessionIdCookieIdentificationMethod.SaveSessionId(null, this.context));
             }
 
             [Fact]
@@ -301,8 +308,9 @@
             [Fact]
             public void Given_empty_session_id_then_throws()
             {
+                var emptySessionId = new SessionId(Guid.Empty, false);
                 Assert.Throws<ArgumentException>(
-                    () => this.bySessionIdCookieIdentificationMethod.SaveSessionId(Guid.Empty, this.context));
+                    () => this.bySessionIdCookieIdentificationMethod.SaveSessionId(emptySessionId, this.context));
             }
 
             [Fact]
