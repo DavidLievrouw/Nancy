@@ -114,7 +114,7 @@
             if (context.Response == null) throw new ArgumentException("The specified context does not contain a response to modify", "context");
             if (sessionId.IsEmpty) throw new ArgumentException("The specified session id cannot be empty", "sessionId");
             
-            var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.ToString());
+            var encryptedSessionId = this.encryptionProvider.Encrypt(sessionId.Value.ToString());
             var hmacBytes = this.hmacProvider.GenerateHmac(encryptedSessionId);
 
             var cookieData = new SessionIdentificationData

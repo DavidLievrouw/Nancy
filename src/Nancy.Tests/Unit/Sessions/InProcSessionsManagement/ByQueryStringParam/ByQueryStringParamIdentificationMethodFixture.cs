@@ -221,7 +221,7 @@
             public void When_decrypted_session_id_is_valid_then_returns_session_id_from_querystring()
             {
                 var expectedSessionId = new SessionId(Guid.NewGuid(), false);
-                var decryptedSessionId = expectedSessionId.ToString();
+                var decryptedSessionId = expectedSessionId.Value.ToString();
                 var sessionIdentificationData = new SessionIdentificationData
                 {
                     SessionId = "ABCSomeEncryptedSessionIdXYZ",
