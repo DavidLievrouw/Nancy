@@ -243,7 +243,7 @@
             public void When_decrypted_session_id_is_valid_then_returns_session_id_from_cookie()
             {
                 var expectedSessionId = new SessionId(Guid.NewGuid(), false);
-                var decryptedSessionId = expectedSessionId.ToString();
+                var decryptedSessionId = expectedSessionId.Value.ToString();
                 var cookieData = new SessionIdentificationData
                 {
                     SessionId = "ABCSomeEncryptedSessionIdXYZ",
@@ -321,7 +321,7 @@
                 var hmacString = Convert.ToBase64String(hmacBytes);
                 var expectedCookieData = string.Format("{0}{1}", encryptedSessionId, hmacString);
 
-                A.CallTo(() => this.fakeEncryptionProvider.Encrypt(this.validSessionId.ToString()))
+                A.CallTo(() => this.fakeEncryptionProvider.Encrypt(this.validSessionId.Value.ToString()))
                     .Returns(encryptedSessionId);
                 A.CallTo(() => this.fakeHmacProvider.GenerateHmac(encryptedSessionId))
                     .Returns(hmacBytes);
