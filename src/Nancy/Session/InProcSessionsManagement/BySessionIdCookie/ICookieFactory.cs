@@ -4,6 +4,6 @@
 
     internal interface ICookieFactory
     {
-        INancyCookie CreateCookie(SessionIdentificationData sessionIdentificationData);
+        INancyCookie CreateCookie(string cookieName, string cookieDomain, string cookiePath, SessionIdentificationData sessionIdentificationData);
     }
 }

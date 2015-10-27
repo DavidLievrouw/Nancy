@@ -24,10 +24,10 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             if (cryptoConfig == null) throw new ArgumentNullException("cryptoConfig");
             this.encryptionProvider = cryptoConfig.EncryptionProvider;
             this.hmacProvider = cryptoConfig.HmacProvider;
-            this.sessionIdentificationDataProvider = new SessionIdentificationDataProvider(this.hmacProvider, this);
-            this.hmacValidator = new HmacValidator(this.hmacProvider);
+            this.sessionIdentificationDataProvider = new SessionIdentificationDataProvider(cryptoConfig.HmacProvider);
+            this.hmacValidator = new HmacValidator(cryptoConfig.HmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
-            this.responseManipulatorForSession = new ResponseManipulatorForSession(this);
+            this.responseManipulatorForSession = new ResponseManipulatorForSession();
             this.ParameterName = DefaultParameterName;
         }
 
@@ -66,7 +66,7 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            var queryStringData = this.sessionIdentificationDataProvider.ProvideDataFromQuery(context.Request);
+            var queryStringData = this.sessionIdentificationDataProvider.ProvideDataFromQuery(context.Request, this.ParameterName);
             if (queryStringData == null) return this.sessionIdFactory.CreateNew();
             var isHmacValid = this.hmacValidator.IsValidHmac(queryStringData);
             if (!isHmacValid) return this.sessionIdFactory.CreateNew();
@@ -104,7 +104,8 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
 
                 this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(
                     context,
-                    sessionIdentificationData);
+                    sessionIdentificationData,
+                    this.ParameterName);
             }
         }
 

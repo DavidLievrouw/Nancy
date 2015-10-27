@@ -18,6 +18,7 @@
         private readonly ISessionIdFactory fakeSessionIdFactory;
         private readonly IResponseManipulatorForSession fakeResponseManipulatorForSession;
         private readonly InProcSessionsConfiguration validConfiguration;
+        private readonly string parameterName;
 
         public ByQueryStringParamIdentificationMethodFixture()
         {
@@ -35,6 +36,8 @@
                 this.fakeHmacValidator,
                 this.fakeSessionIdFactory,
                 this.fakeResponseManipulatorForSession);
+            this.parameterName = "TheNameOfTheParameter";
+            this.byQueryStringParamIdentificationMethod.ParameterName = this.parameterName;
         }
 
         [Fact]
@@ -118,8 +121,14 @@
         [Fact]
         public void On_creation_sets_default_parameter_name()
         {
-            var actual = this.byQueryStringParamIdentificationMethod.ParameterName;
-            Assert.Equal("_nsid", actual);
+            var newInstance = new ByQueryStringParamIdentificationMethod(
+                this.fakeEncryptionProvider,
+                this.fakeHmacProvider,
+                this.fakeSessionIdentificationDataProvider,
+                this.fakeHmacValidator,
+                this.fakeSessionIdFactory,
+                this.fakeResponseManipulatorForSession);
+            Assert.Equal("_nsid", newInstance.ParameterName);
         }
 
         public class Load : ByQueryStringParamIdentificationMethodFixture
@@ -149,7 +158,7 @@
             [Fact]
             public void When_context_contains_no_session_identification_data_then_returns_new_session_id()
             {
-                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request, this.parameterName))
                     .Returns(null);
 
                 var actual = this.byQueryStringParamIdentificationMethod.GetCurrentSessionId(this.context);
@@ -170,7 +179,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request, this.parameterName))
                     .Returns(sessionIdentificationData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(sessionIdentificationData))
                     .Returns(false);
@@ -193,7 +202,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request, this.parameterName))
                     .Returns(sessionIdentificationData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(sessionIdentificationData))
                     .Returns(true);
@@ -219,7 +228,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request, this.parameterName))
                     .Returns(sessionIdentificationData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(sessionIdentificationData))
                     .Returns(true);
@@ -248,7 +257,7 @@
                     Hmac = new byte[] {1, 2, 3}
                 };
 
-                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request))
+                A.CallTo(() => this.fakeSessionIdentificationDataProvider.ProvideDataFromQuery(this.context.Request, this.parameterName))
                     .Returns(sessionIdentificationData);
                 A.CallTo(() => this.fakeHmacValidator.IsValidHmac(sessionIdentificationData))
                     .Returns(true);
@@ -320,8 +329,10 @@
                 this.byQueryStringParamIdentificationMethod.SaveSessionId(existingSessionId, this.context);
                 A.CallTo(
                     () =>
-                        this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(A<NancyContext>._,
-                            A<SessionIdentificationData>._))
+                        this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(
+                            A<NancyContext>._,
+                            A<SessionIdentificationData>._,
+                            A<string>._))
                     .MustNotHaveHappened();
             }
 
@@ -344,7 +355,8 @@
                     this.context,
                     A<SessionIdentificationData>.That.Matches(sid => sid.SessionId == encryptedSessionId &&
                                                                      HmacComparer.Compare(sid.Hmac, hmacBytes,
-                                                                         this.fakeHmacProvider.HmacLength))))
+                                                                         this.fakeHmacProvider.HmacLength)),
+                    this.parameterName))
                     .MustHaveHappened();
             }
         }

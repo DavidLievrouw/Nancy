@@ -24,10 +24,10 @@
             if (cryptoConfig == null) throw new ArgumentNullException("cryptoConfig");
             this.encryptionProvider = cryptoConfig.EncryptionProvider;
             this.hmacProvider = cryptoConfig.HmacProvider;
-            this.sessionIdentificationDataProvider = new SessionIdentificationDataProvider(this.hmacProvider, this);
-            this.hmacValidator = new HmacValidator(this.hmacProvider);
+            this.sessionIdentificationDataProvider = new SessionIdentificationDataProvider(cryptoConfig.HmacProvider);
+            this.hmacValidator = new HmacValidator(cryptoConfig.HmacProvider);
             this.sessionIdFactory = new SessionIdFactory();
-            this.cookieFactory = new CookieFactory(this);
+            this.cookieFactory = new CookieFactory();
             this.CookieName = DefaultCookieName;
         }
 
@@ -90,7 +90,7 @@
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            var cookieData = this.sessionIdentificationDataProvider.ProvideDataFromCookie(context.Request);
+            var cookieData = this.sessionIdentificationDataProvider.ProvideDataFromCookie(context.Request, this.CookieName);
             if (cookieData == null) return this.sessionIdFactory.CreateNew();
             var isHmacValid = this.hmacValidator.IsValidHmac(cookieData);
             if (!isHmacValid) return this.sessionIdFactory.CreateNew();
@@ -122,7 +122,11 @@
                 Hmac = hmacBytes
             };
 
-            var cookie = this.cookieFactory.CreateCookie(sessionIdentificationData);
+            var cookie = this.cookieFactory.CreateCookie(
+                this.CookieName,
+                this.Domain,
+                this.Path,
+                sessionIdentificationData);
             context.Response.WithCookie(cookie);
         }
     }

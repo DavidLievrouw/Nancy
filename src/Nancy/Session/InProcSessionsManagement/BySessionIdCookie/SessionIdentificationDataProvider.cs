@@ -6,26 +6,21 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
 
     internal class SessionIdentificationDataProvider : ISessionIdentificationDataProvider
     {
-        private readonly IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
         private readonly IHmacProvider hmacProvider;
 
-        public SessionIdentificationDataProvider(IHmacProvider hmacProvider,
-            IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod)
+        public SessionIdentificationDataProvider(IHmacProvider hmacProvider)
         {
             if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
-            if (bySessionIdCookieIdentificationMethod == null)
-                throw new ArgumentNullException("bySessionIdCookieIdentificationMethod");
             this.hmacProvider = hmacProvider;
-            this.bySessionIdCookieIdentificationMethod = bySessionIdCookieIdentificationMethod;
         }
 
-        public SessionIdentificationData ProvideDataFromCookie(Request request)
+        public SessionIdentificationData ProvideDataFromCookie(Request request, string cookieName)
         {
             if (request == null) throw new ArgumentNullException("request");
+            if (string.IsNullOrWhiteSpace(cookieName)) throw new ArgumentNullException("cookieName");
 
             string cookieValue = null;
-            if (!request.Cookies.TryGetValue(this.bySessionIdCookieIdentificationMethod.CookieName, out cookieValue))
-                return null;
+            if (!request.Cookies.TryGetValue(cookieName, out cookieValue)) return null;
 
             var decodedCookieValue = HttpUtility.UrlDecode(cookieValue);
             var hmacLength = Base64Helpers.GetBase64Length(this.hmacProvider.HmacLength);
