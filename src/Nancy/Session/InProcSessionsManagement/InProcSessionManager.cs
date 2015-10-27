@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Nancy.Session.InProcSessionsManagement
+﻿namespace Nancy.Session.InProcSessionsManagement
 {
+    using System;
     using Nancy.Session.InProcSessionsManagement.Cache;
 
     internal class InProcSessionManager : IInProcSessionManager
@@ -17,10 +16,18 @@ namespace Nancy.Session.InProcSessionsManagement
             IInProcSessionFactory sessionFactory,
             IPeriodicCacheCleaner periodicCacheCleaner)
         {
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            if (sessionCache == null) throw new ArgumentNullException("sessionCache");
-            if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
-            if (periodicCacheCleaner == null) throw new ArgumentNullException("periodicCacheCleaner");
+            if (configuration == null) {
+                throw new ArgumentNullException("configuration");
+            }
+            if (sessionCache == null) {
+                throw new ArgumentNullException("sessionCache");
+            }
+            if (sessionFactory == null) {
+                throw new ArgumentNullException("sessionFactory");
+            }
+            if (periodicCacheCleaner == null) {
+                throw new ArgumentNullException("periodicCacheCleaner");
+            }
             this.configuration = configuration;
             this.sessionCache = sessionCache;
             this.sessionFactory = sessionFactory;
@@ -37,10 +44,16 @@ namespace Nancy.Session.InProcSessionsManagement
         /// <param name="context">The current context.</param>
         public void Save(ISession session, NancyContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) {
+                throw new ArgumentNullException("context");
+            }
 
-            if (session == null || !session.HasChanged) return;
-            if (session is NullSessionProvider || session.Count <= 0) return;
+            if (session == null || !session.HasChanged) {
+                return;
+            }
+            if (session is NullSessionProvider || session.Count <= 0) {
+                return;
+            }
 
             var identificationMethod = this.configuration.SessionIdentificationMethod;
 
@@ -58,7 +71,9 @@ namespace Nancy.Session.InProcSessionsManagement
         /// <returns>The session that is owned by the specified context, or a new empty session, if none exists.</returns>
         public ISession Load(NancyContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) {
+                throw new ArgumentNullException("context");
+            }
 
             var identificationMethod = this.configuration.SessionIdentificationMethod;
 

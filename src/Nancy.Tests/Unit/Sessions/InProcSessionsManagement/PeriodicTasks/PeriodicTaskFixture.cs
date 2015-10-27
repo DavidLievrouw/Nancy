@@ -8,7 +8,7 @@
     public class PeriodicTaskFixture
     {
         private int numberOfExecutions;
-        private PeriodicTask periodicTask;
+        private readonly PeriodicTask periodicTask;
 
         public PeriodicTaskFixture()
         {
@@ -38,8 +38,7 @@
         [Fact]
         public void Adheres_initial_delay_and_interval()
         {
-            using (var tokenSource = new CancellationTokenSource())
-            {
+            using (var tokenSource = new CancellationTokenSource()) {
                 this.periodicTask.Start(
                     TimeSpan.FromMilliseconds(200),
                     TimeSpan.FromMilliseconds(100),
@@ -53,8 +52,7 @@
         [Fact]
         public void When_disposed_then_stops()
         {
-            using (var tokenSource = new CancellationTokenSource())
-            {
+            using (var tokenSource = new CancellationTokenSource()) {
                 this.periodicTask.Start(
                     TimeSpan.FromMilliseconds(200),
                     TimeSpan.FromMilliseconds(100),
@@ -68,8 +66,7 @@
         [Fact]
         public void When_zero_interval_is_given_then_does_work_only_once()
         {
-            using (var tokenSource = new CancellationTokenSource())
-            {
+            using (var tokenSource = new CancellationTokenSource()) {
                 this.periodicTask.Start(
                     TimeSpan.FromMilliseconds(50),
                     TimeSpan.Zero,

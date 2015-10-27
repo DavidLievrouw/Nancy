@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Nancy.Session.InProcSessionsManagement
+﻿namespace Nancy.Session.InProcSessionsManagement
 {
+    using System;
+
     /// <summary>
     ///  Represents a unique identifier for an in-proc session.
     /// </summary>
@@ -47,10 +47,15 @@ namespace Nancy.Session.InProcSessionsManagement
 
         public static bool operator ==(SessionId x, SessionId y)
         {
-            if (ReferenceEquals(x, y)) return true;
-            if ((object)x == null || (object)y == null) return false;
+            if (ReferenceEquals(x, y)) {
+                return true;
+            }
+            if ((object)x == null || (object)y == null) {
+                return false;
+            }
             return (x.value == y.value);
         }
+
         public static bool operator !=(SessionId x, SessionId y)
         {
             return !(x == y);
@@ -64,7 +69,9 @@ namespace Nancy.Session.InProcSessionsManagement
         public override bool Equals(object obj)
         {
             var otherSessionId = obj as SessionId;
-            if (otherSessionId == null) return false;
+            if (otherSessionId == null) {
+                return false;
+            }
 
             return this.value == otherSessionId.value;
         }

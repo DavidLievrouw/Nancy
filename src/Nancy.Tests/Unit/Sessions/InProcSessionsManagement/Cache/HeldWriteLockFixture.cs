@@ -28,8 +28,7 @@
         [Fact]
         public void When_creating_then_acquires_lock()
         {
-            using (new HeldWriteLock(this.wrappedLock))
-            {
+            using (new HeldWriteLock(this.wrappedLock)) {
                 var actual = this.wrappedLock.IsWriteLockHeld;
                 Assert.True(actual);
             }
@@ -38,8 +37,7 @@
         [Fact]
         public void When_disposing_then_releases_lock()
         {
-            using (new HeldWriteLock(this.wrappedLock))
-            {
+            using (new HeldWriteLock(this.wrappedLock)) {
             }
 
             var actual = this.wrappedLock.IsWriteLockHeld;

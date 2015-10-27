@@ -11,7 +11,9 @@
 
         public SessionId CreateFrom(string sessionIdString)
         {
-            if (sessionIdString == null) return null;
+            if (sessionIdString == null) {
+                return null;
+            }
 
             Guid sessionId;
             return Guid.TryParse(sessionIdString, out sessionId) ? new SessionId(sessionId, false) : null;

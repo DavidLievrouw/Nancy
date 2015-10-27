@@ -15,7 +15,9 @@
 
         public override void Dispose()
         {
-            if (this.wrappedLock.IsUpgradeableReadLockHeld) this.wrappedLock.ExitUpgradeableReadLock();
+            if (this.wrappedLock.IsUpgradeableReadLockHeld) {
+                this.wrappedLock.ExitUpgradeableReadLock();
+            }
         }
     }
 }

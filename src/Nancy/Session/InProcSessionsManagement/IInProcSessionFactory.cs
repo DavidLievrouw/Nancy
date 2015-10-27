@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Nancy.Session.InProcSessionsManagement
+﻿namespace Nancy.Session.InProcSessionsManagement
 {
     /// <summary>
     /// Represents an object that can create in-process memory sessions.

@@ -9,14 +9,20 @@ namespace Nancy.Session.InProcSessionsManagement
 
         public HmacValidator(IHmacProvider hmacProvider)
         {
-            if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
+            if (hmacProvider == null) {
+                throw new ArgumentNullException("hmacProvider");
+            }
             this.hmacProvider = hmacProvider;
         }
 
         public bool IsValidHmac(SessionIdentificationData sessionIdentificationData)
         {
-            if (sessionIdentificationData == null) throw new ArgumentNullException("sessionIdentificationData");
-            if (sessionIdentificationData.Hmac == null) return false;
+            if (sessionIdentificationData == null) {
+                throw new ArgumentNullException("sessionIdentificationData");
+            }
+            if (sessionIdentificationData.Hmac == null) {
+                return false;
+            }
 
             var incomingBytes = sessionIdentificationData.Hmac;
             var expectedHmac = this.hmacProvider.GenerateHmac(sessionIdentificationData.SessionId);

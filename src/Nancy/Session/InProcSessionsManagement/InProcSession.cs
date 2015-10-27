@@ -18,9 +18,15 @@
         /// <param name="timeout">The time after which the session should expire.</param>
         public InProcSession(SessionId id, ISession wrappedSession, DateTime lastSave, TimeSpan timeout)
         {
-            if (id == null) throw new ArgumentNullException("id");
-            if (wrappedSession == null) throw new ArgumentNullException("wrappedSession");
-            if (id.IsEmpty) throw new ArgumentException("The specified session id cannot be empty", "id");
+            if (id == null) {
+                throw new ArgumentNullException("id");
+            }
+            if (wrappedSession == null) {
+                throw new ArgumentNullException("wrappedSession");
+            }
+            if (id.IsEmpty) {
+                throw new ArgumentException("The specified session id cannot be empty", "id");
+            }
             this.WrappedSession = wrappedSession;
             this.Id = id;
             this.LastSave = lastSave;
@@ -79,7 +85,9 @@
         public override bool Equals(object obj)
         {
             var otherSession = obj as InProcSession;
-            if (otherSession == null) return false;
+            if (otherSession == null) {
+                return false;
+            }
 
             return this.Id == otherSession.Id;
         }

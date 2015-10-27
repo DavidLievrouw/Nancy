@@ -131,7 +131,7 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
         public void Given_request_without_query_then_creates_query_for_location_header()
         {
             var expectedLocationHeaderValue = this.context.Request.Url +
-                                              "?" + this.parameterName + 
+                                              "?" + this.parameterName +
                                               "=" + this.sessionIdentificationData;
 
             this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(
@@ -167,7 +167,8 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
         [Fact]
         public void Given_request_already_has_a_session_id_then_replaces_that_session_id()
         {
-            this.context.Request = new Request("GET", "http://www.google.be:624?value=test&process=3&" + this.parameterName + "=ABC123&page=14");
+            this.context.Request = new Request("GET",
+                "http://www.google.be:624?value=test&process=3&" + this.parameterName + "=ABC123&page=14");
             var expectedLocationHeaderValue = "http://www.google.be:624?value=test&process=3" +
                                               "&" + this.parameterName +
                                               "=" + this.sessionIdentificationData +
@@ -184,11 +185,11 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
             Assert.True(new Uri(expectedLocationHeaderValue).Equals(new Uri(locationHeader.Value)));
         }
 
-
         [Fact]
         public void Given_request_already_has_a_session_id_with_encoded_characters_then_replaces_that_session_id()
         {
-            this.context.Request = new Request("GET", "http://www.google.be:624?value=test&process=3&" + this.parameterName + "=ABC%C2%2F23&page=14");
+            this.context.Request = new Request("GET",
+                "http://www.google.be:624?value=test&process=3&" + this.parameterName + "=ABC%C2%2F23&page=14");
             var expectedLocationHeaderValue = "http://www.google.be:624?value=test&process=3" +
                                               "&" + this.parameterName +
                                               "=" + this.sessionIdentificationData +
@@ -211,7 +212,7 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
             this.sessionIdentificationData.SessionId = "/bOu§¨";
             const string encodedSessionId = "%2fbOu%c2%a7%c2%a8";
             const string expectedParameterValue = "01HMAC98" + encodedSessionId;
-            var expectedLocationHeaderValue = this.context.Request.Url + "/" + 
+            var expectedLocationHeaderValue = this.context.Request.Url + "/" +
                                               "?" + this.parameterName +
                                               "=" + expectedParameterValue;
 
@@ -230,7 +231,7 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
         public void Given_response_already_has_a_location_header_then_replaces_header_value()
         {
             var headers = new Dictionary<string, IEnumerable<string>>();
-            headers.Add("location", new [] { "http://www.github.com/nancyfx" });
+            headers.Add("location", new[] {"http://www.github.com/nancyfx"});
             this.context.Request = new Request(this.context.Request.Method, this.context.Request.Url, null, headers);
 
             var expectedLocationHeaderValue = this.context.Request.Url +

@@ -11,7 +11,9 @@
 
         public PeriodicTask(Action action)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) {
+                throw new ArgumentNullException("action");
+            }
             this.action = action;
             this.isDisposed = false;
         }
@@ -24,18 +26,28 @@
             {
                 const TaskCreationOptions attachedToParent = TaskCreationOptions.AttachedToParent;
 
-                if (this.IsStopRequested(cancellationToken)) return;
+                if (this.IsStopRequested(cancellationToken)) {
+                    return;
+                }
 
-                if (initialDelay > TimeSpan.Zero) Thread.Sleep(initialDelay);
+                if (initialDelay > TimeSpan.Zero) {
+                    Thread.Sleep(initialDelay);
+                }
 
                 while (true) {
-                    if (this.IsStopRequested(cancellationToken)) break;
+                    if (this.IsStopRequested(cancellationToken)) {
+                        break;
+                    }
                     Task.Factory.StartNew(() =>
                     {
-                        if (this.IsStopRequested(cancellationToken)) return;
+                        if (this.IsStopRequested(cancellationToken)) {
+                            return;
+                        }
                         this.action();
                     }, cancellationToken, attachedToParent, TaskScheduler.Current);
-                    if (this.IsStopRequested(cancellationToken) || interval <= TimeSpan.Zero) break;
+                    if (this.IsStopRequested(cancellationToken) || interval <= TimeSpan.Zero) {
+                        break;
+                    }
                     Thread.Sleep(interval);
                 }
             };
@@ -50,7 +62,9 @@
 
         private void CheckDisposed()
         {
-            if (this.isDisposed) throw new ObjectDisposedException(this.GetType().Name);
+            if (this.isDisposed) {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
         }
 
         private bool IsStopRequested(CancellationToken cancellationToken)

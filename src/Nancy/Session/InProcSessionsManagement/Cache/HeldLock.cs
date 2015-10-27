@@ -9,7 +9,9 @@
 
         protected HeldLock(ReaderWriterLockSlim wrappedLock)
         {
-            if (wrappedLock == null) throw new ArgumentNullException("wrappedLock");
+            if (wrappedLock == null) {
+                throw new ArgumentNullException("wrappedLock");
+            }
             this.wrappedLock = wrappedLock;
             this.Acquire();
         }

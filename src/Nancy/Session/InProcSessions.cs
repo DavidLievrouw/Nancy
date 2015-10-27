@@ -27,8 +27,12 @@
         /// <param name="configuration">In-process memory based sessions configuration.</param>
         public static void Enable(this IPipelines pipelines, InProcSessionsConfiguration configuration)
         {
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            if (!configuration.IsValid) throw new ArgumentException("Configuration is invalid", "configuration");
+            if (configuration == null) {
+                throw new ArgumentNullException("configuration");
+            }
+            if (!configuration.IsValid) {
+                throw new ArgumentException("Configuration is invalid", "configuration");
+            }
 
             // Composition root for the memory based sessions feature
             var sessionCache = new InProcSessionCache(new RealSystemClock());
@@ -47,8 +51,12 @@
 
         internal static void Enable(this IPipelines pipelines, IInProcSessionManager sessionManager)
         {
-            if (pipelines == null) throw new ArgumentNullException("pipelines");
-            if (sessionManager == null) throw new ArgumentNullException("sessionManager");
+            if (pipelines == null) {
+                throw new ArgumentNullException("pipelines");
+            }
+            if (sessionManager == null) {
+                throw new ArgumentNullException("sessionManager");
+            }
 
             pipelines.BeforeRequest.AddItemToStartOfPipeline(ctx => LoadSession(ctx, sessionManager));
             pipelines.AfterRequest.AddItemToEndOfPipeline(ctx => SaveSession(ctx, sessionManager));

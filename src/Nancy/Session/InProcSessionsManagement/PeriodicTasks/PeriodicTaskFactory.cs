@@ -6,7 +6,9 @@ namespace Nancy.Session.InProcSessionsManagement.PeriodicTasks
     {
         public IPeriodicTask Create(Action action)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action == null) {
+                throw new ArgumentNullException("action");
+            }
             return new PeriodicTask(action);
         }
     }

@@ -21,7 +21,9 @@
         /// </summary>
         public InProcSessionCache(ISystemClock systemClock)
         {
-            if (systemClock == null) throw new ArgumentNullException("systemClock");
+            if (systemClock == null) {
+                throw new ArgumentNullException("systemClock");
+            }
             this.systemClock = systemClock;
             this.sessions = new List<InProcSession>();
             this.rwlock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
@@ -67,7 +69,9 @@
         /// <param name="session">The item to add.</param>
         public void Set(InProcSession session)
         {
-            if (session == null) throw new ArgumentNullException("session");
+            if (session == null) {
+                throw new ArgumentNullException("session");
+            }
             this.CheckDisposed();
 
             using (new HeldWriteLock(this.rwlock)) {
@@ -102,7 +106,9 @@
         public InProcSession Get(SessionId id)
         {
             this.CheckDisposed();
-            if (id == null) throw new ArgumentNullException("id");
+            if (id == null) {
+                throw new ArgumentNullException("id");
+            }
 
             using (new HeldUpgradeableReadLock(this.rwlock)) {
                 var foundSession = this.sessions.SingleOrDefault(session => session.Id == id);
@@ -121,7 +127,9 @@
 
         private void CheckDisposed()
         {
-            if (this.isDisposed) throw new ObjectDisposedException(this.GetType().Name);
+            if (this.isDisposed) {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
         }
     }
 }

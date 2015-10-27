@@ -18,11 +18,18 @@
             IPeriodicTaskFactory periodicTaskFactory,
             ICancellationTokenSourceFactory cancellationTokenSourceFactory)
         {
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            if (sessionCache == null) throw new ArgumentNullException("sessionCache");
-            if (periodicTaskFactory == null) throw new ArgumentNullException("periodicTaskFactory");
-            if (cancellationTokenSourceFactory == null)
+            if (configuration == null) {
+                throw new ArgumentNullException("configuration");
+            }
+            if (sessionCache == null) {
+                throw new ArgumentNullException("sessionCache");
+            }
+            if (periodicTaskFactory == null) {
+                throw new ArgumentNullException("periodicTaskFactory");
+            }
+            if (cancellationTokenSourceFactory == null) {
                 throw new ArgumentNullException("cancellationTokenSourceFactory");
+            }
             this.configuration = configuration;
             this.cancellationTokenSourceFactory = cancellationTokenSourceFactory;
             this.periodicTask = periodicTaskFactory.Create(sessionCache.Trim);
@@ -39,7 +46,9 @@
 
         public void Stop()
         {
-            if (this.cancellationTokenSource != null) this.cancellationTokenSource.Cancel();
+            if (this.cancellationTokenSource != null) {
+                this.cancellationTokenSource.Cancel();
+            }
         }
     }
 }

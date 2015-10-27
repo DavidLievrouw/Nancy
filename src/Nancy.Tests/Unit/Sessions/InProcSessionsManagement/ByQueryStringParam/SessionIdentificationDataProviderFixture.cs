@@ -118,12 +118,10 @@
 
         private void SetParameterValue(string newValue)
         {
-            if (newValue == null)
-            {
+            if (newValue == null) {
                 ((IDictionary<string, object>)this.validRequest.Query).Clear();
             }
-            else
-            {
+            else {
                 ((IDictionary<string, object>)this.validRequest.Query)[this.parameterName] = newValue;
             }
         }

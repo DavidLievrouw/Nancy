@@ -18,7 +18,8 @@
         /// </summary>
         public InProcSessionsConfiguration()
         {
-            this.SessionIdentificationMethod = new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default);
+            this.SessionIdentificationMethod =
+                new BySessionIdCookieIdentificationMethod(CryptographyConfiguration.Default);
             this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
             this.CacheTrimInterval = TimeSpan.FromMinutes(DefaultCacheTrimIntervalMinutes);
         }
@@ -27,7 +28,7 @@
         /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
         /// </summary>
         public InProcSessionsConfiguration(CryptographyConfiguration cryptographyConfiguration,
-             IInProcSessionIdentificationMethod sessionIdentificationMethod)
+            IInProcSessionIdentificationMethod sessionIdentificationMethod)
         {
             this.SessionIdentificationMethod = sessionIdentificationMethod;
             this.SessionTimeout = TimeSpan.FromMinutes(DefaultSessionTimeoutMinutes);
@@ -37,8 +38,7 @@
         /// <summary>
         /// Gets or sets the method that is used to identify the session from the context
         /// </summary>
-        public IInProcSessionIdentificationMethod SessionIdentificationMethod
-        {
+        public IInProcSessionIdentificationMethod SessionIdentificationMethod {
             get;
             set;
         }
@@ -54,8 +54,7 @@
         /// <summary>
         /// Gets or sets the time after which a the expired sessions are cleaned up.
         /// </summary>
-        public TimeSpan CacheTrimInterval
-        {
+        public TimeSpan CacheTrimInterval {
             get;
             set;
         }
@@ -73,8 +72,7 @@
                     return false;
                 }
 
-                if (this.CacheTrimInterval < TimeSpan.Zero)
-                {
+                if (this.CacheTrimInterval < TimeSpan.Zero) {
                     return false;
                 }
 

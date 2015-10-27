@@ -333,7 +333,9 @@
             }
 
             [Fact]
-            public void Adds_expected_cookie_to_response_containing_data_from_encryptionprovider_and_hmacprovider_and_returns_null()
+            public void
+                Adds_expected_cookie_to_response_containing_data_from_encryptionprovider_and_hmacprovider_and_returns_null
+                ()
             {
                 const string encryptedSessionId = "ABC_sessionid_xyz";
                 var hmacBytes = new byte[] {1, 2, 3};
@@ -351,12 +353,12 @@
                     null,
                     null,
                     A<SessionIdentificationData>.That.Matches(cookieData =>
-                    cookieData.SessionId == encryptedSessionId &&
-                    HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))
+                        cookieData.SessionId == encryptedSessionId &&
+                        HmacComparer.Compare(cookieData.Hmac, hmacBytes, this.fakeHmacProvider.HmacLength))))
                     .Returns(new NancyCookie("cookiefortest", expectedCookieData));
 
                 this.bySessionIdCookieIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
-                
+
                 var addedCookie =
                     this.context.Response.Cookies.FirstOrDefault(cookie => cookie.Value == expectedCookieData);
                 Assert.NotNull(addedCookie);

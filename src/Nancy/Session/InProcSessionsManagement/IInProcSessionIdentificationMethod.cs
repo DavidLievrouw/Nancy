@@ -1,7 +1,5 @@
 ﻿namespace Nancy.Session.InProcSessionsManagement
 {
-    using System;
-
     /// <summary>
     /// Identification method for in-process memory based sessions.
     /// </summary>
