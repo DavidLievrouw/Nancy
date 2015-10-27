@@ -68,10 +68,10 @@
         {
             using (var tokenSource = new CancellationTokenSource()) {
                 this.periodicTask.Start(
-                    TimeSpan.FromMilliseconds(50),
+                    TimeSpan.Zero,
                     TimeSpan.Zero,
                     tokenSource.Token);
-                Thread.Sleep(250);
+                Thread.Sleep(500);
                 this.periodicTask.Dispose();
                 Assert.Equal(1, this.numberOfExecutions);
             }
