@@ -34,7 +34,7 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             var hmacString = decodedCookieValue.Substring(0, hmacLength);
             var encryptedSessionId = decodedCookieValue.Substring(hmacLength);
 
-            var hmacBytes = new byte[] {};
+            byte[] hmacBytes;
             try
             {
                 hmacBytes = Convert.FromBase64String(hmacString);

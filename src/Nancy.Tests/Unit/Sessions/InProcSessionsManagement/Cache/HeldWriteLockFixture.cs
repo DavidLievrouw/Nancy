@@ -25,6 +25,7 @@
             Assert.Throws<ArgumentNullException>(() => new HeldWriteLock(null));
         }
 
+        [Fact]
         public void When_creating_then_acquires_lock()
         {
             using (new HeldWriteLock(this.wrappedLock))
@@ -34,6 +35,7 @@
             }
         }
 
+        [Fact]
         public void When_disposing_then_releases_lock()
         {
             using (new HeldWriteLock(this.wrappedLock))

@@ -2,8 +2,8 @@
 
 namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
 {
+    using System.Collections.Generic;
     using System.Linq;
-    using FakeItEasy;
     using Nancy.Session.InProcSessionsManagement;
     using Nancy.Session.InProcSessionsManagement.ByQueryStringParam;
     using Xunit;
@@ -214,6 +214,28 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
             var expectedLocationHeaderValue = this.context.Request.Url + "/" + 
                                               "?" + this.parameterName +
                                               "=" + expectedParameterValue;
+
+            this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(
+                this.context,
+                this.sessionIdentificationData,
+                this.parameterName);
+
+            var locationHeader = this.context.Response.Headers
+                .FirstOrDefault(header => header.Key.Equals("Location", StringComparison.OrdinalIgnoreCase));
+            Assert.NotNull(locationHeader);
+            Assert.True(new Uri(expectedLocationHeaderValue).Equals(new Uri(locationHeader.Value)));
+        }
+
+        [Fact]
+        public void Given_response_already_has_a_location_header_then_replaces_header_value()
+        {
+            var headers = new Dictionary<string, IEnumerable<string>>();
+            headers.Add("location", new [] { "http://www.github.com/nancyfx" });
+            this.context.Request = new Request(this.context.Request.Method, this.context.Request.Url, null, headers);
+
+            var expectedLocationHeaderValue = this.context.Request.Url +
+                                              "?" + this.parameterName +
+                                              "=" + this.sessionIdentificationData;
 
             this.responseManipulatorForSession.ModifyResponseToRedirectToSessionAwareUrl(
                 this.context,
