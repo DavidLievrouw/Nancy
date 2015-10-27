@@ -13,14 +13,14 @@
     public class BySessionIdCookieIdentificationMethodFixture
     {
         private readonly BySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
-        private readonly ISessionIdentificationDataProvider fakeSessionIdentificationDataProvider;
+        private readonly string cookieName;
         private readonly ICookieFactory fakeCookieFactory;
         private readonly IEncryptionProvider fakeEncryptionProvider;
         private readonly IHmacProvider fakeHmacProvider;
         private readonly IHmacValidator fakeHmacValidator;
+        private readonly ISessionIdentificationDataProvider fakeSessionIdentificationDataProvider;
         private readonly ISessionIdFactory fakeSessionIdFactory;
         private readonly InProcSessionsConfiguration validConfiguration;
-        private readonly string cookieName;
 
         public BySessionIdCookieIdentificationMethodFixture()
         {

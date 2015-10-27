@@ -11,7 +11,8 @@
         /// <summary>
         /// Gets the number of sessions that are currently held in cache.
         /// </summary>
-        int Count {
+        int Count
+        {
             get;
         }
 

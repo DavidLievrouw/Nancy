@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading;
-
-namespace Nancy.Session.InProcSessionsManagement.PeriodicTasks
+﻿namespace Nancy.Session.InProcSessionsManagement.PeriodicTasks
 {
+    using System;
+    using System.Threading;
+
     internal class RealTimer : ITimer
     {
         private Timer innerTimer;

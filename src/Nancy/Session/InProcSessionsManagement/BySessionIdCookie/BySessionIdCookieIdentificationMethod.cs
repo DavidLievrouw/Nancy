@@ -9,19 +9,20 @@
     public class BySessionIdCookieIdentificationMethod : IBySessionIdCookieIdentificationMethod
     {
         private const string DefaultCookieName = "_nsid";
+        private readonly ICookieFactory cookieFactory;
         private readonly IEncryptionProvider encryptionProvider;
         private readonly IHmacProvider hmacProvider;
-        private readonly ISessionIdentificationDataProvider sessionIdentificationDataProvider;
         private readonly IHmacValidator hmacValidator;
+        private readonly ISessionIdentificationDataProvider sessionIdentificationDataProvider;
         private readonly ISessionIdFactory sessionIdFactory;
-        private readonly ICookieFactory cookieFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BySessionIdCookieIdentificationMethod"/> class.
         /// </summary>
         public BySessionIdCookieIdentificationMethod(CryptographyConfiguration cryptoConfig)
         {
-            if (cryptoConfig == null) {
+            if (cryptoConfig == null)
+            {
                 throw new ArgumentNullException("cryptoConfig");
             }
             this.encryptionProvider = cryptoConfig.EncryptionProvider;
@@ -44,22 +45,28 @@
             ISessionIdFactory sessionIdFactory,
             ICookieFactory cookieFactory)
         {
-            if (encryptionProvider == null) {
+            if (encryptionProvider == null)
+            {
                 throw new ArgumentNullException("encryptionProvider");
             }
-            if (hmacProvider == null) {
+            if (hmacProvider == null)
+            {
                 throw new ArgumentNullException("hmacProvider");
             }
-            if (sessionIdentificationDataProvider == null) {
+            if (sessionIdentificationDataProvider == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
-            if (hmacValidator == null) {
+            if (hmacValidator == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
-            if (sessionIdFactory == null) {
+            if (sessionIdFactory == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
-            if (cookieFactory == null) {
+            if (cookieFactory == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
             this.encryptionProvider = encryptionProvider;
@@ -74,7 +81,8 @@
         /// <summary>
         /// Gets or sets the cookie name in which the session id is stored.
         /// </summary>
-        public string CookieName {
+        public string CookieName
+        {
             get;
             set;
         }
@@ -82,7 +90,8 @@
         /// <summary>
         /// Gets or sets the domain of the session cookie.
         /// </summary>
-        public string Domain {
+        public string Domain
+        {
             get;
             set;
         }
@@ -90,7 +99,8 @@
         /// <summary>
         /// Gets or sets the path of the session cookie.
         /// </summary>
-        public string Path {
+        public string Path
+        {
             get;
             set;
         }
@@ -102,22 +112,26 @@
         /// <returns>The identifier of the session for the current request.</returns>
         public SessionId GetCurrentSessionId(NancyContext context)
         {
-            if (context == null) {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
 
             var cookieData = this.sessionIdentificationDataProvider.ProvideDataFromCookie(context.Request,
                 this.CookieName);
-            if (cookieData == null) {
+            if (cookieData == null)
+            {
                 return this.sessionIdFactory.CreateNew();
             }
             var isHmacValid = this.hmacValidator.IsValidHmac(cookieData);
-            if (!isHmacValid) {
+            if (!isHmacValid)
+            {
                 return this.sessionIdFactory.CreateNew();
             }
 
             var decryptedSessionId = this.encryptionProvider.Decrypt(cookieData.SessionId);
-            if (string.IsNullOrEmpty(decryptedSessionId)) {
+            if (string.IsNullOrEmpty(decryptedSessionId))
+            {
                 return this.sessionIdFactory.CreateNew();
             }
 
@@ -131,16 +145,20 @@
         /// <param name="context">The current context.</param>
         public void SaveSessionId(SessionId sessionId, NancyContext context)
         {
-            if (sessionId == null) {
+            if (sessionId == null)
+            {
                 throw new ArgumentNullException("sessionId");
             }
-            if (context == null) {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
-            if (context.Response == null) {
+            if (context.Response == null)
+            {
                 throw new ArgumentException("The specified context does not contain a response to modify", "context");
             }
-            if (sessionId.IsEmpty) {
+            if (sessionId.IsEmpty)
+            {
                 throw new ArgumentException("The specified session id cannot be empty", "sessionId");
             }
 

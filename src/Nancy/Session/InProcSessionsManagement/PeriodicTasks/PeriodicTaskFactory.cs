@@ -6,7 +6,8 @@ namespace Nancy.Session.InProcSessionsManagement.PeriodicTasks
     {
         public IPeriodicTask Create(Action action)
         {
-            if (action == null) {
+            if (action == null)
+            {
                 throw new ArgumentNullException("action");
             }
             return new PeriodicTask(action, new RealTimer());

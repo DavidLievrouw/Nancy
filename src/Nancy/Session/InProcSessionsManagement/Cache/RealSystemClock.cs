@@ -12,10 +12,7 @@
         /// </summary>
         public DateTime NowUtc
         {
-            get
-            {
-                return DateTime.UtcNow;
-            }
+            get { return DateTime.UtcNow; }
         }
     }
 }

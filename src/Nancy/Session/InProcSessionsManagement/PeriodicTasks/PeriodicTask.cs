@@ -11,10 +11,12 @@
 
         public PeriodicTask(Action action, ITimer timer)
         {
-            if (action == null) {
+            if (action == null)
+            {
                 throw new ArgumentNullException("action");
             }
-            if (timer == null) {
+            if (timer == null)
+            {
                 throw new ArgumentNullException("timer");
             }
             this.action = action;
@@ -25,7 +27,10 @@
         public void Start(TimeSpan interval, CancellationToken cancellationToken)
         {
             this.CheckDisposed();
-            if (interval <= TimeSpan.Zero) throw new ArgumentException("The interval must be greater than zero.", "interval");
+            if (interval <= TimeSpan.Zero)
+            {
+                throw new ArgumentException("The interval must be greater than zero.", "interval");
+            }
 
             this.timer.StartTimer(() =>
             {
@@ -45,7 +50,8 @@
 
         private void CheckDisposed()
         {
-            if (this.isDisposed) {
+            if (this.isDisposed)
+            {
                 throw new ObjectDisposedException(this.GetType().Name);
             }
         }

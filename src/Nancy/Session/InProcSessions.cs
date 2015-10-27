@@ -27,10 +27,12 @@
         /// <param name="configuration">In-process memory based sessions configuration.</param>
         public static void Enable(this IPipelines pipelines, InProcSessionsConfiguration configuration)
         {
-            if (configuration == null) {
+            if (configuration == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
-            if (!configuration.IsValid) {
+            if (!configuration.IsValid)
+            {
                 throw new ArgumentException("Configuration is invalid", "configuration");
             }
 
@@ -51,10 +53,12 @@
 
         internal static void Enable(this IPipelines pipelines, IInProcSessionManager sessionManager)
         {
-            if (pipelines == null) {
+            if (pipelines == null)
+            {
                 throw new ArgumentNullException("pipelines");
             }
-            if (sessionManager == null) {
+            if (sessionManager == null)
+            {
                 throw new ArgumentNullException("sessionManager");
             }
 

@@ -7,9 +7,9 @@
 
     public class PeriodicTaskFixture
     {
-        private int numberOfExecutions;
         private readonly PeriodicTask periodicTask;
         private readonly TimerForUnitTests timer;
+        private int numberOfExecutions;
 
         public PeriodicTaskFixture()
         {
@@ -33,7 +33,8 @@
         [Fact]
         public void Given_zero_interval_time_then_throws()
         {
-            using (var tokenSource = new CancellationTokenSource()) {
+            using (var tokenSource = new CancellationTokenSource())
+            {
                 Assert.Throws<ArgumentException>(() => this.periodicTask.Start(TimeSpan.Zero, tokenSource.Token));
             }
         }
@@ -41,7 +42,8 @@
         [Fact]
         public void Given_negative_interval_time_then_throws()
         {
-            using (var tokenSource = new CancellationTokenSource()) {
+            using (var tokenSource = new CancellationTokenSource())
+            {
                 Assert.Throws<ArgumentException>(
                     () => this.periodicTask.Start(TimeSpan.FromSeconds(-1), tokenSource.Token));
             }
@@ -50,7 +52,8 @@
         [Fact]
         public void When_cancelled_before_first_execution_then_does_not_execute()
         {
-            using (var tokenSource = new CancellationTokenSource()) {
+            using (var tokenSource = new CancellationTokenSource())
+            {
                 this.periodicTask.Start(
                     TimeSpan.FromMilliseconds(1000),
                     tokenSource.Token);
@@ -63,7 +66,8 @@
         [Fact]
         public void Adheres_interval()
         {
-            using (var tokenSource = new CancellationTokenSource()) {
+            using (var tokenSource = new CancellationTokenSource())
+            {
                 this.periodicTask.Start(
                     TimeSpan.FromMilliseconds(1000),
                     tokenSource.Token);
@@ -76,7 +80,8 @@
         [Fact]
         public void When_disposed_then_stops()
         {
-            using (var tokenSource = new CancellationTokenSource()) {
+            using (var tokenSource = new CancellationTokenSource())
+            {
                 this.periodicTask.Start(
                     TimeSpan.FromMilliseconds(1000),
                     tokenSource.Token);

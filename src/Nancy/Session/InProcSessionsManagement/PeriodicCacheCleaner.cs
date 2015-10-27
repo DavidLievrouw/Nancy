@@ -7,8 +7,8 @@
 
     internal class PeriodicCacheCleaner : IPeriodicCacheCleaner
     {
-        private readonly InProcSessionsConfiguration configuration;
         private readonly ICancellationTokenSourceFactory cancellationTokenSourceFactory;
+        private readonly InProcSessionsConfiguration configuration;
         private readonly IPeriodicTask periodicTask;
         private CancellationTokenSource cancellationTokenSource;
 
@@ -18,16 +18,20 @@
             IPeriodicTaskFactory periodicTaskFactory,
             ICancellationTokenSourceFactory cancellationTokenSourceFactory)
         {
-            if (configuration == null) {
+            if (configuration == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
-            if (sessionCache == null) {
+            if (sessionCache == null)
+            {
                 throw new ArgumentNullException("sessionCache");
             }
-            if (periodicTaskFactory == null) {
+            if (periodicTaskFactory == null)
+            {
                 throw new ArgumentNullException("periodicTaskFactory");
             }
-            if (cancellationTokenSourceFactory == null) {
+            if (cancellationTokenSourceFactory == null)
+            {
                 throw new ArgumentNullException("cancellationTokenSourceFactory");
             }
             this.configuration = configuration;
@@ -45,7 +49,8 @@
 
         public void Stop()
         {
-            if (this.cancellationTokenSource != null) {
+            if (this.cancellationTokenSource != null)
+            {
                 this.cancellationTokenSource.Cancel();
             }
         }

@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement
+﻿namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement
 {
+    using System;
     using System.Threading;
     using FakeItEasy;
     using Nancy.Session;
@@ -12,13 +11,13 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement
 
     public class PeriodicCacheCleanerFixture
     {
-        private readonly IInProcSessionCache fakeSessionCache;
-        private readonly IPeriodicTaskFactory fakePeriodicTaskFactory;
-        private readonly ICancellationTokenSourceFactory fakeCancellationTokenSourceFactory;
-        private readonly InProcSessionsConfiguration validConfiguration;
-        private readonly IPeriodicTask fakePeriodicTask;
-        private readonly PeriodicCacheCleaner periodicCacheCleaner;
         private readonly CancellationTokenSource cancellationTokenSource;
+        private readonly ICancellationTokenSourceFactory fakeCancellationTokenSourceFactory;
+        private readonly IPeriodicTask fakePeriodicTask;
+        private readonly IPeriodicTaskFactory fakePeriodicTaskFactory;
+        private readonly IInProcSessionCache fakeSessionCache;
+        private readonly PeriodicCacheCleaner periodicCacheCleaner;
+        private readonly InProcSessionsConfiguration validConfiguration;
 
         public PeriodicCacheCleanerFixture()
         {

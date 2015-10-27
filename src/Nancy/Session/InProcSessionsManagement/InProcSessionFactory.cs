@@ -10,10 +10,12 @@
 
         public InProcSessionFactory(InProcSessionsConfiguration configuration, ISystemClock systemClock)
         {
-            if (configuration == null) {
+            if (configuration == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
-            if (systemClock == null) {
+            if (systemClock == null)
+            {
                 throw new ArgumentNullException("systemClock");
             }
             this.configuration = configuration;
@@ -22,13 +24,16 @@
 
         public InProcSession Create(SessionId sessionId, ISession wrappedSession)
         {
-            if (sessionId == null) {
+            if (sessionId == null)
+            {
                 throw new ArgumentNullException("sessionId");
             }
-            if (sessionId.IsEmpty) {
+            if (sessionId.IsEmpty)
+            {
                 throw new ArgumentException("The session id cannot be empty", "sessionId");
             }
-            if (wrappedSession == null) {
+            if (wrappedSession == null)
+            {
                 throw new ArgumentNullException("wrappedSession");
             }
 

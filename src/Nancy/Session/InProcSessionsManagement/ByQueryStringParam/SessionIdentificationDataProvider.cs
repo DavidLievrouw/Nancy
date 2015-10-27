@@ -9,7 +9,8 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
 
         public SessionIdentificationDataProvider(IHmacProvider hmacProvider)
         {
-            if (hmacProvider == null) {
+            if (hmacProvider == null)
+            {
                 throw new ArgumentNullException("hmacProvider");
             }
             this.hmacProvider = hmacProvider;
@@ -17,22 +18,26 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
 
         public SessionIdentificationData ProvideDataFromQuery(Request request, string parameterName)
         {
-            if (request == null) {
+            if (request == null)
+            {
                 throw new ArgumentNullException("request");
             }
-            if (string.IsNullOrWhiteSpace(parameterName)) {
+            if (string.IsNullOrWhiteSpace(parameterName))
+            {
                 throw new ArgumentNullException("parameterName");
             }
 
             var querystringDictionary = request.Query.ToDictionary();
-            if (querystringDictionary == null || !querystringDictionary.ContainsKey(parameterName)) {
+            if (querystringDictionary == null || !querystringDictionary.ContainsKey(parameterName))
+            {
                 return null;
             }
 
             string parameterValue = querystringDictionary[parameterName];
             var hmacLength = Base64Helpers.GetBase64Length(this.hmacProvider.HmacLength);
 
-            if (parameterValue.Length < hmacLength) {
+            if (parameterValue.Length < hmacLength)
+            {
                 // Definitely invalid
                 return null;
             }
@@ -41,10 +46,12 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             var encryptedSessionId = parameterValue.Substring(hmacLength);
 
             byte[] hmacBytes;
-            try {
+            try
+            {
                 hmacBytes = Convert.FromBase64String(hmacString);
             }
-            catch (FormatException) {
+            catch (FormatException)
+            {
                 // Invalid HMAC
                 return null;
             }

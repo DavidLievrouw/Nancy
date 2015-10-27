@@ -5,11 +5,31 @@
 
     public class TimerForUnitTests : ITimer
     {
+        private TimeSpan elapsedTime;
+
+        private bool isStarted;
         private Action timerAction;
         private TimeSpan timerInterval;
 
-        private bool isStarted;
-        private TimeSpan elapsedTime;
+        public void ElapseSeconds(double seconds)
+        {
+            var newElapsedTime = this.elapsedTime + TimeSpan.FromSeconds(seconds);
+            if (this.isStarted)
+            {
+                var executionCountBefore = this.timerInterval <= TimeSpan.Zero
+                    ? 0
+                    : this.elapsedTime.Ticks/this.timerInterval.Ticks;
+                var executionCountAfter = this.timerInterval <= TimeSpan.Zero
+                    ? 0
+                    : newElapsedTime.Ticks/this.timerInterval.Ticks;
+
+                for (var i = 0; i < executionCountAfter - executionCountBefore; i++)
+                {
+                    this.timerAction();
+                }
+            }
+            this.elapsedTime = newElapsedTime;
+        }
 
         #region ITimer methods
 
@@ -32,23 +52,5 @@
         }
 
         #endregion
-
-        public void ElapseSeconds(double seconds)
-        {
-            var newElapsedTime = this.elapsedTime + TimeSpan.FromSeconds(seconds);
-            if (this.isStarted) {
-                var executionCountBefore = this.timerInterval <= TimeSpan.Zero
-                    ? 0
-                    : this.elapsedTime.Ticks/this.timerInterval.Ticks;
-                var executionCountAfter = this.timerInterval <= TimeSpan.Zero
-                    ? 0
-                    : newElapsedTime.Ticks/this.timerInterval.Ticks;
-
-                for (var i = 0; i < executionCountAfter - executionCountBefore; i++) {
-                    this.timerAction();
-                }
-            }
-            this.elapsedTime = newElapsedTime;
-        }
     }
 }

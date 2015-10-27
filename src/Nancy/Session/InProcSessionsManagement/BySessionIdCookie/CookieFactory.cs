@@ -10,10 +10,12 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             string cookiePath,
             SessionIdentificationData sessionIdentificationData)
         {
-            if (sessionIdentificationData == null) {
+            if (sessionIdentificationData == null)
+            {
                 throw new ArgumentNullException("sessionIdentificationData");
             }
-            if (string.IsNullOrWhiteSpace(cookieName)) {
+            if (string.IsNullOrWhiteSpace(cookieName))
+            {
                 throw new ArgumentNullException("cookieName");
             }
 

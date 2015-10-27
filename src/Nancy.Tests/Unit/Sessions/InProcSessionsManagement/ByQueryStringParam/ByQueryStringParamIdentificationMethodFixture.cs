@@ -14,11 +14,11 @@
         private readonly IEncryptionProvider fakeEncryptionProvider;
         private readonly IHmacProvider fakeHmacProvider;
         private readonly IHmacValidator fakeHmacValidator;
+        private readonly IResponseManipulatorForSession fakeResponseManipulatorForSession;
         private readonly ISessionIdentificationDataProvider fakeSessionIdentificationDataProvider;
         private readonly ISessionIdFactory fakeSessionIdFactory;
-        private readonly IResponseManipulatorForSession fakeResponseManipulatorForSession;
-        private readonly InProcSessionsConfiguration validConfiguration;
         private readonly string parameterName;
+        private readonly InProcSessionsConfiguration validConfiguration;
 
         public ByQueryStringParamIdentificationMethodFixture()
         {

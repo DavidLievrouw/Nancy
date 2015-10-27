@@ -9,9 +9,9 @@
 
     public class InProcSessionFactoryFixture
     {
-        private readonly InProcSessionsConfiguration validConfiguration;
         private readonly ISystemClock fakeSystemClock;
         private readonly InProcSessionFactory sessionFactory;
+        private readonly InProcSessionsConfiguration validConfiguration;
 
         public InProcSessionFactoryFixture()
         {

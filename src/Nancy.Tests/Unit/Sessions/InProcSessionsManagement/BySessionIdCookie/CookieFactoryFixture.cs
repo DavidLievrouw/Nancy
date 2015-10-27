@@ -7,13 +7,13 @@
 
     public class CookieFactoryFixture
     {
-        private readonly SessionIdentificationData sessionIdentificationData;
         private readonly string cookieDomain;
         private readonly CookieFactory cookieFactory;
         private readonly string cookieName;
         private readonly string cookiePath;
         private readonly string cookieValue;
         private readonly string cookieValueEncoded;
+        private readonly SessionIdentificationData sessionIdentificationData;
 
         public CookieFactoryFixture()
         {

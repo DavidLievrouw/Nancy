@@ -8,16 +8,28 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
         /// <summary>
         /// Gets or sets the cookie name in which the session id is stored.
         /// </summary>
-        string CookieName { get; set; }
+        string CookieName
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the domain of the session cookie.
         /// </summary>
-        string Domain { get; set; }
+        string Domain
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the path of the session cookie.
         /// </summary>
-        string Path { get; set; }
+        string Path
+        {
+            get;
+            set;
+        }
     }
 }

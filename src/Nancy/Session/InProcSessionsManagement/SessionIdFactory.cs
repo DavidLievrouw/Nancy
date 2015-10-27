@@ -11,7 +11,8 @@
 
         public SessionId CreateFrom(string sessionIdString)
         {
-            if (sessionIdString == null) {
+            if (sessionIdString == null)
+            {
                 return null;
             }
 

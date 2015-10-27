@@ -14,6 +14,11 @@
         private const int DefaultCacheTrimIntervalMinutes = 30;
 
         /// <summary>
+        /// An instance of the <see cref="InProcSessionsConfiguration"/> class, using its default values. 
+        /// </summary>
+        public static readonly InProcSessionsConfiguration Default = new InProcSessionsConfiguration();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="InProcSessionsConfiguration"/> class.
         /// </summary>
         public InProcSessionsConfiguration()
@@ -38,7 +43,8 @@
         /// <summary>
         /// Gets or sets the method that is used to identify the session from the context
         /// </summary>
-        public IInProcSessionIdentificationMethod SessionIdentificationMethod {
+        public IInProcSessionIdentificationMethod SessionIdentificationMethod
+        {
             get;
             set;
         }
@@ -46,7 +52,8 @@
         /// <summary>
         /// Gets or sets the time after which a memory session expires
         /// </summary>
-        public TimeSpan SessionTimeout {
+        public TimeSpan SessionTimeout
+        {
             get;
             set;
         }
@@ -54,7 +61,8 @@
         /// <summary>
         /// Gets or sets the time after which a the expired sessions are cleaned up.
         /// </summary>
-        public TimeSpan CacheTrimInterval {
+        public TimeSpan CacheTrimInterval
+        {
             get;
             set;
         }
@@ -62,27 +70,27 @@
         /// <summary>
         /// Gets a value indicating whether the configuration is valid or not.
         /// </summary>
-        public bool IsValid {
-            get {
-                if (this.SessionIdentificationMethod == null) {
+        public bool IsValid
+        {
+            get
+            {
+                if (this.SessionIdentificationMethod == null)
+                {
                     return false;
                 }
 
-                if (this.SessionTimeout <= TimeSpan.Zero) {
+                if (this.SessionTimeout <= TimeSpan.Zero)
+                {
                     return false;
                 }
 
-                if (this.CacheTrimInterval < TimeSpan.Zero) {
+                if (this.CacheTrimInterval < TimeSpan.Zero)
+                {
                     return false;
                 }
 
                 return true;
             }
         }
-
-        /// <summary>
-        /// An instance of the <see cref="InProcSessionsConfiguration"/> class, using its default values. 
-        /// </summary>
-        public static readonly InProcSessionsConfiguration Default = new InProcSessionsConfiguration();
     }
 }

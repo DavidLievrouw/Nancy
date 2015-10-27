@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement
+﻿namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement
 {
+    using System;
     using Nancy.Session.InProcSessionsManagement;
     using Xunit;
 

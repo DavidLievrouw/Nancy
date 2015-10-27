@@ -4,12 +4,14 @@ namespace Nancy.Session.InProcSessionsManagement
 
     internal class SessionIdentificationData
     {
-        public string SessionId {
+        public string SessionId
+        {
             get;
             set;
         }
 
-        public byte[] Hmac {
+        public byte[] Hmac
+        {
             get;
             set;
         }
@@ -17,7 +19,8 @@ namespace Nancy.Session.InProcSessionsManagement
         public override string ToString()
         {
             var base64hmac = string.Empty;
-            if (this.Hmac != null) {
+            if (this.Hmac != null)
+            {
                 base64hmac = Convert.ToBase64String(this.Hmac);
             }
             return string.Format("{0}{1}", base64hmac, this.SessionId);

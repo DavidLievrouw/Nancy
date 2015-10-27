@@ -165,7 +165,8 @@
             });
 
             var threads = new List<Thread>();
-            for (var i = 0; i < numberOfThreads; i++) {
+            for (var i = 0; i < numberOfThreads; i++)
+            {
                 var newThread = new Thread(threadAction);
                 newThread.Start();
                 threads.Add(newThread);

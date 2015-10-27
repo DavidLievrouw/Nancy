@@ -1,13 +1,12 @@
-﻿using System;
-
-namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.PeriodicTasks
+﻿namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.PeriodicTasks
 {
+    using System;
     using Nancy.Session.InProcSessionsManagement.PeriodicTasks;
     using Xunit;
 
     public class PeriodicTaskFactoryFixture
     {
-        private PeriodicTaskFactory periodicTaskFactory;
+        private readonly PeriodicTaskFactory periodicTaskFactory;
 
         public PeriodicTaskFactoryFixture()
         {

@@ -1,8 +1,6 @@
 namespace Nancy.Tests.Unit.Sessions
 {
     using System;
-    using FakeItEasy;
-    using Nancy.Cryptography;
     using Nancy.Session;
     using Xunit;
 

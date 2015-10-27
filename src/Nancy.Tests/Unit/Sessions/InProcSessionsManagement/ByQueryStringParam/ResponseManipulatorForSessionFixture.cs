@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
+﻿namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Nancy.Session.InProcSessionsManagement;
@@ -10,9 +9,9 @@ namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.ByQueryStringParam
 
     public class ResponseManipulatorForSessionFixture
     {
-        private readonly ResponseManipulatorForSession responseManipulatorForSession;
-        private readonly string parameterName;
         private readonly NancyContext context;
+        private readonly string parameterName;
+        private readonly ResponseManipulatorForSession responseManipulatorForSession;
         private readonly SessionIdentificationData sessionIdentificationData;
 
         public ResponseManipulatorForSessionFixture()

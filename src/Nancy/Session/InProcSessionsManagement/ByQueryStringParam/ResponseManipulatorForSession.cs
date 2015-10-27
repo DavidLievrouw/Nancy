@@ -11,19 +11,24 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             SessionIdentificationData sessionIdentificationData,
             string parameterName)
         {
-            if (context == null) {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
-            if (sessionIdentificationData == null) {
+            if (sessionIdentificationData == null)
+            {
                 throw new ArgumentNullException("sessionIdentificationData");
             }
-            if (string.IsNullOrWhiteSpace(parameterName)) {
+            if (string.IsNullOrWhiteSpace(parameterName))
+            {
                 throw new ArgumentNullException("parameterName");
             }
-            if (context.Request == null) {
+            if (context.Request == null)
+            {
                 throw new ArgumentException("The specified context does not contain a request", "context");
             }
-            if (context.Response == null) {
+            if (context.Response == null)
+            {
                 throw new ArgumentException("The specified context does not contain a response", "context");
             }
 
@@ -33,9 +38,11 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
             queryParameters.Set(parameterName, sessionIdentificationData.ToString());
 
             var newQueryString = string.Empty;
-            if (queryParameters.Count > 0) {
+            if (queryParameters.Count > 0)
+            {
                 var newQueryBuilder = new StringBuilder();
-                foreach (var paramName in queryParameters.AllKeys) {
+                foreach (var paramName in queryParameters.AllKeys)
+                {
                     newQueryBuilder.Append(string.Format("{0}={1}&",
                         paramName,
                         HttpUtility.UrlEncode(queryParameters[paramName])));

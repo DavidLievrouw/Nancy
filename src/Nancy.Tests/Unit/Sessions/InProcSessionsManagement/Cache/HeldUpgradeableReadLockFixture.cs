@@ -28,7 +28,8 @@
         [Fact]
         public void When_creating_then_acquires_lock()
         {
-            using (new HeldUpgradeableReadLock(this.wrappedLock)) {
+            using (new HeldUpgradeableReadLock(this.wrappedLock))
+            {
                 var actual = this.wrappedLock.IsUpgradeableReadLockHeld;
                 Assert.True(actual);
             }
@@ -37,7 +38,8 @@
         [Fact]
         public void When_disposing_then_releases_lock()
         {
-            using (new HeldUpgradeableReadLock(this.wrappedLock)) {
+            using (new HeldUpgradeableReadLock(this.wrappedLock))
+            {
             }
 
             var actual = this.wrappedLock.IsUpgradeableReadLockHeld;

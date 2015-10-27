@@ -15,7 +15,10 @@ namespace Nancy.Session.InProcSessionsManagement.Cache
 
         public override void Dispose()
         {
-            if (this.wrappedLock.IsWriteLockHeld) this.wrappedLock.ExitWriteLock();
+            if (this.wrappedLock.IsWriteLockHeld)
+            {
+                this.wrappedLock.ExitWriteLock();
+            }
         }
     }
 }

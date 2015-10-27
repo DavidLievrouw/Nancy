@@ -21,7 +21,8 @@
         /// </summary>
         public InProcSessionCache(ISystemClock systemClock)
         {
-            if (systemClock == null) {
+            if (systemClock == null)
+            {
                 throw new ArgumentNullException("systemClock");
             }
             this.systemClock = systemClock;
@@ -32,10 +33,13 @@
         /// <summary>
         /// Gets the number of sessions that are currently held in cache.
         /// </summary>
-        public int Count {
-            get {
+        public int Count
+        {
+            get
+            {
                 this.CheckDisposed();
-                using (new HeldReadLock(this.rwlock)) {
+                using (new HeldReadLock(this.rwlock))
+                {
                     return this.sessions.Count;
                 }
             }
@@ -69,18 +73,22 @@
         /// <param name="session">The item to add.</param>
         public void Set(InProcSession session)
         {
-            if (session == null) {
+            if (session == null)
+            {
                 throw new ArgumentNullException("session");
             }
             this.CheckDisposed();
 
-            using (new HeldWriteLock(this.rwlock)) {
+            using (new HeldWriteLock(this.rwlock))
+            {
                 var index = this.sessions.IndexOf(session);
 
-                if (index < 0) {
+                if (index < 0)
+                {
                     this.sessions.Add(session);
                 }
-                else {
+                else
+                {
                     this.sessions[index] = session;
                 }
             }
@@ -93,7 +101,8 @@
         {
             this.CheckDisposed();
 
-            using (new HeldWriteLock(this.rwlock)) {
+            using (new HeldWriteLock(this.rwlock))
+            {
                 this.sessions.RemoveAll(session => session.IsExpired(this.systemClock.NowUtc));
             }
         }
@@ -106,16 +115,20 @@
         public InProcSession Get(SessionId id)
         {
             this.CheckDisposed();
-            if (id == null) {
+            if (id == null)
+            {
                 throw new ArgumentNullException("id");
             }
 
-            using (new HeldUpgradeableReadLock(this.rwlock)) {
+            using (new HeldUpgradeableReadLock(this.rwlock))
+            {
                 var foundSession = this.sessions.SingleOrDefault(session => session.Id == id);
 
                 // CQS violation, for convenience
-                if (foundSession != null && foundSession.IsExpired(this.systemClock.NowUtc)) {
-                    using (new HeldWriteLock(this.rwlock)) {
+                if (foundSession != null && foundSession.IsExpired(this.systemClock.NowUtc))
+                {
+                    using (new HeldWriteLock(this.rwlock))
+                    {
                         this.sessions.Remove(foundSession);
                         foundSession = null;
                     }
@@ -127,7 +140,8 @@
 
         private void CheckDisposed()
         {
-            if (this.isDisposed) {
+            if (this.isDisposed)
+            {
                 throw new ObjectDisposedException(this.GetType().Name);
             }
         }

@@ -10,7 +10,8 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
 
         public SessionIdentificationDataProvider(IHmacProvider hmacProvider)
         {
-            if (hmacProvider == null) {
+            if (hmacProvider == null)
+            {
                 throw new ArgumentNullException("hmacProvider");
             }
             this.hmacProvider = hmacProvider;
@@ -18,22 +19,26 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
 
         public SessionIdentificationData ProvideDataFromCookie(Request request, string cookieName)
         {
-            if (request == null) {
+            if (request == null)
+            {
                 throw new ArgumentNullException("request");
             }
-            if (string.IsNullOrWhiteSpace(cookieName)) {
+            if (string.IsNullOrWhiteSpace(cookieName))
+            {
                 throw new ArgumentNullException("cookieName");
             }
 
             string cookieValue = null;
-            if (!request.Cookies.TryGetValue(cookieName, out cookieValue)) {
+            if (!request.Cookies.TryGetValue(cookieName, out cookieValue))
+            {
                 return null;
             }
 
             var decodedCookieValue = HttpUtility.UrlDecode(cookieValue);
             var hmacLength = Base64Helpers.GetBase64Length(this.hmacProvider.HmacLength);
 
-            if (decodedCookieValue.Length < hmacLength) {
+            if (decodedCookieValue.Length < hmacLength)
+            {
                 // Definitely invalid
                 return null;
             }
@@ -42,10 +47,12 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             var encryptedSessionId = decodedCookieValue.Substring(hmacLength);
 
             byte[] hmacBytes;
-            try {
+            try
+            {
                 hmacBytes = Convert.FromBase64String(hmacString);
             }
-            catch (FormatException) {
+            catch (FormatException)
+            {
                 // Invalid HMAC
                 return null;
             }

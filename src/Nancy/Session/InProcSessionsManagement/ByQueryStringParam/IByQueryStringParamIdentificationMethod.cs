@@ -8,6 +8,10 @@ namespace Nancy.Session.InProcSessionsManagement.ByQueryStringParam
         /// <summary>
         /// Gets or sets the querystring parameter name in which the session id is stored.
         /// </summary>
-        string ParameterName { get; set; }
+        string ParameterName
+        {
+            get;
+            set;
+        }
     }
 }

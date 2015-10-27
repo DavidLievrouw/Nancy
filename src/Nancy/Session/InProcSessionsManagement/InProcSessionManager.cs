@@ -6,9 +6,9 @@
     internal class InProcSessionManager : IInProcSessionManager
     {
         private readonly InProcSessionsConfiguration configuration;
+        private readonly IPeriodicCacheCleaner periodicCacheCleaner;
         private readonly IInProcSessionCache sessionCache;
         private readonly IInProcSessionFactory sessionFactory;
-        private readonly IPeriodicCacheCleaner periodicCacheCleaner;
 
         public InProcSessionManager(
             InProcSessionsConfiguration configuration,
@@ -16,16 +16,20 @@
             IInProcSessionFactory sessionFactory,
             IPeriodicCacheCleaner periodicCacheCleaner)
         {
-            if (configuration == null) {
+            if (configuration == null)
+            {
                 throw new ArgumentNullException("configuration");
             }
-            if (sessionCache == null) {
+            if (sessionCache == null)
+            {
                 throw new ArgumentNullException("sessionCache");
             }
-            if (sessionFactory == null) {
+            if (sessionFactory == null)
+            {
                 throw new ArgumentNullException("sessionFactory");
             }
-            if (periodicCacheCleaner == null) {
+            if (periodicCacheCleaner == null)
+            {
                 throw new ArgumentNullException("periodicCacheCleaner");
             }
             this.configuration = configuration;
@@ -44,14 +48,17 @@
         /// <param name="context">The current context.</param>
         public void Save(ISession session, NancyContext context)
         {
-            if (context == null) {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
 
-            if (session == null || !session.HasChanged) {
+            if (session == null || !session.HasChanged)
+            {
                 return;
             }
-            if (session is NullSessionProvider || session.Count <= 0) {
+            if (session is NullSessionProvider || session.Count <= 0)
+            {
                 return;
             }
 
@@ -71,7 +78,8 @@
         /// <returns>The session that is owned by the specified context, or a new empty session, if none exists.</returns>
         public ISession Load(NancyContext context)
         {
-            if (context == null) {
+            if (context == null)
+            {
                 throw new ArgumentNullException("context");
             }
 

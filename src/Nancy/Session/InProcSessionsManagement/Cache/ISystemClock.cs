@@ -10,6 +10,9 @@ namespace Nancy.Session.InProcSessionsManagement.Cache
         /// <summary>
         /// Gets the current UTC date and time.
         /// </summary>
-        DateTime NowUtc { get; }
+        DateTime NowUtc
+        {
+            get;
+        }
     }
 }

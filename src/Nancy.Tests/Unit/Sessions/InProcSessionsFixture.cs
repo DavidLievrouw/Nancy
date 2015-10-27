@@ -1,8 +1,7 @@
-﻿using System.Linq;
-
-namespace Nancy.Tests.Unit.Sessions
+﻿namespace Nancy.Tests.Unit.Sessions
 {
     using System;
+    using System.Linq;
     using FakeItEasy;
     using Nancy.Bootstrapper;
     using Nancy.Session;
