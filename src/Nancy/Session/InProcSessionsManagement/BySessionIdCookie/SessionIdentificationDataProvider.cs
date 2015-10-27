@@ -14,7 +14,7 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
         {
             if (hmacProvider == null) throw new ArgumentNullException("hmacProvider");
             if (bySessionIdCookieIdentificationMethod == null)
-                throw new ArgumentNullException(nameof(bySessionIdCookieIdentificationMethod));
+                throw new ArgumentNullException("bySessionIdCookieIdentificationMethod");
             this.hmacProvider = hmacProvider;
             this.bySessionIdCookieIdentificationMethod = bySessionIdCookieIdentificationMethod;
         }
@@ -46,7 +46,8 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
             }
             catch (FormatException)
             {
-                encryptedSessionId = decodedCookieValue;
+                // Invalid HMAC
+                return null;
             }
 
             return new SessionIdentificationData

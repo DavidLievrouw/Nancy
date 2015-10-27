@@ -77,13 +77,6 @@
         }
 
         [Fact]
-        public void Decodes_parameter_value()
-        {
-            var actual = this.sessionIdentificationDataProvider.ProvideDataFromQuery(this.validRequest);
-            Assert.Equal(this.expectedResult.SessionId, actual.SessionId);
-        }
-
-        [Fact]
         public void Given_session_data_is_completele_nonsense_then_returns_null()
         {
             this.SetParameterValue("BS");
@@ -92,16 +85,11 @@
         }
 
         [Fact]
-        public void Given_session_hmac_is_invalid_base64_string_then_returns_input_without_hmac()
+        public void Given_session_hmac_is_invalid_base64_string_then_returns_null()
         {
-            var parameterData = "A" + this.encryptedSessionIdString;
-            var expectedResult = HttpUtility.UrlDecode(parameterData);
             this.SetParameterValue("A" + this.encryptedSessionIdString);
-
             var actual = this.sessionIdentificationDataProvider.ProvideDataFromQuery(this.validRequest);
-            Assert.Equal(expectedResult, actual.SessionId);
-            Assert.NotNull(actual.Hmac);
-            Assert.Empty(actual.Hmac);
+            Assert.Null(actual);
         }
 
         [Fact]

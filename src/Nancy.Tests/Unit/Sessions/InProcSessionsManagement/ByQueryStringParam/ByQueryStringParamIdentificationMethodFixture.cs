@@ -16,6 +16,7 @@
         private readonly IHmacValidator fakeHmacValidator;
         private readonly ISessionIdentificationDataProvider fakeSessionIdentificationDataProvider;
         private readonly ISessionIdFactory fakeSessionIdFactory;
+        private readonly IResponseManipulatorForSession fakeResponseManipulatorForSession;
         private readonly InProcSessionsConfiguration validConfiguration;
 
         public ByQueryStringParamIdentificationMethodFixture()
@@ -26,12 +27,14 @@
             this.fakeSessionIdentificationDataProvider = A.Fake<ISessionIdentificationDataProvider>();
             this.fakeHmacValidator = A.Fake<IHmacValidator>();
             this.fakeSessionIdFactory = A.Fake<ISessionIdFactory>();
+            this.fakeResponseManipulatorForSession = A.Fake<IResponseManipulatorForSession>();
             this.byQueryStringParamIdentificationMethod = new ByQueryStringParamIdentificationMethod(
                 this.fakeEncryptionProvider,
                 this.fakeHmacProvider,
                 this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
-                this.fakeSessionIdFactory);
+                this.fakeSessionIdFactory,
+                this.fakeResponseManipulatorForSession);
         }
 
         [Fact]
@@ -48,7 +51,8 @@
                 this.fakeHmacProvider,
                 this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
-                this.fakeSessionIdFactory));
+                this.fakeSessionIdFactory,
+                this.fakeResponseManipulatorForSession));
         }
 
         [Fact]
@@ -59,7 +63,8 @@
                 null,
                 this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
-                this.fakeSessionIdFactory));
+                this.fakeSessionIdFactory,
+                this.fakeResponseManipulatorForSession));
         }
 
         [Fact]
@@ -70,7 +75,8 @@
                 this.fakeHmacProvider,
                 null,
                 this.fakeHmacValidator,
-                this.fakeSessionIdFactory));
+                this.fakeSessionIdFactory,
+                this.fakeResponseManipulatorForSession));
         }
 
         [Fact]
@@ -81,7 +87,8 @@
                 this.fakeHmacProvider,
                 this.fakeSessionIdentificationDataProvider,
                 null,
-                this.fakeSessionIdFactory));
+                this.fakeSessionIdFactory,
+                this.fakeResponseManipulatorForSession));
         }
 
         [Fact]
@@ -92,6 +99,19 @@
                 this.fakeHmacProvider,
                 this.fakeSessionIdentificationDataProvider,
                 this.fakeHmacValidator,
+                null,
+                this.fakeResponseManipulatorForSession));
+        }
+
+        [Fact]
+        public void Given_null_response_manipulator_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ByQueryStringParamIdentificationMethod(
+                this.fakeEncryptionProvider,
+                this.fakeHmacProvider,
+                this.fakeSessionIdentificationDataProvider,
+                this.fakeHmacValidator,
+                this.fakeSessionIdFactory,
                 null));
         }
 
@@ -254,7 +274,7 @@
 
             public Save()
             {
-                this.validSessionId = new SessionId(Guid.NewGuid(), false);
+                this.validSessionId = new SessionId(Guid.NewGuid(), true);
                 this.context = new NancyContext()
                 {
                     Request = new Request("GET", "http://www.google.be")
@@ -280,7 +300,9 @@
             {
                 var contextWithoutRequest = new NancyContext();
                 Assert.Throws<ArgumentException>(
-                    () => this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId, contextWithoutRequest));
+                    () =>
+                        this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId,
+                            contextWithoutRequest));
             }
 
             [Fact]
@@ -289,6 +311,41 @@
                 var emptySessionId = new SessionId(Guid.Empty, false);
                 Assert.Throws<ArgumentException>(
                     () => this.byQueryStringParamIdentificationMethod.SaveSessionId(emptySessionId, this.context));
+            }
+
+            [Fact]
+            public void Given_session_id_is_not_new_then_does_nothing()
+            {
+                var existingSessionId = new SessionId(Guid.NewGuid(), false);
+                this.byQueryStringParamIdentificationMethod.SaveSessionId(existingSessionId, this.context);
+                A.CallTo(
+                    () =>
+                        this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(A<NancyContext>._,
+                            A<SessionIdentificationData>._))
+                    .MustNotHaveHappened();
+            }
+
+            [Fact]
+            public void Given_session_id_is_new_then_manipulates_response()
+            {
+                const string encryptedSessionId = "ABC_sessionid_xyz";
+                var hmacBytes = new byte[] {1, 2, 3};
+
+                A.CallTo(() => this.fakeEncryptionProvider.Encrypt(this.validSessionId.Value.ToString()))
+                    .Returns(encryptedSessionId);
+                A.CallTo(() => this.fakeHmacProvider.GenerateHmac(encryptedSessionId))
+                    .Returns(hmacBytes);
+                A.CallTo(() => this.fakeHmacProvider.HmacLength)
+                    .Returns(hmacBytes.Length);
+
+                this.byQueryStringParamIdentificationMethod.SaveSessionId(this.validSessionId, this.context);
+
+                A.CallTo(() => this.fakeResponseManipulatorForSession.ModifyResponseToRedirectToSessionUrl(
+                    this.context,
+                    A<SessionIdentificationData>.That.Matches(sid => sid.SessionId == encryptedSessionId &&
+                                                                     HmacComparer.Compare(sid.Hmac, hmacBytes,
+                                                                         this.fakeHmacProvider.HmacLength))))
+                    .MustHaveHappened();
             }
         }
     }

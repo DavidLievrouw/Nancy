@@ -256,6 +256,7 @@
     <Compile Include="Unit\Security\UserIdentityExtensionsFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\ByQueryStringParam\ByQueryStringParamIdentificationMethodFixture.cs" />
+    <Compile Include="Unit\Sessions\InProcSessionsManagement\ByQueryStringParam\ResponseManipulatorForSessionFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\ByQueryStringParam\SessionIdentificationDataProviderFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\BySessionIdCookie\BySessionIdCookieIdentificationMethodFixture.cs" />
     <Compile Include="Unit\Sessions\InProcSessionsManagement\SessionIdentificationDataFixture.cs" />
