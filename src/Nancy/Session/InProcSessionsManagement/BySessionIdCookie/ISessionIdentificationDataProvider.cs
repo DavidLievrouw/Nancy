@@ -2,6 +2,6 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
 {
     internal interface ISessionIdentificationDataProvider
     {
-        SessionIdentificationData ProvideDataFromCookie(Request request);
+        SessionIdentificationData ProvideDataFromCookie(Request request, string cookieName);
     }
 }

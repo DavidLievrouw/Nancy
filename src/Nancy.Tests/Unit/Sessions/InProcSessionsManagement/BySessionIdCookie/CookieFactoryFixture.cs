@@ -1,14 +1,12 @@
 ﻿namespace Nancy.Tests.Unit.Sessions.InProcSessionsManagement.BySessionIdCookie
 {
     using System;
-    using FakeItEasy;
     using Nancy.Session.InProcSessionsManagement;
     using Nancy.Session.InProcSessionsManagement.BySessionIdCookie;
     using Xunit;
 
     public class CookieFactoryFixture
     {
-        private readonly IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
         private readonly SessionIdentificationData sessionIdentificationData;
         private readonly string cookieDomain;
         private readonly CookieFactory cookieFactory;
@@ -19,8 +17,7 @@
 
         public CookieFactoryFixture()
         {
-            this.bySessionIdCookieIdentificationMethod = A.Fake<IBySessionIdCookieIdentificationMethod>();
-            this.cookieFactory = new CookieFactory(this.bySessionIdCookieIdentificationMethod);
+            this.cookieFactory = new CookieFactory();
 
             this.cookieName = "TheCookieName";
             this.cookieValue = "01HMAC98%02SessionId";
@@ -32,43 +29,77 @@
             };
             this.cookieDomain = ".nascar.com";
             this.cookiePath = "/schedule/";
-
-            A.CallTo(() => this.bySessionIdCookieIdentificationMethod.CookieName)
-                .Returns(this.cookieName);
-            A.CallTo(() => this.bySessionIdCookieIdentificationMethod.Domain)
-                .Returns(this.cookieDomain);
-            A.CallTo(() => this.bySessionIdCookieIdentificationMethod.Path)
-                .Returns(this.cookiePath);
         }
 
         [Fact]
-        public void Given_null_identification_method_then_throws()
+        public void Given_null_cookie_name_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => new CookieFactory(null));
+            Assert.Throws<ArgumentNullException>(() => this.cookieFactory.CreateCookie(
+                null,
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData));
         }
 
         [Fact]
-        public void Given_null_cookie_data_then_throws()
+        public void Given_empty_cookie_name_then_throws()
         {
-            Assert.Throws<ArgumentNullException>(() => this.cookieFactory.CreateCookie(null));
+            Assert.Throws<ArgumentNullException>(() => this.cookieFactory.CreateCookie(
+                string.Empty,
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData));
+        }
+
+        [Fact]
+        public void Given_whitespace_cookie_name_then_throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => this.cookieFactory.CreateCookie(
+                " ",
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData));
+        }
+
+        [Fact]
+        public void Given_null_cookie_domain_then_does_not_throw()
+        {
+            Assert.DoesNotThrow(() => this.cookieFactory.CreateCookie(
+                this.cookieName,
+                null,
+                this.cookiePath,
+                this.sessionIdentificationData));
+        }
+
+        [Fact]
+        public void Given_null_cookie_path_then_does_not_throw()
+        {
+            Assert.DoesNotThrow(() => this.cookieFactory.CreateCookie(
+                this.cookieName,
+                this.cookieDomain,
+                null,
+                this.sessionIdentificationData));
         }
 
         [Fact]
         public void Returns_http_only_cookie()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
+            var actualCookie = this.cookieFactory.CreateCookie(
+                this.cookieName,
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData);
             Assert.True(actualCookie.HttpOnly);
         }
 
         [Fact]
         public void Returns_cookie_without_path_and_domain_if_none_is_set()
         {
-            A.CallTo(() => this.bySessionIdCookieIdentificationMethod.Domain)
-                .Returns(null);
-            A.CallTo(() => this.bySessionIdCookieIdentificationMethod.Path)
-                .Returns(null);
-
-            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
+            var actualCookie = this.cookieFactory.CreateCookie(
+                this.cookieName,
+                null,
+                null,
+                this.sessionIdentificationData);
             Assert.Null(actualCookie.Domain);
             Assert.Null(actualCookie.Path);
         }
@@ -76,7 +107,11 @@
         [Fact]
         public void Returns_cookie_with_path_and_domain_if_specified()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
+            var actualCookie = this.cookieFactory.CreateCookie(
+                this.cookieName,
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData);
             Assert.Equal(this.cookieDomain, actualCookie.Domain);
             Assert.Equal(this.cookiePath, actualCookie.Path);
         }
@@ -84,21 +119,33 @@
         [Fact]
         public void Returns_cookie_with_valid_name()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
+            var actualCookie = this.cookieFactory.CreateCookie(
+                this.cookieName,
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData);
             Assert.Equal(this.cookieName, actualCookie.Name);
         }
 
         [Fact]
         public void Returns_cookie_with_specified_data()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
+            var actualCookie = this.cookieFactory.CreateCookie(
+                this.cookieName,
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData);
             Assert.Equal(this.cookieValue, actualCookie.Value);
         }
 
         [Fact]
         public void Returns_cookie_with_specified_encoded_data()
         {
-            var actualCookie = this.cookieFactory.CreateCookie(this.sessionIdentificationData);
+            var actualCookie = this.cookieFactory.CreateCookie(
+                this.cookieName,
+                this.cookieDomain,
+                this.cookiePath,
+                this.sessionIdentificationData);
             Assert.Equal(this.cookieValueEncoded, actualCookie.EncodedValue);
         }
     }

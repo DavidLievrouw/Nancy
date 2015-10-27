@@ -5,26 +5,18 @@ namespace Nancy.Session.InProcSessionsManagement.BySessionIdCookie
 
     internal class CookieFactory : ICookieFactory
     {
-        private readonly IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod;
-
-        public CookieFactory(IBySessionIdCookieIdentificationMethod bySessionIdCookieIdentificationMethod)
-        {
-            if (bySessionIdCookieIdentificationMethod == null)
-                throw new ArgumentNullException("bySessionIdCookieIdentificationMethod");
-            this.bySessionIdCookieIdentificationMethod = bySessionIdCookieIdentificationMethod;
-        }
-
-        public INancyCookie CreateCookie(SessionIdentificationData sessionIdentificationData)
+        public INancyCookie CreateCookie(string cookieName, string cookieDomain, string cookiePath, SessionIdentificationData sessionIdentificationData)
         {
             if (sessionIdentificationData == null) throw new ArgumentNullException("sessionIdentificationData");
-
+            if (string.IsNullOrWhiteSpace(cookieName)) throw new ArgumentNullException("cookieName");
+            
             return new NancyCookie(
-                this.bySessionIdCookieIdentificationMethod.CookieName,
+                cookieName,
                 sessionIdentificationData.ToString(),
                 true)
             {
-                Domain = this.bySessionIdCookieIdentificationMethod.Domain,
-                Path = this.bySessionIdCookieIdentificationMethod.Path
+                Domain = cookieDomain,
+                Path = cookiePath
             };
         }
     }
