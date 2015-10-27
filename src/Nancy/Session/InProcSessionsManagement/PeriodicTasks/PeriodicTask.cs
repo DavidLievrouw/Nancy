@@ -15,7 +15,7 @@
                 throw new ArgumentNullException("action");
             }
             if (timer == null) {
-                throw new ArgumentNullException(nameof(timer));
+                throw new ArgumentNullException("timer");
             }
             this.action = action;
             this.timer = timer;
