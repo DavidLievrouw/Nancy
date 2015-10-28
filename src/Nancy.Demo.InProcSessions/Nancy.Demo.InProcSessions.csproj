@@ -69,6 +69,10 @@
       <Project>{15b7f794-0bb2-4b66-ad78-4a951f1209b2}</Project>
       <Name>Nancy.Hosting.Aspnet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nancy.Session.InProc\Nancy.Session.InProc.csproj">
+      <Project>{d69b93d2-c336-4132-a5ab-89eb88c2b842}</Project>
+      <Name>Nancy.Session.InProc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nancy\Nancy.csproj">
       <Project>{34576216-0dca-4b0f-a0dc-9075e75a676f}</Project>
       <Name>Nancy</Name>
