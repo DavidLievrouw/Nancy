@@ -1,7 +1,6 @@
 namespace Nancy.Session.InProc.Tests
 {
     using System;
-    using Nancy.Tests;
     using Xunit;
 
     public class InProcSessionsConfigurationFixture
@@ -17,7 +16,7 @@ namespace Nancy.Session.InProc.Tests
         public void Should_be_valid_with_all_properties_set()
         {
             var result = new InProcSessionsConfiguration().IsValid;
-            result.ShouldBeTrue();
+            Assert.True(result);
         }
 
         [Fact]
@@ -27,7 +26,7 @@ namespace Nancy.Session.InProc.Tests
 
             var result = this.config.IsValid;
 
-            result.ShouldBeFalse();
+            Assert.False(result);
         }
 
         [Fact]
@@ -37,7 +36,7 @@ namespace Nancy.Session.InProc.Tests
 
             var result = this.config.IsValid;
 
-            result.ShouldBeFalse();
+            Assert.False(result);
         }
 
         [Fact]
@@ -47,7 +46,7 @@ namespace Nancy.Session.InProc.Tests
 
             var result = this.config.IsValid;
 
-            result.ShouldBeFalse();
+            Assert.False(result);
         }
 
         [Fact]
@@ -57,7 +56,7 @@ namespace Nancy.Session.InProc.Tests
 
             var result = this.config.IsValid;
 
-            result.ShouldBeTrue();
+            Assert.True(result);
         }
 
         [Fact]
@@ -67,7 +66,7 @@ namespace Nancy.Session.InProc.Tests
 
             var result = this.config.IsValid;
 
-            result.ShouldBeFalse();
+            Assert.False(result);
         }
     }
 }

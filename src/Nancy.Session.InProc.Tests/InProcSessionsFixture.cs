@@ -5,7 +5,6 @@
     using FakeItEasy;
     using Nancy.Bootstrapper;
     using Nancy.Session.InProc.InProcSessionsManagement;
-    using Nancy.Tests;
     using Xunit;
 
     public class InProcSessionsFixture
@@ -28,8 +27,8 @@
 
             hooks.Enable(this.fakeSessionManager);
 
-            beforePipeline.PipelineDelegates.Count().ShouldEqual(1);
-            afterPipeline.PipelineItems.Count().ShouldEqual(1);
+            Assert.Equal(1, beforePipeline.PipelineDelegates.Count());
+            Assert.Equal(1, afterPipeline.PipelineItems.Count());
         }
 
         [Fact]
