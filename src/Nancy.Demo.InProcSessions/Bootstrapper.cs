@@ -2,7 +2,7 @@ namespace Nancy.Demo.InProcSessions
 {
     using System;
     using Nancy.Bootstrapper;
-    using Nancy.Session;
+    using Nancy.Session.InProc;
     using Nancy.TinyIoc;
 
     public class Bootstrapper : DefaultNancyBootstrapper

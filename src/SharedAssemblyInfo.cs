@@ -11,4 +11,5 @@ using System.Reflection;
 
 [assembly: InternalsVisibleTo("Nancy.Tests")]
 [assembly: InternalsVisibleTo("Nancy.Hosting.Self.Tests")]
+[assembly: InternalsVisibleTo("Nancy.Session.InProc.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
